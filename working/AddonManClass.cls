@@ -125,13 +125,13 @@ Private Function GetForm_AddonManager() As String
     Dim AddonCnt As Long
     Dim AddonInUse As Boolean
     Dim CollectionID As Long
-    Dim Cnt As Long
+    Dim cnt As Long
     Dim Ptr As Long
-    Dim UploadTab As New FastStringClass
-    Dim ModifyTab As New FastStringClass
+    Dim UploadTab As New fastStringClass
+    Dim ModifyTab As New fastStringClass
     Dim RowPtr As Long
     Dim RowCnt As Long
-    Dim Body As FastStringClass
+    Dim Body As fastStringClass
     Dim fs As New kmaFileSystem3.FileSystemClass
     Dim GuidGenerator As GuidGenerator
     Dim Cells() As String
@@ -159,7 +159,7 @@ Private Function GetForm_AddonManager() As String
     Dim UserError As String
     Dim CDefContent As String
     Dim Temp As String
-    Dim Content As New FastString.FastStringClass
+    Dim Content As New fastStringClass
     Dim ButtonBar As String
     Dim Button As String
     Dim AdminUI As Object
@@ -261,9 +261,9 @@ Private Function GetForm_AddonManager() As String
                 '   Before deleting each addon, make sure it is not in another collection
                 '---------------------------------------------------------------------------------------------
                 '
-                Cnt = Main.GetStreamInteger("accnt")
-                If Cnt > 0 Then
-                    For Ptr = 0 To Cnt - 1
+                cnt = Main.GetStreamInteger("accnt")
+                If cnt > 0 Then
+                    For Ptr = 0 To cnt - 1
                         If Main.GetStreamBoolean2("ac" & Ptr) Then
                             TargetCollectionID = Main.GetStreamInteger("acID" & Ptr)
                             TargetCollectionName = Main.GetRecordName("Add-on Collections", TargetCollectionID)
@@ -319,9 +319,9 @@ Private Function GetForm_AddonManager() As String
                 ' Delete Add-ons
                 '---------------------------------------------------------------------------------------------
                 '
-                Cnt = Main.GetStreamInteger("aocnt")
-                If Cnt > 0 Then
-                    For Ptr = 0 To Cnt - 1
+                cnt = Main.GetStreamInteger("aocnt")
+                If cnt > 0 Then
+                    For Ptr = 0 To cnt - 1
                         If Main.GetStreamBoolean2("ao" & Ptr) Then
                             Call Main.DeleteContentRecord("Add-ons", Main.GetStreamInteger("aoID" & Ptr))
                         End If
@@ -373,8 +373,8 @@ Private Function GetForm_AddonManager() As String
             If InstallLibCollectionList <> "" Then
                 InstallLibCollectionList = Mid(InstallLibCollectionList, 2)
                 LibGuids = Split(InstallLibCollectionList, ",")
-                Cnt = UBound(LibGuids) + 1
-                For Ptr = 0 To Cnt - 1
+                cnt = UBound(LibGuids) + 1
+                For Ptr = 0 To cnt - 1
                     RegisterList = ""
                     UpgradeOK = AddonInstall.UpgradeAllAppsFromLibCollection(LibGuids(Ptr), Main.ApplicationName, IISResetRequired, RegisterList, ErrorMessage)
                     If Not UpgradeOK Then
@@ -705,7 +705,7 @@ Private Function GetForm_AddonManager() As String
                     Next
                 End If
                 BodyHTML = "" _
-                    & CR & "<script language=""JavaScript"">" _
+                    & cr & "<script language=""JavaScript"">" _
                     & "function clearLibraryRows(r) {" _
                     & "var c,p;" _
                     & "c=document.getElementsByName('LibraryRow');" _
@@ -716,9 +716,9 @@ Private Function GetForm_AddonManager() As String
                     & "}" _
                     & "</script>" _
                     & "<input type=hidden name=LibraryCnt value=""" & RowPtr & """>" _
-                    & CR & "<div style=""width:100%"">" _
+                    & cr & "<div style=""width:100%"">" _
                     & kmaIndent(BodyHTML) _
-                    & CR & "</div>" _
+                    & cr & "</div>" _
                     & ""
                 'BodyHTML = "" _
                 '    & "<script language=""JavaScript"">" _
@@ -803,7 +803,7 @@ Private Function GetForm_AddonManager() As String
             ' Get the Upload Add-ons tab
             ' --------------------------------------------------------------------------------
             '
-            Set Body = New FastStringClass
+            Set Body = New fastStringClass
             If Not DbUpToDate Then
                 Call Body.Add("<p>Add-on upload is disabled because your site database needs to be updated.</p>")
             Else
