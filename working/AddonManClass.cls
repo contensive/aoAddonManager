@@ -73,9 +73,9 @@ Private Function GetForm_AddonManager() As String
     Dim cellTemplate As String
     Dim Cell As String
     Dim CollectionCheckbox As String
-    Dim IsOnServer As Boolean
+    'Dim IsOnServer As Boolean
     Dim IsOnSite As Boolean
-    Dim LocalCollectionXML As String
+    'Dim LocalCollectionXML As String
     Dim DisplaySystem As Boolean
     Dim CollectionSystem As Boolean
     Dim DbUpToDate As Boolean
@@ -86,10 +86,10 @@ Private Function GetForm_AddonManager() As String
     Dim SettingNode As IXMLDOMNode
     Dim DateValue As Date
     Dim ErrorMessage As String
-    Dim OnServerGuidList As String
+    'Dim OnServerGuidList As String
     Dim UpgradeOK As Boolean
     Dim RegisterList As String
-    Dim LocalCollections As DOMDocument
+    'Dim LocalCollections As DOMDocument
     Dim LibCollections As DOMDocument
     Dim InstallFolder As String
     Dim LibGuids() As String
@@ -99,7 +99,6 @@ Private Function GetForm_AddonManager() As String
     Dim SQL As String
     Dim CSAddons As Long
     Dim addonid As Long
-    'Dim Upgrade As New ccUpgrade.UpGradeClass
     Dim LoopPtr As Long
     Dim InstallSourcePath As String
     Dim Deletes() As DeleteType
@@ -137,7 +136,6 @@ Private Function GetForm_AddonManager() As String
     Dim Cells() As String
     Dim PageNumber As Long
     Dim ColumnCnt As Long
-    
     Dim FormDescription As String
     Dim ColCaption() As String
     Dim ColAlign() As String
@@ -155,7 +153,6 @@ Private Function GetForm_AddonManager() As String
     Dim AOName As String
     Dim FieldName As String
     Dim FieldValue As String
-    '
     Dim UserError As String
     Dim CDefContent As String
     Dim Temp As String
@@ -163,7 +160,6 @@ Private Function GetForm_AddonManager() As String
     Dim ButtonBar As String
     Dim Button As String
     Dim AdminUI As Object
-    'Dim AdminUI As New AdminUIClass
     Dim Caption As String
     Dim Description As String
     Dim ButtonList As String
@@ -179,7 +175,6 @@ Private Function GetForm_AddonManager() As String
     Dim InterfaceNode As IXMLDOMNode
     Dim CollectionNode As IXMLDOMNode
     Dim CDefNode As IXMLDOMNode
-    'Dim remote As New RemoteClass
     Dim status As String
     Dim AllowInstallFromFolder As Boolean
     Dim InstallLibCollectionList As String
@@ -205,8 +200,23 @@ Private Function GetForm_AddonManager() As String
     Dim CollectionDemoLink As String
     Dim hint As String
     '
-    Set AddonInstall = CreateObject("ccUpgrade.AddonInstallClass")
-    Set AdminUI = CreateObject("ccWeb3.AdminUIClass")
+    'Set AddonInstall = CreateObject("ccUpgrade.AddonInstallClass")
+    'Set AdminUI = CreateObject("ccWeb3.AdminUIClass")
+    '
+    ' workaround for migration to 4.2 - calls to cp and cpCom
+    '
+    Dim cmc As Object
+    Dim useCmc As Boolean
+    useCmc = False
+    If Main.SiteProperty_BuildVersion > "4.2.100" Then
+        useCmc = True
+        Set cmc = Main.getCmc()
+        ' call admin UI proxy
+        Set AdminUI = CreateObject("ccWeb3.AdminUIClass")
+    Else
+        Set AddonInstall = CreateObject("ccUpgrade.AddonInstallClass")
+        Set AdminUI = CreateObject("ccWeb3.AdminUIClass")
+    End If
     '
     ' Sitekey - this is the site's identifyer back at the support site. It initially is being used
     ' to identify site support agreements for add-on use.
@@ -334,7 +344,11 @@ Private Function GetForm_AddonManager() As String
                 '
                 If Main.IsDeveloper() And Main.GetStreamBoolean("InstallCore") Then
                     Call Main.DeleteContentRecords("Add-on Collections", "ccguid='{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}'")
-                    UpgradeOK = AddonInstall.UpgradeAllAppsFromLibCollection("{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}", Main.ApplicationName, IISResetRequired, RegisterList, ErrorMessage)
+                    If useCmc Then
+                        UpgradeOK = cmc.UpgradeAllAppsFromLibCollection("{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}", IISResetRequired, RegisterList, ErrorMessage)
+                    Else
+                        UpgradeOK = AddonInstall.UpgradeAllAppsFromLibCollection("{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}", Main.ApplicationName, IISResetRequired, RegisterList, ErrorMessage)
+                    End If
                 End If
                 '
                 '---------------------------------------------------------------------------------------------
@@ -497,19 +511,19 @@ Private Function GetForm_AddonManager() As String
             ColWidth(3) = "99%"
             ColSortable(3) = False
             '
-            Set LocalCollections = New DOMDocument
-            LocalCollectionXML = AddonInstall.GetConfig()
-            Call LocalCollections.loadXML(LocalCollectionXML)
-            For Each CDef_Node In LocalCollections.documentElement.childNodes
-                If LCase(CDef_Node.baseName) = "collection" Then
-                    For Each CollectionNode In CDef_Node.childNodes
-                        If LCase(CollectionNode.baseName) = "guid" Then
-                            OnServerGuidList = OnServerGuidList & "," & CollectionNode.Text
-                            Exit For
-                        End If
-                    Next
-                End If
-            Next
+            'Set LocalCollections = New DOMDocument
+            'LocalCollectionXML = AddonInstall.GetConfig()
+            'Call LocalCollections.loadXML(LocalCollectionXML)
+'            For Each CDef_Node In LocalCollections.documentElement.childNodes
+'                If LCase(CDef_Node.baseName) = "collection" Then
+'                    For Each CollectionNode In CDef_Node.childNodes
+'                        If LCase(CollectionNode.baseName) = "guid" Then
+'                            OnServerGuidList = OnServerGuidList & "," & CollectionNode.Text
+'                            Exit For
+'                        End If
+'                    Next
+'                End If
+'            Next
             '
             Set LibCollections = New DOMDocument
             'LibCollections.Load ("http://jay2.kma.net/GetCollectionList?iv=" & Main.ContentServerVersion)
@@ -638,7 +652,7 @@ Private Function GetForm_AddonManager() As String
                                         'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
                                         'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
                                     Else
-                                        IsOnServer = kmaEncodeBoolean(InStr(1, OnServerGuidList, CollectionGUID, vbTextCompare))
+                                        'IsOnServer = kmaEncodeBoolean(InStr(1, OnServerGuidList, CollectionGUID, vbTextCompare))
                                         CS = Main.Opencscontent("Add-on Collections", GuidFieldName & "=" & KmaEncodeSQLText(CollectionGUID), , , , , "ID")
                                         IsOnSite = Main.iscsok(CS)
                                         Call Main.closecs(CS)
