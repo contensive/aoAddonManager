@@ -208,7 +208,7 @@ Private Function GetForm_AddonManager() As String
     Dim cmc As Object
     Dim useCmc As Boolean
     useCmc = False
-    If Main.SiteProperty_BuildVersion > "4.2.100" Then
+    If Main.ContentServerVersion > "4.2.100" Then
         useCmc = True
         Set cmc = Main.getCmc()
         ' call admin UI proxy
