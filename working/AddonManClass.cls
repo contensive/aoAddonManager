@@ -125,7 +125,7 @@ Private Function GetForm_AddonManager() As String
     Dim AddonInUse As Boolean
     Dim CollectionID As Long
     Dim cnt As Long
-    Dim Ptr As Long
+    Dim ptr As Long
     Dim UploadTab As New fastStringClass
     Dim ModifyTab As New fastStringClass
     Dim RowPtr As Long
@@ -261,8 +261,8 @@ Private Function GetForm_AddonManager() As String
                 '---------------------------------------------------------------------------------------------
                 '
                 If main.GetStreamText("LibraryRow") <> "" Then
-                    Ptr = main.GetStreamInteger("LibraryRow")
-                    CollectionGUID = main.GetStreamText("LibraryRowguid" & Ptr)
+                    ptr = main.GetStreamInteger("LibraryRow")
+                    CollectionGUID = main.GetStreamText("LibraryRowguid" & ptr)
                     InstallLibCollectionList = InstallLibCollectionList & "," & CollectionGUID
                 End If
                 '
@@ -273,9 +273,9 @@ Private Function GetForm_AddonManager() As String
                 '
                 cnt = main.GetStreamInteger("accnt")
                 If cnt > 0 Then
-                    For Ptr = 0 To cnt - 1
-                        If main.GetStreamBoolean2("ac" & Ptr) Then
-                            TargetCollectionID = main.GetStreamInteger("acID" & Ptr)
+                    For ptr = 0 To cnt - 1
+                        If main.GetStreamBoolean2("ac" & ptr) Then
+                            TargetCollectionID = main.GetStreamInteger("acID" & ptr)
                             TargetCollectionName = main.GetRecordName("Add-on Collections", TargetCollectionID)
                             '
                             ' Clean up rules associating this collection to other objects
@@ -331,9 +331,9 @@ Private Function GetForm_AddonManager() As String
                 '
                 cnt = main.GetStreamInteger("aocnt")
                 If cnt > 0 Then
-                    For Ptr = 0 To cnt - 1
-                        If main.GetStreamBoolean2("ao" & Ptr) Then
-                            Call main.DeleteContentRecord("Add-ons", main.GetStreamInteger("aoID" & Ptr))
+                    For ptr = 0 To cnt - 1
+                        If main.GetStreamBoolean2("ao" & ptr) Then
+                            Call main.DeleteContentRecord("Add-ons", main.GetStreamInteger("aoID" & ptr))
                         End If
                     Next
                 End If
@@ -367,12 +367,12 @@ Private Function GetForm_AddonManager() As String
                     '
                     UploadsCnt = main.GetStreamInteger("UploadCount")
                     ReDim Uploads(UploadsCnt)
-                    For Ptr = 0 To UploadsCnt - 1
-                        UploadPathPage = main.ProcessFormInputFile("Upload" & Ptr, InstallFolder)
+                    For ptr = 0 To UploadsCnt - 1
+                        UploadPathPage = main.ProcessFormInputFile("Upload" & ptr, InstallFolder)
                         If UploadPathPage <> "" Then
-                            Uploads(Ptr) = Mid(Replace(UploadPathPage, InstallFolder, ""), 2)
-                            Call HandleClassAppendLogfile("AddonManager", " app=" & main.ApplicationName & ", Member=" & main.MemberName & " (" & main.memberID & "), Uploads=" & Uploads(Ptr))
-                            status = status & "<BR>Uploaded collection file [" & Uploads(Ptr) & "]"
+                            Uploads(ptr) = Mid(Replace(UploadPathPage, InstallFolder, ""), 2)
+                            Call HandleClassAppendLogfile("AddonManager", " app=" & main.ApplicationName & ", Member=" & main.MemberName & " (" & main.memberID & "), Uploads=" & Uploads(ptr))
+                            status = status & "<BR>Uploaded collection file [" & Uploads(ptr) & "]"
                         End If
                     Next
                     AllowInstallFromFolder = True
@@ -388,9 +388,9 @@ Private Function GetForm_AddonManager() As String
                 InstallLibCollectionList = Mid(InstallLibCollectionList, 2)
                 LibGuids = Split(InstallLibCollectionList, ",")
                 cnt = UBound(LibGuids) + 1
-                For Ptr = 0 To cnt - 1
+                For ptr = 0 To cnt - 1
                     RegisterList = ""
-                    UpgradeOK = AddonInstall.UpgradeAllAppsFromLibCollection(LibGuids(Ptr), main.ApplicationName, IISResetRequired, RegisterList, ErrorMessage)
+                    UpgradeOK = AddonInstall.UpgradeAllAppsFromLibCollection(LibGuids(ptr), main.ApplicationName, IISResetRequired, RegisterList, ErrorMessage)
                     If Not UpgradeOK Then
                         '
                         ' block the reset because we will loose the error message
@@ -402,7 +402,7 @@ Private Function GetForm_AddonManager() As String
                         ' Save the first collection as the installed collection
                         '
                         If InstalledCollectionGuid = "" Then
-                            InstalledCollectionGuid = LibGuids(Ptr)
+                            InstalledCollectionGuid = LibGuids(ptr)
                         End If
                     End If
                 Next
@@ -528,11 +528,11 @@ Private Function GetForm_AddonManager() As String
             Set LibCollections = New DOMDocument
             'LibCollections.Load ("http://jay2.kma.net/GetCollectionList?iv=" & Main.ContentServerVersion)
             Call LibCollections.Load("http://support.contensive.com/GetCollectionList?iv=" & main.ContentServerVersion & "&key=" & kmaEncodeURL(SiteKey) & "&name=" & kmaEncodeURL(main.ApplicationName) & "&primaryDomain=" & kmaEncodeURL(main.ServerDomainPrimary))
-            Ptr = 0
-            Do While LibCollections.readyState <> 4 And Ptr < 100
+            ptr = 0
+            Do While LibCollections.readyState <> 4 And ptr < 100
                 Sleep (100)
                 DoEvents
-                Ptr = Ptr + 1
+                ptr = ptr + 1
             Loop
             If LibCollections.readyState <> 4 Then
                 UserError = "There was an error reading the Collection Library. The library website took too long to respond. Please try again later."
