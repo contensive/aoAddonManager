@@ -205,6 +205,8 @@ Private Function GetForm_AddonManager() As String
     '
     ' workaround for migration to 4.2 - calls to cp and cpCom
     '
+Call HandleClassAppendLogfile("AddonManager 100", "debugging")
+
     Dim cmc As Object
     Dim useCmc As Boolean
     useCmc = False
@@ -221,6 +223,7 @@ Private Function GetForm_AddonManager() As String
     ' Sitekey - this is the site's identifyer back at the support site. It initially is being used
     ' to identify site support agreements for add-on use.
     '
+Call HandleClassAppendLogfile("AddonManager 200", "debugging")
     SiteKey = main.getsiteproperty("sitekey", "")
     If SiteKey = "" Then
         Set GuidGenerator = New GuidGenerator
@@ -229,6 +232,7 @@ Private Function GetForm_AddonManager() As String
         Set GuidGenerator = Nothing
     End If
     '
+Call HandleClassAppendLogfile("AddonManager 300", "debugging")
     DbUpToDate = (main.SiteProperty_BuildVersion >= main.ContentServerVersion)
     Button = main.GetStreamText(RequestNameButton)
     AllowInstallFromFolder = False
@@ -272,6 +276,7 @@ Private Function GetForm_AddonManager() As String
                 '---------------------------------------------------------------------------------------------
                 '
                 cnt = main.GetStreamInteger("accnt")
+Call HandleClassAppendLogfile("AddonManager 400", "debugging")
                 If cnt > 0 Then
                     For Ptr = 0 To cnt - 1
                         If main.GetStreamBoolean2("ac" & Ptr) Then
@@ -384,6 +389,7 @@ Private Function GetForm_AddonManager() As String
             '   Install Library Collections
             ' --------------------------------------------------------------------------------
             '
+Call HandleClassAppendLogfile("AddonManager 500", "debugging")
             If InstallLibCollectionList <> "" Then
                 InstallLibCollectionList = Mid(InstallLibCollectionList, 2)
                 LibGuids = Split(InstallLibCollectionList, ",")
@@ -534,6 +540,7 @@ Private Function GetForm_AddonManager() As String
                 DoEvents
                 Ptr = Ptr + 1
             Loop
+Call HandleClassAppendLogfile("AddonManager 600", "debugging")
             If LibCollections.readyState <> 4 Then
                 UserError = "There was an error reading the Collection Library. The library website took too long to respond. Please try again later."
                 Call HandleClassAppendLogfile("AddonManager", UserError)
@@ -752,6 +759,7 @@ Private Function GetForm_AddonManager() As String
                 BodyHTML = BodyHTML & main.GetFormInputHidden("AOCnt", RowPtr)
                 Call main.AddLiveTabEntry("<NOBR>Collection&nbsp;Library</NOBR>", BodyHTML, "ccAdminTab")
             End If
+Call HandleClassAppendLogfile("AddonManager 700", "debugging")
             '
             ' --------------------------------------------------------------------------------
             ' Current Collections Tab
