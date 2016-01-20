@@ -1,3 +1,4 @@
+
 Imports System
 Imports System.Collections.Generic
 Imports System.Text
@@ -45,7 +46,7 @@ Namespace Contensive.addonManager
                 If CP.Version < "5.0.000" Then
                     returnHtml = CP.Utils.ExecuteAddon(guidAddonManagerActiveX)
                 Else
-                    returnHtml = GetForm_AddonManager(CP)
+                    returnHtml = GetForm_AddonManager5(CP)
                 End If
             Catch ex As Exception
                 HandleError(CP, ex)
@@ -60,7 +61,7 @@ Namespace Contensive.addonManager
         '       Eventually, this should be substituted with a "Addon Manager Addon" - so the interface can be improved with Contensive recompile
         '==========================================================================================================================================
         '
-        Private Function GetForm_AddonManager(cp As CPBaseClass) As String
+        Private Function GetForm_AddonManager5(cp As CPBaseClass) As String
             On Error GoTo ErrorTrap
             '
             Const InstallFolderName = "install"
@@ -126,7 +127,7 @@ Namespace Contensive.addonManager
             Dim ModifyTab As New keyPtrIndexClass
             Dim RowPtr As Integer
             Dim RowCnt As Integer
-            Dim Body As keyPtrIndexClass
+            Dim Body As StringBuilder
             Dim Cells() As String
             Dim PageNumber As Integer
             Dim ColumnCnt As Integer
@@ -141,7 +142,7 @@ Namespace Contensive.addonManager
             Dim ClassStyle As String
             Dim DefaultSortColumnPtr As Integer
             Dim BodyHTML As String
-            Dim CS As Integer
+            Dim cs As CPCSBaseClass = cp.CSNew
             Dim Criteria As String
             Dim IsFound As Boolean
             Dim AOName As String
@@ -150,7 +151,7 @@ Namespace Contensive.addonManager
             Dim UserError As String
             Dim CDefContent As String
             Dim Temp As String
-            Dim Content As New keyPtrIndexClass
+            'Dim Content As New keyPtrIndexClass
             Dim ButtonBar As String
             Dim Button As String
             Dim AdminUI As Object
@@ -165,7 +166,7 @@ Namespace Contensive.addonManager
             Dim CDef_Node As Xml.XmlNode
             Dim CDefChildNode As Xml.XmlNode
             Dim DataSourcename As String
-            Dim Doc As New Xml.XmlNode
+            Dim Doc As New Xml.XmlDocument
             Dim InterfaceNode As Xml.XmlNode
             Dim CollectionNode As Xml.XmlNode
             Dim CDefNode As Xml.XmlNode
@@ -243,12 +244,12 @@ Namespace Contensive.addonManager
                     ' ----- Put up error message
                     '
                     ButtonList = ButtonCancel
-                    Content.Add(AdminUI.GetFormBodyAdminOnly(main))
+                    BodyHTML = cp.Html.p("You must be an administrator to use this tool.")
                 Else
                     '
                     PreTableCopy = "Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added."
-                    InstallFolder = "CollectionUpload" & CStr(GetRandomInteger())
-                    InstallPath = main.PhysicalFilePath & InstallFolder & "\"
+                    InstallFolder = "CollectionUpload" & cp.Utils.CreateGuid
+                    InstallPath = cp.Site.PhysicalFilePath & InstallFolder & "\"
                     If (Button = ButtonOK) Then
                         '
                         '---------------------------------------------------------------------------------------------
@@ -256,7 +257,7 @@ Namespace Contensive.addonManager
                         '---------------------------------------------------------------------------------------------
                         '
                         If cp.Doc.GetText("LibraryRow") <> "" Then
-                            Ptr = main.GetStreamInteger("LibraryRow")
+                            Ptr = cp.Doc.GetInteger("LibraryRow")
                             CollectionGUID = cp.Doc.GetText("LibraryRowguid" & Ptr)
                             InstallLibCollectionList = InstallLibCollectionList & "," & CollectionGUID
                         End If
@@ -266,56 +267,58 @@ Namespace Contensive.addonManager
                         '   Before deleting each addon, make sure it is not in another collection
                         '---------------------------------------------------------------------------------------------
                         '
-                        cnt = main.GetStreamInteger("accnt")
+                        cnt = cp.Doc.GetInteger("accnt")
                         Call HandleClassAppendLogfile("AddonManager 400", "debugging")
                         If cnt > 0 Then
                             For Ptr = 0 To cnt - 1
-                                If main.GetStreamBoolean2("ac" & Ptr) Then
-                                    TargetCollectionID = main.GetStreamInteger("acID" & Ptr)
-                                    TargetCollectionName = main.GetRecordName("Add-on Collections", TargetCollectionID)
+                                If cp.Doc.GetBoolean("ac" & Ptr) Then
+                                    TargetCollectionID = cp.Doc.GetInteger("acID" & Ptr)
+                                    TargetCollectionName = cp.Content.GetRecordName("Add-on Collections", TargetCollectionID)
                                     '
                                     ' Clean up rules associating this collection to other objects
                                     '
-                                    Call main.DeleteContentRecords("Add-on Collection CDef Rules", "collectionid=" & TargetCollectionID)
-                                    Call main.DeleteContentRecords("Add-on Collection Module Rules", "collectionid=" & TargetCollectionID)
+                                    Call cp.Content.Delete("Add-on Collection CDef Rules", "collectionid=" & TargetCollectionID)
+                                    Call cp.Content.Delete("Add-on Collection Module Rules", "collectionid=" & TargetCollectionID)
                                     '
                                     ' Delete any addons from this collection
                                     '
-                                    CS = main.Opencscontent("add-ons", "collectionid=" & TargetCollectionID)
-                                    Do While main.iscsok(CS)
-                                        '
-                                        ' Clean up the rules that might have pointed to the addon
-                                        '
-                                        addonid = main.getcsinteger(CS, "id")
-                                        Call main.DeleteContentRecords("Admin Menuing", "addonid=" & addonid)
-                                        Call main.DeleteContentRecords("Shared Styles Add-on Rules", "addonid=" & addonid)
-                                        Call main.DeleteContentRecords("Add-on Scripting Module Rules", "addonid=" & addonid)
-                                        Call main.DeleteContentRecords("Add-on Include Rules", "addonid=" & addonid)
-                                        Call main.DeleteContentRecords("Add-on Include Rules", "includedaddonid=" & addonid)
-                                        Call main.nextcsrecord(CS)
-                                    Loop
-                                    Call main.DeleteContentRecords("add-ons", "collectionid=" & TargetCollectionID)
+                                    If cs.open("add-ons", "collectionid=" & TargetCollectionID) Then
+                                        Do
+                                            '
+                                            ' Clean up the rules that might have pointed to the addon
+                                            '
+                                            addonid = cs.getinteger("id")
+                                            Call cp.Content.Delete("Admin Menuing", "addonid=" & addonid)
+                                            Call cp.Content.Delete("Shared Styles Add-on Rules", "addonid=" & addonid)
+                                            Call cp.Content.Delete("Add-on Scripting Module Rules", "addonid=" & addonid)
+                                            Call cp.Content.Delete("Add-on Include Rules", "addonid=" & addonid)
+                                            Call cp.Content.Delete("Add-on Include Rules", "includedaddonid=" & addonid)
+                                            cs.gonext()
+                                        Loop While cs.ok
+                                    End If
+                                    cs.close()
+                                    Call cp.Content.Delete("add-ons", "collectionid=" & TargetCollectionID)
                                     '
                                     ' Delete the navigator entry for the collection under 'Add-ons'
                                     '
                                     If TargetCollectionID > 0 Then
                                         AddonNavigatorID = 0
-                                        CS = main.Opencscontent("Navigator Entries", "name='Manage Add-ons' and ((parentid=0)or(parentid is null))")
-                                        If main.iscsok(CS) Then
-                                            AddonNavigatorID = main.getcsinteger(CS, "ID")
+                                        cs.open("Navigator Entries", "name='Manage Add-ons' and ((parentid=0)or(parentid is null))")
+                                        If cs.ok Then
+                                            AddonNavigatorID = cs.getinteger("ID")
                                         End If
-                                        Call main.closecs(CS)
+                                        Call cs.close()
                                         If AddonNavigatorID > 0 Then
                                             Call GetForm_AddonManager_DeleteNavigatorBranch(TargetCollectionName, AddonNavigatorID)
                                         End If
                                         '
                                         ' Now delete the Collection record
                                         '
-                                        Call main.DeleteContentRecord("Add-on Collections", TargetCollectionID)
+                                        cp.Content.Delete("Add-on Collections", "id=" & TargetCollectionID)
                                         '
                                         ' Delete Navigator Entries set as installed by the collection (this may be all that is needed)
                                         '
-                                        Call main.DeleteContentRecords("Navigator Entries", "installedbycollectionid=" & TargetCollectionID)
+                                        Call cp.Content.Delete("Navigator Entries", "installedbycollectionid=" & TargetCollectionID)
                                     End If
                                 End If
                             Next
@@ -325,11 +328,11 @@ Namespace Contensive.addonManager
                         ' Delete Add-ons
                         '---------------------------------------------------------------------------------------------
                         '
-                        cnt = main.GetStreamInteger("aocnt")
+                        cnt = cp.Doc.GetInteger("aocnt")
                         If cnt > 0 Then
                             For Ptr = 0 To cnt - 1
-                                If main.GetStreamBoolean2("ao" & Ptr) Then
-                                    Call main.DeleteContentRecord("Add-ons", main.GetStreamInteger("aoID" & Ptr))
+                                If cp.Doc.GetBoolean("ao" & Ptr) Then
+                                    cp.Content.Delete("Add-ons", "id=" & cp.Doc.GetInteger("aoID" & Ptr))
                                 End If
                             Next
                         End If
@@ -338,8 +341,8 @@ Namespace Contensive.addonManager
                         ' Reinstall core collection
                         '---------------------------------------------------------------------------------------------
                         '
-                        If main.IsDeveloper() And main.GetStreamBoolean("InstallCore") Then
-                            Call main.DeleteContentRecords("Add-on Collections", "ccguid='{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}'")
+                        If cp.User.IsDeveloper And cp.Doc.GetBoolean("InstallCore") Then
+                            Call cp.Content.Delete("Add-on Collections", "ccguid='{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}'")
                             If useCmc Then
                                 UpgradeOK = cmc.UpgradeAllAppsFromLibCollection("{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}", IISResetRequired, RegisterList, ErrorMessage)
                             Else
@@ -351,7 +354,7 @@ Namespace Contensive.addonManager
                         ' Upload new collection files
                         '---------------------------------------------------------------------------------------------
                         '
-                        CollectionFilePathPage = main.ProcessFormInputFile("MetaFile", InstallFolder)
+                        CollectionFilePathPage = cp.Html.ProcessInputFile("MetaFile", InstallFolder)
                         '
                         ' Process the MetaFile
                         '
@@ -359,9 +362,9 @@ Namespace Contensive.addonManager
                             CollectionFilename = Mid(Replace(CollectionFilePathPage, InstallFolder, ""), 2)
                             status = status & "<BR>Uploaded collection file [" & CollectionFilename & "]"
                             '
-                            Call AppendLogFile2(main.ApplicationName, "Uploading new collection file, member=" & main.MemberName & " (" & main.memberID & "), CollectionFilename=" & CollectionFilename, App.EXEName, "AdminClass", "GetForm_AddonManager", 0, "", "", False, True, main.ServerLink, "AddonInstall", "")
+                            'Call AppendLogFile2(main.ApplicationName, "Uploading new collection file, member=" & main.MemberName & " (" & main.memberID & "), CollectionFilename=" & CollectionFilename, App.EXEName, "AdminClass", "GetForm_AddonManager", 0, "", "", False, True, main.ServerLink, "AddonInstall", "")
                             '
-                            UploadsCnt = main.GetStreamInteger("UploadCount")
+                            UploadsCnt = cp.Doc.GetInteger("UploadCount")
                             ReDim Uploads(UploadsCnt)
                             For Ptr = 0 To UploadsCnt - 1
                                 UploadPathPage = main.ProcessFormInputFile("Upload" & Ptr, InstallFolder)
@@ -387,13 +390,13 @@ Namespace Contensive.addonManager
                         cnt = UBound(LibGuids) + 1
                         For Ptr = 0 To cnt - 1
                             RegisterList = ""
-                            UpgradeOK = AddonInstall.UpgradeAllAppsFromLibCollection(LibGuids(Ptr), main.ApplicationName, IISResetRequired, RegisterList, ErrorMessage)
+                            UpgradeOK = AddonInstall.UpgradeAllAppsFromLibCollection(LibGuids(Ptr), cp.Site.Name, IISResetRequired, RegisterList, ErrorMessage)
                             If Not UpgradeOK Then
                                 '
                                 ' block the reset because we will loose the error message
                                 '
                                 IISResetRequired = False
-                                main.AddUserError("This Add-on Collection did not install correctly, " & ErrorMessage)
+                                cp.UserError.Add("This Add-on Collection did not install correctly, " & ErrorMessage)
                             Else
                                 '
                                 ' Save the first collection as the installed collection
@@ -410,15 +413,15 @@ Namespace Contensive.addonManager
                     ' --------------------------------------------------------------------------------
                     '
                     If AllowInstallFromFolder Then
-                        'InstallFolder = Main.PhysicalFilePath & InstallFolderName & "\"\
+                        'InstallFolder = cp.Site.PhysicalFilePath & InstallFolderName & "\"\
 
                         If fs.CheckFileFolder(InstallPath) Then
                             UpgradeOK = AddonInstall.InstallCollectionFilesFromFolder3(InstallPath, IISResetRequired, main.ApplicationName, ErrorMessage, InstalledCollectionGuid)
                             If Not UpgradeOK Then
                                 If ErrorMessage = "" Then
-                                    main.AddUserError("The Add-on Collection did not install correctly, but no detailed error message was given.")
+                                    cp.UserError.Add("The Add-on Collection did not install correctly, but no detailed error message was given.")
                                 Else
-                                    main.AddUserError("The Add-on Collection did not install correctly, " & ErrorMessage)
+                                    cp.UserError.Add("The Add-on Collection did not install correctly, " & ErrorMessage)
                                 End If
                             End If
                         End If
@@ -435,11 +438,11 @@ Namespace Contensive.addonManager
                     ' --------------------------------------------------------------------------------
                     '
                     If InstalledCollectionGuid <> "" Then
-                        CS = main.Opencscontent("Add-on Collections", GuidFieldName & "=" & KmaEncodeSQLText(InstalledCollectionGuid))
-                        If main.iscsok(CS) Then
-                            InstalledCollectionID = main.getcsinteger(CS, "ID")
+                        cs.open("Add-on Collections", GuidFieldName & "=" & KmaEncodeSQLText(InstalledCollectionGuid))
+                        If cs.ok Then
+                            InstalledCollectionID = cs.getinteger("ID")
                         End If
-                        Call main.closecs(CS)
+                        Call cs.close()
                     End If
                     '
                     ' --------------------------------------------------------------------------------
@@ -447,7 +450,7 @@ Namespace Contensive.addonManager
                     ' --------------------------------------------------------------------------------
                     '
                     If RegisterList <> "" Then
-                        Call AddonInstall.RegisterActiveXFiles(RegisterList)
+                        'Call AddonInstall.RegisterActiveXFiles(RegisterList)
                         Call AddonInstall.RegisterDotNet(RegisterList)
                         RegisterList = ""
                     End If
@@ -461,7 +464,7 @@ Namespace Contensive.addonManager
                         ' registers are async - make sure they are done before reset
                         '
                         Call main.IISReset()
-                        GetForm_AddonManager = "<div style=""top-margin:50px;text-align:center"">Your system will be reset to complete the installation.</div>"
+                        GetForm_AddonManager5 = "<div style=""top-margin:50px;text-align:center"">Your system will be reset to complete the installation.</div>"
                         Call main.setvisitproperty("RunOnce HelpCollectionID", InstalledCollectionID)
                         Exit Function
                     End If
@@ -652,9 +655,9 @@ Namespace Contensive.addonManager
                                                 'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
                                             Else
                                                 'IsOnServer = kmaEncodeBoolean(InStr(1, OnServerGuidList, CollectionGUID, vbTextCompare))
-                                                CS = main.Opencscontent("Add-on Collections", GuidFieldName & "=" & KmaEncodeSQLText(CollectionGUID), , , , , "ID")
-                                                IsOnSite = main.iscsok(CS)
-                                                Call main.closecs(CS)
+                                                cs.open("Add-on Collections", GuidFieldName & "=" & KmaEncodeSQLText(CollectionGUID), , , , , "ID")
+                                                IsOnSite = cs.ok
+                                                Call cs.close()
                                                 If IsOnSite Then
                                                     '
                                                     ' Already installed
@@ -779,34 +782,34 @@ Namespace Contensive.addonManager
                         '
                         ' before system attribute
                         '
-                        CS = main.Opencscontent("Add-on Collections", , "Name")
-                    ElseIf Not main.IsDeveloper Then
+                        cs.open("Add-on Collections", , "Name")
+                    ElseIf Not cp.User.IsDeveloper Then
                         '
                         ' non-developers
                         '
-                        CS = main.Opencscontent("Add-on Collections", "((system is null)or(system=0))", "Name")
+                        cs.Open("Add-on Collections", "((system is null)or(system=0))", "Name")
                     Else
                         '
                         ' developers
                         '
                         DisplaySystem = True
-                        CS = main.Opencscontent("Add-on Collections", , "Name")
+                        cs.Open("Add-on Collections", , "Name")
                     End If
-                    ReDim Preserve Cells(main.GetCSRowCount(CS), ColumnCnt)
+                    ReDim Preserve Cells(cs.GetRowCount(cs), ColumnCnt)
                     RowPtr = 0
-                    Do While main.iscsok(CS)
-                        Cells(RowPtr, 0) = main.GetFormInputCheckBox("AC" & RowPtr) & main.GetFormInputHidden("ACID" & RowPtr, main.getcsinteger(CS, "ID"))
-                        'Cells(RowPtr, 1) = "<a href=""" & Main.SiteProperty_AdminURL & "?id=" & Main.GetCSInteger(CS, "ID") & "&cid=" & Main.GetCSInteger(CS, "ContentControlID") & "&af=4""><img src=""/cclib/images/IconContentEdit.gif"" border=0></a>"
-                        Cells(RowPtr, 1) = main.getcsText(CS, "name")
+                    Do While cs.OK
+                        Cells(RowPtr, 0) = main.GetFormInputCheckBox("AC" & RowPtr) & main.GetFormInputHidden("ACID" & RowPtr, cs.getinteger("ID"))
+                        'Cells(RowPtr, 1) = "<a href=""" & Main.SiteProperty_AdminURL & "?id=" & cs.getinteger( "ID") & "&cid=" & cs.getinteger( "ContentControlID") & "&af=4""><img src=""/cclib/images/IconContentEdit.gif"" border=0></a>"
+                        Cells(RowPtr, 1) = cs.GetText(cs, "name")
                         If DisplaySystem Then
-                            If main.GetCSBoolean(CS, "system") Then
+                            If cs.GetBoolean(cs, "system") Then
                                 Cells(RowPtr, 1) = Cells(RowPtr, 1) & " (system)"
                             End If
                         End If
-                        Call main.nextcsrecord(CS)
+                        Call main.nextcsrecord(cs)
                         RowPtr = RowPtr + 1
                     Loop
-                    Call main.closecs(CS)
+                    Call cs.Close()
                     BodyHTML = "<div style=""width:100%"">" & AdminUI.GetReport2(main, RowPtr, ColCaption, ColAlign, ColWidth, Cells, RowPtr, 1, "", PostTableCopy, RowPtr, "ccAdmin", ColSortable, 0) & "</div>"
                     BodyHTML = AdminUI.GetEditPanel(main, True, "Add-on Collections", "Use this form to uninstall (remove) add-on collections from your site.", BodyHTML)
                     BodyHTML = BodyHTML & main.GetFormInputHidden("accnt", RowPtr)
@@ -817,16 +820,16 @@ Namespace Contensive.addonManager
                     ' Get the Upload Add-ons tab
                     ' --------------------------------------------------------------------------------
                     '
-                    Body = New keyPtrIndexClass
+                    Body = New StringBuilder
                     If Not DbUpToDate Then
-                        Call Body.Add("<p>Add-on upload is disabled because your site database needs to be updated.</p>")
+                        Call Body.Append("<p>Add-on upload is disabled because your site database needs to be updated.</p>")
                     Else
-                        Call Body.Add(AdminUI.EditTableOpen)
+                        Call Body.Append(AdminUI.EditTableOpen)
 
-                        If main.IsDeveloper Then
-                            Call Body.Add(AdminUI.GetEditRow(main, main.GetFormInputCheckBox("InstallCore"), "Reinstall Core Collection", "", False, False, ""))
+                        If cp.User.IsDeveloper Then
+                            Call Body.Append(AdminUI.GetEditRow(main, main.GetFormInputCheckBox("InstallCore"), "Reinstall Core Collection", "", False, False, ""))
                         End If
-                        Call Body.Add(AdminUI.GetEditRow(main, main.GetFormInputFile("MetaFile"), "Add-on Collection File(s)", "", True, False, ""))
+                        Call Body.Append(AdminUI.GetEditRow(main, main.GetFormInputFile("MetaFile"), "Add-on Collection File(s)", "", True, False, ""))
                         FormInput = "" _
                             & "<TABLE id=""UploadInsert"" border=""0"" cellpadding=""0"" cellspacing=""1"" width=""100%"">" _
                             & "</Table>" _
@@ -835,8 +838,8 @@ Namespace Contensive.addonManager
                             & "</Table>" _
                             & main.GetFormInputHidden("UploadCount", 1, "UploadCount") _
                             & ""
-                        Call Body.Add(AdminUI.GetEditRow(main, FormInput, "&nbsp;", "", True, False, ""))
-                        Call Body.Add(AdminUI.EditTableClose)
+                        Call Body.Append(AdminUI.GetEditRow(main, FormInput, "&nbsp;", "", True, False, ""))
+                        Call Body.Append(AdminUI.EditTableClose)
                     End If
                     Call main.AddLiveTabEntry("Add&nbsp;Manually", AdminUI.GetEditPanel(main, True, "Install or Update an Add-on Collection.", "Use this form to upload a new or updated Add-on Collection to your site. A collection file can be a single xml configuration file, a single zip file containing the configuration file and other resource files, or a configuration with other resource files uploaded separately. Use the 'Add more files' link to add as many files as you need. When you hit OK, the Collection will be checked, and only submitted if all files are uploaded.", Body.Text), "ccAdminTab")
                     '
@@ -877,29 +880,29 @@ ErrorTrap:
         Private Sub GetForm_AddonManager_DeleteNavigatorBranch(EntryName As String, EntryParentID As Integer)
             On Error GoTo ErrorTrap
             '
-            Dim CS As Integer
+            Dim cs As cpcsClass = cp.csnew
             Dim EntryID As Integer
             '
             Call AppendLogFile2(main.ApplicationName, "Deleting Navigator Branch", App.EXEName, "AdminClass", "GetForm_AddonManager_DeleteNavigatorBranch", 0, "", "", False, True, main.ServerLink, "AddonInstall", "")
             '
             If EntryParentID = 0 Then
-                CS = main.Opencscontent("Navigator Entries", "(name=" & KmaEncodeSQLText(EntryName) & ")and((parentID is null)or(parentid=0))")
+                cs.open("Navigator Entries", "(name=" & KmaEncodeSQLText(EntryName) & ")and((parentID is null)or(parentid=0))")
             Else
-                CS = main.Opencscontent("Navigator Entries", "(name=" & KmaEncodeSQLText(EntryName) & ")and(parentID=" & KmaEncodeSQLNumber(EntryParentID) & ")")
+                cs.open("Navigator Entries", "(name=" & KmaEncodeSQLText(EntryName) & ")and(parentID=" & KmaEncodeSQLNumber(EntryParentID) & ")")
             End If
-            If main.iscsok(CS) Then
-                EntryID = main.getcsinteger(CS, "ID")
+            If cs.ok Then
+                EntryID = cs.getinteger("ID")
             End If
-            Call main.closecs(CS)
+            Call cs.close()
             '
             If EntryID <> 0 Then
-                CS = main.Opencscontent("Navigator Entries", "(parentID=" & KmaEncodeSQLNumber(EntryID) & ")")
-                Do While main.iscsok(CS)
-                    Call GetForm_AddonManager_DeleteNavigatorBranch(main.getcsText(CS, "name"), EntryID)
+                cs.open("Navigator Entries", "(parentID=" & KmaEncodeSQLNumber(EntryID) & ")")
+                Do While cs.ok
+                    Call GetForm_AddonManager_DeleteNavigatorBranch(cs.getText(CS, "name"), EntryID)
                     Call main.nextcsrecord(CS)
                 Loop
-                Call main.closecs(CS)
-                Call main.DeleteContentRecord("Navigator Entries", EntryID)
+                Call cs.close()
+                Callcp.Content.Delete("Navigator Entries", EntryID)
             End If
             '
             Exit Sub
@@ -975,7 +978,7 @@ Private Sub HandleClassTrapError(MethodName As String, Optional Context As Strin
             Dim ParentName As String
             Dim ParentID As Integer
             Dim Pos As Integer
-            Dim CS As Integer
+            Dim cs As cpcsClass = cp.csnew
             '
             GetParentIDFromNameSpace = 0
             If NameSpacex <> "" Then
@@ -989,18 +992,18 @@ Private Sub HandleClassTrapError(MethodName As String, Optional Context As Strin
                     ParentNameSpace = Mid(NameSpacex, 1, Pos - 1)
                 End If
                 If ParentNameSpace = "" Then
-                    CS = main.Opencscontent(ContentName, "(name=" & KmaEncodeSQLText(ParentName) & ")and((parentid is null)or(parentid=0))", "ID", , , , "ID")
-                    If main.iscsok(CS) Then
-                        GetParentIDFromNameSpace = main.getcsinteger(CS, "ID")
+                    cs.open(ContentName, "(name=" & KmaEncodeSQLText(ParentName) & ")and((parentid is null)or(parentid=0))", "ID", , , , "ID")
+                    If cs.ok Then
+                        GetParentIDFromNameSpace = cs.getinteger("ID")
                     End If
-                    Call main.closecs(CS)
+                    Call cs.close()
                 Else
                     ParentID = GetParentIDFromNameSpace(ContentName, ParentNameSpace)
-                    CS = main.Opencscontent(ContentName, "(name=" & KmaEncodeSQLText(ParentName) & ")and(parentid=" & ParentID & ")", "ID", , , , "ID")
-                    If main.iscsok(CS) Then
-                        GetParentIDFromNameSpace = main.getcsinteger(CS, "ID")
+                    cs.open(ContentName, "(name=" & KmaEncodeSQLText(ParentName) & ")and(parentid=" & ParentID & ")", "ID", , , , "ID")
+                    If cs.ok Then
+                        GetParentIDFromNameSpace = cs.getinteger("ID")
                     End If
-                    Call main.closecs(CS)
+                    Call cs.close()
                 End If
             End If
             '
@@ -1017,22 +1020,22 @@ ErrorTrap:
         Private Function getLayout(layoutGuid As String, DefaultName As String) As String
             On Error GoTo ErrorTrap
             '
-            Dim CS As Integer
+            Dim cs As cpcsClass = cp.csnew
             '
-            CS = main.Opencscontent("layouts", "ccguid=" & KmaEncodeSQLText(layoutGuid))
-            If Not main.iscsok(CS) Then
-                Call main.closecs(CS)
+            cs.open("layouts", "ccguid=" & KmaEncodeSQLText(layoutGuid))
+            If Not cs.ok Then
+                Call cs.close()
                 CS = main.InsertCSContent("layouts")
-                If main.iscsok(CS) Then
+                If cs.ok Then
                     Call main.setcs(CS, "ccguid", layoutGuid)
                     Call main.setcs(CS, "name", DefaultName)
                     Call main.setcs(CS, "layout", "<!-- layout record created " & Now & " -->")
                 End If
             End If
-            If main.iscsok(CS) Then
-                getLayout = main.getcs(CS, "layout")
+            If cs.ok Then
+                getLayout = cs.get(CS, "layout")
             End If
-            Call main.closecs(CS)
+            Call cs.close()
             '
             Exit Function
             '

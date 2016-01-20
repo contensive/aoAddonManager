@@ -84,7 +84,8 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="addonClass.vb" />
+    <Compile Include="addonManager5Class.vb" />
+    <Compile Include="adminUIClass.vb" />
     <Compile Include="keyPtrIndexClass.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
