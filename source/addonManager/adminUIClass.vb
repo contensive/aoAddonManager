@@ -19,13 +19,15 @@ Namespace Contensive.addonManager
             SortableNotSet = 3
         End Enum
         '
-        Private cp As cpclass
+        Private cp As CPBaseClass
         '
         '===========================================================================
-        '   HandleError: Page List Trap Errors
-        '===========================================================================
-        '
+        ''' <summary>
+        ''' HandleError: Page List Trap Errors
+        ''' </summary>
+        ''' <param name="MethodName"></param>
         Private Sub HandleTrapError(ByVal MethodName As String)
+            cp.Site.ErrorReport(ex)
             '
             Call handleException(cp, New Exception("unexpected exception in method [" & MethodName & "]"))
             '
@@ -1038,7 +1040,7 @@ ErrorTrap:
 
 
 
-        Public Sub New(cp As CPClass)
+        Public Sub New(cp As CPBaseClass)
             MyBase.New()
             Me.cp = cp
         End Sub

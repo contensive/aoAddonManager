@@ -1,0 +1,556 @@
+﻿
+
+Imports System
+Imports System.Collections.Generic
+Imports System.Text
+Imports Contensive.BaseClasses
+Imports System.Xml
+Imports adminFramework
+
+Namespace Contensive.addonManager
+    '
+    ' Sample Vb addon
+    '
+    Public Class collectionLibraryClass
+        Inherits AddonBaseClass
+        '
+        ' injected objects -- do not dispose
+        '
+        Private cp As CPBaseClass
+        ' 
+        ' class scope
+        '
+        Private Const RequestNameButton As String = "button"
+        Private Const CollectionListRootNode As String = "collectionlist"
+        '
+        Private Const ButtonCancel As String = " Cancel "
+        Private Const ButtonOK As String = " Cancel "
+        '
+        Private Structure NavigatorType
+            Public Name As String
+            Public NameSpacex As String
+        End Structure
+
+        Private Structure Collection2Type
+            Public AddonCnt As Integer
+            Public AddonGuid() As String
+            Public AddonName() As String
+            Public MenuCnt As Integer
+            Public Menus() As String
+            Public NavigatorCnt As Integer
+            Public Navigators() As NavigatorType
+        End Structure
+        '
+        Private CollectionCnt As Integer
+        Private Collections() As Collection2Type
+        Private Const guidAddonManagerLibraryListCell = "{9767F464-3728-4B7D-904B-3442D7FD03BE}"
+        Private Const guidAddonManagerActiveX = "{1DC06F61-1837-419B-AF36-D5CC41E1C9FD}"
+        '
+        '=====================================================================================
+        ' addon api
+        '=====================================================================================
+        '
+        Public Overrides Function Execute(ByVal CP As CPBaseClass) As Object
+            Dim returnHtml As String = ""
+            Try
+                Me.cp = CP
+                returnHtml = GetCollectionLibrary()
+            Catch ex As Exception
+                CP.Site.ErrorReport(ex)
+            End Try
+            Return returnHtml
+        End Function
+        '
+        '==========================================================================================================================================
+        '   Addon Manager
+        '       This is a form that lets you upload an addon
+        '       Eventually, this should be substituted with a "Addon Manager Addon" - so the interface can be improved with Contensive recompile
+        '==========================================================================================================================================
+        '
+        Private Function GetCollectionLibrary() As String
+            Dim returnResult As String = ""
+            Try
+                '
+                Dim form As New formSimpleClass
+                Dim showAddon As Boolean
+                Dim cellTemplate As String
+                Dim Cell As String
+                Dim CollectionCheckbox As String
+                Dim IsOnSite As Boolean
+                'Dim DisplaySystem As Boolean
+                Dim DbUpToDate As Boolean
+                Dim GuidFieldName As String
+                Dim DateValue As Date
+                Dim ErrorMessage As String = ""
+                Dim UpgradeOK As Boolean
+                Dim LibCollections As Xml.XmlDocument
+                Dim installFolder As String
+                Dim LibGuids() As String
+                Dim AddonNavigatorID As Integer
+                Dim TargetCollectionName As String
+                Dim addonid As Integer
+                Dim CollectionName As String
+                Dim CollectionGUID As String = ""
+                Dim CollectionVersion As String
+                Dim CollectionDescription As String
+                Dim CollectionImageLink As String
+                Dim CollectionContensiveVersion As String = ""
+                Dim CollectionLastChangeDate As String
+                ' Dim FormInput As String
+                Dim cnt As Integer
+                Dim Ptr As Integer
+                'Dim UploadTab As New keyPtrIndexClass
+                'Dim ModifyTab As New keyPtrIndexClass
+                Dim RowPtr As Integer
+                ' Dim Body As StringBuilder
+                ' Dim Cells() As String
+                Dim PageNumber As Integer
+                Dim ColumnCnt As Integer
+                Dim ColCaption() As String
+                Dim ColAlign() As String
+                Dim ColWidth() As String
+                Dim ColSortable() As Boolean
+                Dim PreTableCopy As String
+                ' Dim PostTableCopy As String
+                Dim BodyHTML As String = ""
+                Dim cs As CPCSBaseClass = cp.CSNew
+                Dim UserError As String
+                Dim Button As String
+                'Dim AdminUI As New adminUIClass(cp)
+                Dim Caption As String
+                Dim Description As String
+                Dim ButtonList As String
+                Dim CollectionFilename As String = ""
+                Dim UploadsCnt As Integer
+                Dim Doc As New Xml.XmlDocument
+                Dim CollectionNode As Xml.XmlNode
+                Dim status As String = ""
+                Dim collectionsToBeInstalledFromFolder As Boolean
+                Dim InstallLibCollectionList As String = ""
+                Dim TargetCollectionID As Integer
+                Dim InstallPath As String
+                Dim SiteKey As String
+                Dim CollectionHelpLink As String
+                Dim CollectionDemoLink As String
+                '
+                SiteKey = cp.Site.GetText("sitekey", "")
+                If SiteKey = "" Then
+                    SiteKey = cp.Utils.CreateGuid()
+                    Call cp.Site.SetProperty("sitekey", SiteKey)
+                End If
+                '
+                DbUpToDate = (cp.Site.GetText("buildVersion") >= cp.Version)
+                Button = cp.Doc.GetText(RequestNameButton)
+                collectionsToBeInstalledFromFolder = False
+                GuidFieldName = "ccguid"
+                If Button = ButtonCancel Then
+                    '
+                    ' ----- redirect back to the root
+                    '
+                    Call cp.Response.Redirect(cp.Site.GetText("adminUrl"))
+                Else
+                    If Not cp.User.IsAdmin() Then
+                        '
+                        ' ----- Put up error message
+                        '
+                        ButtonList = ButtonCancel
+                        BodyHTML = cp.Html.p("You must be an administrator to use this tool.")
+                    Else
+                        '
+                        PreTableCopy = "Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added."
+                        installFolder = "CollectionUpload" & cp.Utils.CreateGuid
+                        InstallPath = installFolder & "\"
+                        If (Button = ButtonOK) Then
+                            '
+                            '---------------------------------------------------------------------------------------------
+                            ' Download and install Collections from the Collection Library
+                            '---------------------------------------------------------------------------------------------
+                            '
+                            InstallLibCollectionList = ""
+                            If cp.Doc.GetText("LibraryRow") <> "" Then
+                                Ptr = cp.Doc.GetInteger("LibraryRow")
+                                CollectionGUID = cp.Doc.GetText("LibraryRowguid" & Ptr)
+                                InstallLibCollectionList = InstallLibCollectionList & "," & CollectionGUID
+                            End If
+                            '
+                            '---------------------------------------------------------------------------------------------
+                            ' Delete collections
+                            '   Before deleting each addon, make sure it is not in another collection
+                            '---------------------------------------------------------------------------------------------
+                            '
+                            cnt = cp.Doc.GetInteger("accnt")
+                            If cnt > 0 Then
+                                For Ptr = 0 To cnt - 1
+                                    If cp.Doc.GetBoolean("ac" & Ptr) Then
+                                        TargetCollectionID = cp.Doc.GetInteger("acID" & Ptr)
+                                        TargetCollectionName = cp.Content.GetRecordName("Add-on Collections", TargetCollectionID)
+                                        '
+                                        ' Clean up rules associating this collection to other objects
+                                        '
+                                        Call cp.Content.DeleteRecords("Add-on Collection CDef Rules", "collectionid=" & TargetCollectionID)
+                                        Call cp.Content.DeleteRecords("Add-on Collection Module Rules", "collectionid=" & TargetCollectionID)
+                                        '
+                                        ' Delete any addons from this collection
+                                        '
+                                        If cs.Open("add-ons", "collectionid=" & TargetCollectionID) Then
+                                            Do
+                                                '
+                                                ' Clean up the rules that might have pointed to the addon
+                                                '
+                                                addonid = cs.GetInteger("id")
+                                                Call cp.Content.DeleteRecords("Admin Menuing", "addonid=" & addonid)
+                                                Call cp.Content.DeleteRecords("Shared Styles Add-on Rules", "addonid=" & addonid)
+                                                Call cp.Content.DeleteRecords("Add-on Scripting Module Rules", "addonid=" & addonid)
+                                                Call cp.Content.DeleteRecords("Add-on Include Rules", "addonid=" & addonid)
+                                                Call cp.Content.DeleteRecords("Add-on Include Rules", "includedaddonid=" & addonid)
+                                                cs.GoNext()
+                                            Loop While cs.OK
+                                        End If
+                                        cs.Close()
+                                        Call cp.Content.DeleteRecords("add-ons", "collectionid=" & TargetCollectionID)
+                                        '
+                                        ' Delete the navigator entry for the collection under 'Add-ons'
+                                        '
+                                        If TargetCollectionID > 0 Then
+                                            AddonNavigatorID = 0
+                                            cs.Open("Navigator Entries", "name='Manage Add-ons' and ((parentid=0)or(parentid is null))")
+                                            If cs.OK Then
+                                                AddonNavigatorID = cs.GetInteger("ID")
+                                            End If
+                                            Call cs.Close()
+                                            If AddonNavigatorID > 0 Then
+                                                Call GetForm_AddonManager_DeleteNavigatorBranch(cp, TargetCollectionName, AddonNavigatorID)
+                                            End If
+                                            '
+                                            ' Now delete the Collection record
+                                            '
+                                            cp.Content.DeleteRecords("Add-on Collections", "id=" & TargetCollectionID)
+                                            '
+                                            ' Delete Navigator Entries set as installed by the collection (this may be all that is needed)
+                                            '
+                                            Call cp.Content.DeleteRecords("Navigator Entries", "installedbycollectionid=" & TargetCollectionID)
+                                        End If
+                                    End If
+                                Next
+                            End If
+                            '
+                            '---------------------------------------------------------------------------------------------
+                            ' Delete Add-on Collections
+                            '---------------------------------------------------------------------------------------------
+                            '
+                            cnt = cp.Doc.GetInteger("aocnt")
+                            If cnt > 0 Then
+                                For Ptr = 0 To cnt - 1
+                                    If cp.Doc.GetBoolean("ao" & Ptr) Then
+                                        cp.Content.DeleteRecords("Add-on Collections", "id=" & cp.Doc.GetInteger("aoID" & Ptr))
+                                    End If
+                                Next
+                            End If
+                            '
+                            '---------------------------------------------------------------------------------------------
+                            ' Reinstall core collection
+                            '---------------------------------------------------------------------------------------------
+                            '
+                            If cp.User.IsDeveloper And cp.Doc.GetBoolean("InstallCore") Then
+                                Call cp.Content.DeleteRecords("Add-on Collections", "ccguid='{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}'")
+                                UpgradeOK = cp.Addon.installCollectionFromLibrary("{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}", ErrorMessage)
+                            End If
+                            '
+                            '---------------------------------------------------------------------------------------------
+                            ' Upload new collection files
+                            '---------------------------------------------------------------------------------------------
+                            '
+                            If cp.Html.ProcessInputFile("MetaFile", cp.privateFiles, installFolder, CollectionFilename) Then
+                                Dim taskId As Integer = cp.Utils.installCollectionAsyncFromFile(installFolder & CollectionFilename)
+                                status &= "<BR>Uploaded collection file [" & CollectionFilename & "]. Queued for processing as task [" & taskId & "]"
+                                UploadsCnt = cp.Doc.GetInteger("UploadCount")
+                                For Ptr = 0 To UploadsCnt - 1
+                                    If cp.Html.ProcessInputFile("Upload" & Ptr, cp.privateFiles, installFolder, CollectionFilename) Then
+                                        taskId = cp.Utils.installCollectionAsyncFromFile(CollectionFilename)
+                                        status &= "<BR>Uploaded collection file [" & CollectionFilename & "]. Queued for processing as task [" & taskId & "]"
+                                    End If
+                                Next
+                                status = status & "<BR>Submitted Collection for import."
+                            End If
+                        End If
+                        '
+                        ' --------------------------------------------------------------------------------
+                        '   Install Library Collections
+                        ' --------------------------------------------------------------------------------
+                        '
+                        If InstallLibCollectionList <> "" Then
+                            InstallLibCollectionList = Mid(InstallLibCollectionList, 2)
+                            LibGuids = Split(InstallLibCollectionList, ",")
+                            cnt = UBound(LibGuids) + 1
+                            For Ptr = 0 To cnt - 1
+                                cp.Utils.installCollectionAsyncFromLibrary(LibGuids(Ptr))
+                            Next
+                        End If
+                        '
+                        ' and delete the install folder if it was created
+                        '
+                        If cp.privateFiles.folderExists(InstallPath) Then
+                            Call cp.privateFiles.deleteFolder(InstallPath)
+                        End If
+                        '
+                        ' --------------------------------------------------------------------------------
+                        ' Get Form
+                        ' --------------------------------------------------------------------------------
+                        ' Get the Collection Library tab
+                        ' --------------------------------------------------------------------------------
+                        '
+                        ColumnCnt = 4
+                        PageNumber = 1
+                        ReDim ColCaption(3)
+                        ReDim ColAlign(3)
+                        ReDim ColWidth(3)
+                        ReDim ColSortable(3)
+                        'ReDim Cells3(10, 4)
+                        '
+                        ColCaption(0) = "Install"
+                        ColAlign(0) = "center"
+                        ColWidth(0) = "50"
+                        ColSortable(0) = False
+                        '
+                        ColCaption(1) = "Name"
+                        ColAlign(1) = "left"
+                        ColWidth(1) = "200"
+                        ColSortable(1) = False
+                        '
+                        ColCaption(2) = "Last&nbsp;Updated"
+                        ColAlign(2) = "right"
+                        ColWidth(2) = "200"
+                        ColSortable(2) = False
+                        '
+                        ColCaption(3) = "Description"
+                        ColAlign(3) = "left"
+                        ColWidth(3) = "99%"
+                        ColSortable(3) = False
+                        '
+                        LibCollections = New Xml.XmlDocument
+                        Call LibCollections.Load("http://support.contensive.com/GetCollectionList?iv=" & cp.Version & "&key=" & cp.Utils.EncodeRequestVariable(SiteKey) & "&name=" & cp.Utils.EncodeRequestVariable(cp.Site.Name) & "&primaryDomain=" & cp.Utils.EncodeRequestVariable(cp.Site.DomainPrimary))
+                        If True Then
+                            If (LibCollections.DocumentElement.Name.ToLower() <> CollectionListRootNode.ToLower()) Then
+                                UserError = "There was an error reading the Collection Library file. The '" & CollectionListRootNode & "' element was not found."
+                                status = status & "<BR>" & UserError
+                                cp.UserError.Add(UserError)
+                            Else
+                                '
+                                ' Go through file to validate the XML, and build status message -- since service process can not communicate to user
+                                '
+                                RowPtr = 0
+                                'Content = ""
+                                cellTemplate = getLayout(cp, guidAddonManagerLibraryListCell, "Addon Manager Library List Cell")
+                                For Each CDef_Node As Xml.XmlNode In LibCollections.DocumentElement.ChildNodes
+                                    Cell = cellTemplate
+                                    CollectionImageLink = ""
+                                    CollectionCheckbox = ""
+                                    CollectionName = ""
+                                    CollectionLastChangeDate = ""
+                                    CollectionDescription = ""
+                                    CollectionHelpLink = ""
+                                    CollectionDemoLink = ""
+                                    Select Case LCase(CDef_Node.Name)
+                                        Case "collection"
+                                            '
+                                            ' Read the collection
+                                            '
+                                            For Each CollectionNode In CDef_Node.ChildNodes
+                                                Select Case CollectionNode.Name.ToLower()
+                                                    Case "name"
+                                                        '
+                                                        ' Name
+                                                        '
+                                                        CollectionName = CollectionNode.InnerText
+                                                    Case "helplink"
+                                                        '
+                                                        ' helpLink
+                                                        '
+                                                        CollectionHelpLink = CollectionNode.InnerText
+                                                    Case "demolink"
+                                                        '
+                                                        ' demoLink
+                                                        '
+                                                        CollectionDemoLink = CollectionNode.InnerText
+                                                    Case "guid"
+                                                        '
+                                                        ' Guid
+                                                        '
+                                                        CollectionGUID = CollectionNode.InnerText
+                                                    Case "version"
+                                                        '
+                                                        ' Version
+                                                        '
+                                                        CollectionVersion = CollectionNode.InnerText
+                                                    Case "description"
+                                                        '
+                                                        ' Version
+                                                        '
+                                                        CollectionDescription = CollectionNode.InnerText
+                                                    Case "imagelink"
+                                                        '
+                                                        ' Version
+                                                        '
+                                                        CollectionImageLink = CollectionNode.InnerText
+                                                    Case "contensiveversion"
+                                                        '
+                                                        ' Version
+                                                        '
+                                                        CollectionContensiveVersion = CollectionNode.InnerText
+                                                    Case "lastchangedate"
+                                                        '
+                                                        ' Version
+                                                        '
+                                                        CollectionLastChangeDate = CollectionNode.InnerText
+                                                        If IsDate(CollectionLastChangeDate) Then
+                                                            DateValue = CDate(CollectionLastChangeDate)
+                                                            CollectionLastChangeDate = DateValue.Date.ToShortDateString
+                                                        End If
+                                                        If CollectionLastChangeDate = "" Then
+                                                            CollectionLastChangeDate = "unknown"
+                                                        End If
+                                                End Select
+                                            Next
+                                            If CollectionImageLink = "" Then
+                                                CollectionImageLink = "/addonManager/libraryNoImage.jpg"
+                                            End If
+                                            If CollectionLastChangeDate = "" Then
+                                                CollectionLastChangeDate = "unknown"
+                                            End If
+                                            If CollectionDescription = "" Then
+                                                CollectionDescription = "No description is available for this add-on collection."
+                                            End If
+                                            'If RowPtr >= UBound(Cells3, 1) Then
+                                            '    ReDim Preserve Cells3(RowPtr + 100, ColumnCnt)
+                                            'End If
+                                            showAddon = False
+                                            If CollectionName = "" Then
+                                                'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>"
+                                                'Cells3(RowPtr, 1) = "no name"
+                                                'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
+                                                'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
+                                            Else
+                                                If CollectionGUID = "" Then
+                                                    'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>"
+                                                    'Cells3(RowPtr, 1) = CollectionName & " (no guid)"
+                                                    'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
+                                                    'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
+                                                Else
+                                                    'IsOnServer = kmaEncodeBoolean(InStr(1, OnServerGuidList, CollectionGUID, vbTextCompare))
+                                                    cs.Open("Add-on Collections", GuidFieldName & "=" & cp.Db.EncodeSQLText(CollectionGUID), , , "ID")
+                                                    IsOnSite = cs.OK
+                                                    Call cs.Close()
+                                                    If IsOnSite Then
+                                                        '
+                                                        ' Already installed
+                                                        '
+                                                        showAddon = True
+                                                        CollectionCheckbox = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""1"" disabled>&nbsp;Already installed."
+                                                        'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""1"" disabled>"
+                                                        'Cells3(RowPtr, 1) = CollectionName & "&nbsp;(installed already)"
+                                                        'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
+                                                        'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
+                                                    ElseIf ((CollectionContensiveVersion <> "") And (CollectionContensiveVersion > cp.Version)) Then
+                                                        '
+                                                        ' wrong version
+                                                        '
+                                                        showAddon = True
+                                                        CollectionCheckbox = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>&nbsp;Disabled because this server needs to be upgraded. Contensive v" & CollectionContensiveVersion & " is required."
+                                                        'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>"
+                                                        'Cells3(RowPtr, 1) = CollectionName & "&nbsp;(Contensive v" & CollectionContensiveVersion & " needed)"
+                                                        'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
+                                                        'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
+                                                    ElseIf Not DbUpToDate Then
+                                                        '
+                                                        ' Site needs to by upgraded
+                                                        '
+                                                        showAddon = True
+                                                        CollectionCheckbox = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>&nbsp;Disabled because this website database needs to be upgraded."
+                                                        CollectionName = CollectionName
+                                                        'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>"
+                                                        'Cells3(RowPtr, 1) = CollectionName & "&nbsp;(install disabled)"
+                                                        'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
+                                                        'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
+                                                    Else
+                                                        '
+                                                        ' Not installed yet
+                                                        '
+                                                        showAddon = True
+                                                        CollectionCheckbox = "<input TYPE=""CheckBox"" NAME=""LibraryRow"" VALUE=""" & RowPtr & """ onClick=""clearLibraryRows('" & RowPtr & "');"">" & cp.Html.Hidden("LibraryRowGuid" & RowPtr, CollectionGUID) & cp.Html.Hidden("LibraryRowName" & RowPtr, CollectionName) & "&nbsp;Install"
+                                                        'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow"" VALUE=""" & RowPtr & """ onClick=""clearLibraryRows('" & RowPtr & "');"">" & cp.html.Hidden("LibraryRowGuid" & RowPtr, CollectionGUID) & cp.html.Hidden("LibraryRowName" & RowPtr, CollectionName)
+                                                        'Cells3(RowPtr, 1) = CollectionName & "&nbsp;"
+                                                        'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
+                                                        'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
+                                                    End If
+                                                End If
+                                            End If
+                                            If CollectionDemoLink <> "" Then
+                                                CollectionDescription = CollectionDescription & "<div class=""amDemoLink""><a target=""_blank"" href=""" & CollectionDemoLink & """>Demo</a></div>"
+                                            End If
+                                            If CollectionHelpLink <> "" Then
+                                                CollectionDescription = CollectionDescription & "<div class=""amHelpLink""><a target=""_blank"" href=""" & CollectionHelpLink & """>Reference</a></div>"
+                                            End If
+                                            If showAddon Then
+                                                Cell = Replace(Cell, "##imageLink##", CollectionImageLink)
+                                                Cell = Replace(Cell, "##checkbox##", CollectionCheckbox)
+                                                Cell = Replace(Cell, "##name##", CollectionName)
+                                                Cell = Replace(Cell, "##date##", CollectionLastChangeDate)
+                                                Cell = Replace(Cell, "##description##", CollectionDescription)
+                                                BodyHTML = BodyHTML & Cell
+                                            End If
+                                            RowPtr = RowPtr + 1
+                                    End Select
+                                Next
+                            End If
+                            BodyHTML = "" _
+                            & cr & "<script language=""JavaScript"">" _
+                            & "function clearLibraryRows(r) {" _
+                            & "var c,p;" _
+                            & "c=document.getElementsByName('LibraryRow');" _
+                                & "for (p=0;p<c.length;p++){" _
+                                    & "if(c[p].value!=r)c[p].checked=false;" _
+                                & "}" _
+                            & "" _
+                            & "}" _
+                            & "</script>" _
+                            & "<input type=hidden name=LibraryCnt value=""" & RowPtr & """>" _
+                            & cr & "<div style=""width:100%"">" _
+                            & kmaIndent(BodyHTML) _
+                            & cr & "</div>" _
+                            & ""
+                            form.body = BodyHTML
+                            form.description = "Select Add-ons to install from the Contensive Add-on Library. Please select only one at a time. Click OK to install the selected Add-on. The site may need to be stopped during the installation, but will be available again in approximately one minute"
+
+                            'BodyHTML = AdminUI.GetEditPanel(main, True, "Add-on Collection Library", "Select Add-ons to install from the Contensive Add-on Library. Please select only one at a time. Click OK to install the selected Add-on. The site may need to be stopped during the installation, but will be available again in approximately one minute.", BodyHTML)
+                            'BodyHTML = BodyHTML & cp.Html.Hidden("AOCnt", RowPtr)
+                            'Call main.AddLiveTabEntry("<NOBR>Collection&nbsp;Library</NOBR>", BodyHTML, "ccAdminTab")
+                        End If
+                        '
+                        ' --------------------------------------------------------------------------------
+                        ' Build Page from tabs
+                        ' --------------------------------------------------------------------------------
+                        '
+                        form.addFormButton(ButtonCancel)
+                        form.addFormButton(ButtonOK)
+                    End If
+                    '
+                    ' Output the Add-on
+                    '
+                    form.title = "Add-on Library"
+                    If Not DbUpToDate Then
+                        Description = Description & "<div style=""Margin-left:50px"">The Add-on Manager is disabled because this site's Database needs to be upgraded.</div>"
+                    End If
+                    If status <> "" Then
+                        Description = Description & "<div style=""Margin-left:50px"">" & status & "</div>"
+                    End If
+                    returnResult = form.getHtml(cp)
+                    ' returnResult = AdminUI.GetBody(main, Caption, ButtonList, "", False, False, Description, "", 0, Content.Text)
+                    'Call main.AddPageTitle("Add-on Manager")
+                End If
+            Catch ex As Exception
+                cp.Site.ErrorReport(ex)
+            End Try
+            Return returnResult
+        End Function
+    End Class
+End Namespace
