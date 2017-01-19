@@ -25,7 +25,7 @@ Namespace Contensive.addonManager
         Private Const CollectionListRootNode As String = "collectionlist"
         '
         Private Const ButtonCancel As String = " Cancel "
-        Private Const ButtonOK As String = " Cancel "
+        Private Const ButtonOK As String = " OK "
         '
         Private Structure NavigatorType
             Public Name As String
@@ -130,7 +130,7 @@ Namespace Contensive.addonManager
                     Else
                         '
                         PreTableCopy = "Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added."
-                        installFolder = "CollectionUpload" & cp.Utils.CreateGuid
+                        installFolder = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "")
                         InstallPath = cp.Site.PhysicalFilePath & installFolder & "\"
                         If (Button = ButtonOK) Then
                             '

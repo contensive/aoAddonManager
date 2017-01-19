@@ -167,11 +167,112 @@ end function]]></Code>
 		<Styles></Styles>
 		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
+	<Addon name="addonManager-Export" guid="{e716ec0e-b83f-43cc-9933-1a0733fb7641}" type="Tool">
+		<Copy></Copy>
+		<CopyText></CopyText>
+		<ActiveXProgramID></ActiveXProgramID>
+		<DotNetClass><![CDATA[Contensive.addonManager.exportClass]]></DotNetClass>
+		<ArgumentList></ArgumentList>
+		<AsAjax>No</AsAjax>
+		<Filter>No</Filter>
+		<Help></Help>
+		<HelpLink></HelpLink>
+		<Icon Link="" width="0" height="0" sprites="0" />
+		<InIframe>No</InIframe>
+		<BlockEditTools>No</BlockEditTools>
+		<FormXML></FormXML>
+		<IsInline>No</IsInline>
+		<JavascriptOnLoad></JavascriptOnLoad>
+		<JavascriptInHead></JavascriptInHead>
+		<JavascriptBodyEnd></JavascriptBodyEnd>
+		<MetaDescription></MetaDescription>
+		<OtherHeadTags></OtherHeadTags>
+		<Content>No</Content>
+		<Template>No</Template>
+		<Email>No</Email>
+		<Admin>Yes</Admin>
+		<OnPageEndEvent>No</OnPageEndEvent>
+		<OnPageStartEvent>No</OnPageStartEvent>
+		<OnBodyStart>No</OnBodyStart>
+		<OnBodyEnd>No</OnBodyEnd>
+		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
+		<ProcessInterval>0</ProcessInterval>
+		<PageTitle></PageTitle>
+		<RemoteAssetLink></RemoteAssetLink>
+		<Styles><![CDATA[		.collectionExport{
+			padding-top:20px;
+		}
+		.collectionExport .mainForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport .responseForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport{
+			padding-top:20px;
+		}
+		.collectionExport .mainForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport .responseForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport{
+			padding-top:20px;
+		}
+		.collectionExport .mainForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport .responseForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+
+
+]]></Styles>
+		<Scripting Language="" EntryPoint="" Timeout="5000"/>
+	</Addon>
 	<Addon name="addonManager-Includes" guid="{5a7c4d78-b4fb-4cc1-9abc-fa52d0e7714a}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
-		<DotNetClass><![CDATA[Contensive.addonManager.collectionLibraryClass]]></DotNetClass>
+		<DotNetClass></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
 		<Filter>No</Filter>
@@ -292,9 +393,9 @@ end function]]></Code>
 	</Addon>
 	<Addon name="addonManager-Upload" guid="{e66d6890-4e1a-499b-9a37-83b767bce19c}" type="Add-on">
 		<Copy></Copy>
-		<CopyText><![CDATA[addonManager-Upload]]></CopyText>
+		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
-		<DotNetClass></DotNetClass>
+		<DotNetClass><![CDATA[Contensive.addonManager.uploadClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
 		<Filter>No</Filter>
@@ -328,37 +429,61 @@ end function]]></Code>
 		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
 	<data>
-		<record content="layouts" guid="{9767F464-3728-4B7D-904B-3442D7FD03BE}" name="Addon Manager Library List Cell">
-			<field name="active">True</field>
-		</record>
 		<record content="portals" guid="{f732f7f1-03ef-4f58-8e2a-f502bde53606}" name="Add-on Manager">
 			<field name="active">True</field>
 			<field name="defaultconfigjson"></field>
 			<field name="defaultfeatureid"></field>
+			<field name="sortorder"></field>
+		</record>
+		<record content="portal features" guid="{3e8fc5ca-33d7-4f40-9185-5d2f13657926}" name="AddonManager-Export">
+			<field name="active">True</field>
+			<field name="addonid">{e716ec0e-b83f-43cc-9933-1a0733fb7641}</field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Export]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="sortorder"><![CDATA[c]]></field>
 		</record>
 		<record content="portal features" guid="{96b51732-5c24-4a33-8292-b58567b00d42}" name="AddonManager-Data">
 			<field name="active">True</field>
 			<field name="addonid"></field>
 			<field name="addpadding">False</field>
 			<field name="datacontentid"></field>
-		</record>
-		<record content="portal features" guid="{bfc41fa2-c17a-4712-8966-3d42e735c710}" name="AddonManager-Upload">
-			<field name="active">True</field>
-			<field name="addonid">{e66d6890-4e1a-499b-9a37-83b767bce19c}</field>
-			<field name="addpadding">False</field>
-			<field name="datacontentid"></field>
-		</record>
-		<record content="portal features" guid="{ed348836-b522-4e08-b4ff-9197d48a07eb}" name="AddonManager-Uninstall">
-			<field name="active">True</field>
-			<field name="addonid">{38798d20-00d3-4131-9ebf-359fd0118e3e}</field>
-			<field name="addpadding">False</field>
-			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Data]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="sortorder"><![CDATA[c]]></field>
 		</record>
 		<record content="portal features" guid="{baaa59b1-986f-4bf2-83bc-085518c1708c}" name="AddonManager-CollectionLibrary">
 			<field name="active">True</field>
 			<field name="addonid">{556e1660-62dc-4706-a07d-ba1bf3449128}</field>
 			<field name="addpadding">False</field>
 			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Collection Library]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="sortorder"><![CDATA[a]]></field>
+		</record>
+		<record content="portal features" guid="{bfc41fa2-c17a-4712-8966-3d42e735c710}" name="AddonManager-Upload">
+			<field name="active">True</field>
+			<field name="addonid">{e66d6890-4e1a-499b-9a37-83b767bce19c}</field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Upload]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="sortorder"><![CDATA[c]]></field>
+		</record>
+		<record content="portal features" guid="{ed348836-b522-4e08-b4ff-9197d48a07eb}" name="AddonManager-Uninstall">
+			<field name="active">True</field>
+			<field name="addonid">{38798d20-00d3-4131-9ebf-359fd0118e3e}</field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Uninstall]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="sortorder"><![CDATA[b]]></field>
 		</record>
 	</data>
 	<ImportCollection name="Portal Framework">{87249F75-A065-4F2F-8DCD-FBBF2CA0DCCD}</ImportCollection>

@@ -22,7 +22,7 @@ Namespace Contensive.addonManager
         Private Const CollectionListRootNode As String = "collectionlist"
         '
         Private Const ButtonCancel As String = " Cancel "
-        Private Const ButtonOK As String = " Cancel "
+        Private Const ButtonOK As String = " OK "
         '
         Private Structure NavigatorType
             Public Name As String
@@ -76,15 +76,10 @@ Namespace Contensive.addonManager
                 Dim UpgradeOK As Boolean
                 Dim installFolder As String
                 Dim LibGuids() As String
-                Dim FormInput As String
                 Dim cnt As Integer
                 Dim Ptr As Integer
-                Dim PreTableCopy As String
-                Dim BodyHTML As String
                 Dim cs As CPCSBaseClass = cp.CSNew
                 Dim Button As String
-                Dim Caption As String
-                Dim Description As String
                 Dim ButtonList As String
                 Dim CollectionFilename As String = ""
                 Dim UploadsCnt As Integer
@@ -94,7 +89,8 @@ Namespace Contensive.addonManager
                 Dim InstallLibCollectionList As String = ""
                 Dim InstallPath As String
                 Dim SiteKey As String
-                Dim Body As New StringBuilder()
+                'Dim Body As New StringBuilder()
+                Dim form As New adminFramework.formSimpleClass
                 '
                 SiteKey = cp.Site.GetText("sitekey", "")
                 If SiteKey = "" Then
@@ -117,12 +113,12 @@ Namespace Contensive.addonManager
                         ' ----- Put up error message
                         '
                         ButtonList = ButtonCancel
-                        BodyHTML = cp.Html.p("You must be an administrator to use this tool.")
+                        form.body &= cp.Html.p("You must be an administrator to use this tool.")
                     Else
                         '
-                        PreTableCopy = "Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added."
-                        installFolder = "CollectionUpload" & cp.Utils.CreateGuid
-                        InstallPath = cp.Site.PhysicalFilePath & installFolder & "\"
+                        form.body &= "Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added."
+                        installFolder = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "")
+                        InstallPath = installFolder & "\"
                         If (Button = ButtonOK) Then
                             '
                             '---------------------------------------------------------------------------------------------
@@ -138,17 +134,16 @@ Namespace Contensive.addonManager
                             ' Upload new collection files
                             '---------------------------------------------------------------------------------------------
                             '
-                            If cp.Html.ProcessInputFile("MetaFile", cp.privateFiles, installFolder, CollectionFilename) Then
-                                Dim taskId As Integer = cp.Utils.installCollectionAsyncFromFile(installFolder & CollectionFilename)
-                                status &= "<BR>Uploaded collection file [" & CollectionFilename & "]. Queued for processing as task [" & taskId & "]"
+                            If (cp.privateFiles.saveUpload("metaFile", InstallPath, CollectionFilename)) Then
+                                Dim taskId As Integer = cp.Utils.installCollectionFromFile(InstallPath & CollectionFilename)
+                                form.body &= "<BR>Uploaded collection file [" & CollectionFilename & "]. Queued for processing as task [" & taskId & "]"
                                 UploadsCnt = cp.Doc.GetInteger("UploadCount")
                                 For Ptr = 0 To UploadsCnt - 1
-                                    If cp.Html.ProcessInputFile("Upload" & Ptr, cp.privateFiles, installFolder, CollectionFilename) Then
-                                        taskId = cp.Utils.installCollectionAsyncFromFile(CollectionFilename)
-                                        status &= "<BR>Uploaded collection file [" & CollectionFilename & "]. Queued for processing as task [" & taskId & "]"
+                                    If (cp.privateFiles.saveUpload("Upload" & Ptr, InstallPath, CollectionFilename)) Then
+                                        taskId = cp.Utils.installCollectionFromFile(CollectionFilename)
+                                        form.body &= "<BR>Uploaded collection file [" & CollectionFilename & "]. Queued for processing as task [" & taskId & "]"
                                     End If
                                 Next
-                                status = status & "<BR>Submitted Collection for import."
                             End If
                         End If
                         '
@@ -161,7 +156,7 @@ Namespace Contensive.addonManager
                             LibGuids = Split(InstallLibCollectionList, ",")
                             cnt = UBound(LibGuids) + 1
                             For Ptr = 0 To cnt - 1
-                                cp.Utils.installCollectionAsyncFromLibrary(LibGuids(Ptr))
+                                cp.Utils.installCollectionFromLibrary(LibGuids(Ptr))
                             Next
                         End If
                         '
@@ -179,49 +174,39 @@ Namespace Contensive.addonManager
                         ' Get the Upload Add-ons tab
                         ' --------------------------------------------------------------------------------
                         '
-                        Body = New StringBuilder
                         If Not DbUpToDate Then
-                            Call Body.Append("<p>Add-on upload is disabled because your site database needs to be updated.</p>")
+                            form.body &= "<p>Add-on upload is disabled because your site database needs to be updated.</p>"
                         Else
-                            'Call Body.Append(AdminUI.EditTableOpen)
-
-                            'If cp.User.IsDeveloper Then
-                            '    Call Body.Append(AdminUI.GetEditRow(cp.Html.CheckBox("InstallCore"), "Reinstall Core Collection", "", False, False, ""))
-                            'End If
-                            'Call Body.Append(AdminUI.GetEditRow(cp.Html.InputFile("MetaFile"), "Add-on Collection File(s)", "", True, False, ""))
-                            FormInput = "" _
-                            & "<TABLE id=""UploadInsert"" border=""0"" cellpadding=""0"" cellspacing=""1"" width=""100%"">" _
-                            & "</Table>" _
-                            & "<TABLE border=""0"" cellpadding=""0"" cellspacing=""1"" width=""100%"">" _
-                            & "<TR><TD align=""left""><a href=""#"" onClick=""InsertUpload(); return false;"">+ Add more files</a></TD></TR>" _
-                            & "</Table>" _
-                            & cp.Html.Hidden("UploadCount", "1", "UploadCount") _
+                            form.body &= "" _
+                                & vbCrLf & vbTab & "<table border=""0"" cellpadding=""0"" cellspacing=""1"" width=""100%"">" _
+                                & vbCrLf & vbTab & vbTab & "<tr><td>" & cp.Html.CheckBox("InstallCore") & "Reinstall Core Collection</td></tr>" _
+                                & vbCrLf & vbTab & vbTab & "<tr><td>" & cp.Html.InputFile("MetaFile") & "Add-on Collection File(s)</td></tr>" _
+                                & vbCrLf & vbTab & vbTab & "<tr><td align=""left""><a href=""#"" onClick=""InsertUpload(); return false;"">+ Add more files</a></td></tr>" _
+                                & vbCrLf & vbTab & "</table>" _
+                                & vbCrLf & vbTab & vbTab & cp.Html.Hidden("UploadCount", "1", "UploadCount") _
                             & ""
-                            'Call Body.Append(AdminUI.GetEditRow(main, FormInput, "&nbsp;", "", True, False, ""))
-                            'Call Body.Append(AdminUI.EditTableClose)
                         End If
-                        ' Call main.AddLiveTabEntry("Add&nbsp;Manually", AdminUI.GetEditPanel(main, True, "Install or Update an Add-on Collection.", "Use this form to upload a new or updated Add-on Collection to your site. A collection file can be a single xml configuration file, a single zip file containing the configuration file and other resource files, or a configuration with other resource files uploaded separately. Use the 'Add more files' link to add as many files as you need. When you hit OK, the Collection will be checked, and only submitted if all files are uploaded.", Body.Text), "ccAdminTab")
                         '
                         ' --------------------------------------------------------------------------------
                         ' Build Page from tabs
                         ' --------------------------------------------------------------------------------
                         '
-                        ButtonList = ButtonCancel & "," & ButtonOK
+                        form.addFormButton(ButtonOK)
+                        form.addFormButton(ButtonCancel)
                     End If
                     '
                     ' Output the Add-on
                     '
-                    Caption = "Add-on Manager"
-                    Description = "<div>Use the add-on manager to add and remove Add-ons from your Contensive installation.</div>"
+                    form.title = "Add-on Manager"
+                    form.description = "<div>Use the add-on manager to add and remove Add-ons from your Contensive installation.</div>"
                     If Not DbUpToDate Then
-                        Description = Description & "<div style=""Margin-left:50px"">The Add-on Manager is disabled because this site's Database needs to be upgraded.</div>"
+                        form.description &= "<div style=""Margin-left:50px"">The Add-on Manager is disabled because this site's Database needs to be upgraded.</div>"
                     End If
                     If status <> "" Then
-                        Description = Description & "<div style=""Margin-left:50px"">" & status & "</div>"
+                        form.description &= "<div style=""Margin-left:50px"">" & status & "</div>"
                     End If
-                    ' GetForm_AddonManager = AdminUI.GetBody(main, Caption, ButtonList, "", False, False, Description, "", 0, Content.Text)
-                    ' Call main.AddPageTitle("Add-on Manager")
                 End If
+                returnResult = form.getHtml(cp)
             Catch ex As Exception
                 cp.Site.ErrorReport(ex)
             End Try

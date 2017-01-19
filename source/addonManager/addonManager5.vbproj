@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="commonModule.vb" />
+    <Compile Include="exportClass.vb" />
     <Compile Include="uploadClass.vb" />
     <Compile Include="collectionLibraryClass.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -148,6 +149,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="uninstallClass.vb" />
+    <Compile Include="xmlToolsClass.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
