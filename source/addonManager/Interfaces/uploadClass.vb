@@ -134,7 +134,8 @@ Namespace Contensive.addonManager
                             ' Upload new collection files
                             '---------------------------------------------------------------------------------------------
                             '
-                            If (cp.privateFiles.saveUpload("metaFile", InstallPath, CollectionFilename)) Then
+                            cp.Site.
+                            If(cp.privateFiles.saveUpload("metaFile", InstallPath, CollectionFilename)) Then
                                 Dim taskId As Integer = cp.Utils.installCollectionFromFile(InstallPath & CollectionFilename)
                                 form.body &= "<BR>Uploaded collection file [" & CollectionFilename & "]. Queued for processing as task [" & taskId & "]"
                                 UploadsCnt = cp.Doc.GetInteger("UploadCount")
