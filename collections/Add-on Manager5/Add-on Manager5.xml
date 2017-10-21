@@ -478,4 +478,5 @@
 	</data>
 	<ImportCollection name="Portal Framework">{87249F75-A065-4F2F-8DCD-FBBF2CA0DCCD}</ImportCollection>
 	<Resource name="librarynoimage.jpg" type="www" path="addonmanager" />
+	<Resource name="Installer41.dll" type="execute" path="" />
 </Collection>
