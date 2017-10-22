@@ -77,8 +77,12 @@
       <HintPath>packages\Contensive.portalApi.1.0.11\lib\net35\adminFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="clibCore, Version=5.0.6126.37847, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\contensive.clib.5.0.0\lib\net451\clibCore.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="CPBase, Version=4.1.2.0, Culture=neutral, PublicKeyToken=10b3c53389b845fb, processorArchitecture=MSIL">
-      <HintPath>packages\contensive.clib.4.1.2\lib\net35\CPBase.dll</HintPath>
+      <HintPath>packages\contensive.clib.5.0.0\lib\net451\CPBase.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="HttpMultipartParser, Version=2.2.4.0, Culture=neutral, PublicKeyToken=6d293681fa6c7a03, processorArchitecture=MSIL">
@@ -103,6 +107,8 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="constants.vb" />
+    <Compile Include="Controllers\v5InstallController.vb" />
     <Compile Include="Controllers\genericController.vb" />
     <Compile Include="Interfaces\exportClass.vb" />
     <Compile Include="Interfaces\uploadClass.vb" />

@@ -10,7 +10,6 @@ Imports Contensive.addonManager
 
 Namespace Contensive.addonManager
     Module genericController
-        Public cr As String = vbCrLf
         '
         Public Function kmaIndent(source As String) As String
             Return source

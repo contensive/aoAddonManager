@@ -75,8 +75,6 @@ Namespace Contensive.addonManager
                 Dim ErrorMessage As String = ""
                 Dim UpgradeOK As Boolean
                 Dim installFolder As String
-                Dim LibGuids() As String
-                Dim cnt As Integer
                 Dim Ptr As Integer
                 Dim cs As CPCSBaseClass = cp.CSNew
                 Dim Button As String
@@ -127,44 +125,74 @@ Namespace Contensive.addonManager
                             '
                             If cp.User.IsDeveloper And cp.Doc.GetBoolean("InstallCore") Then
                                 Call cp.Content.Delete("Add-on Collections", "ccguid='{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}'")
-                                UpgradeOK = cp.Addon.installCollectionFromLibrary("{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}", ErrorMessage)
+                                If (cp.Version < "5") Then
+                                    '
+                                    ' -- use [addonManager-InstallFromLibraryC41]
+                                    cp.Doc.SetProperty("collectionGuid", "{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}")
+                                    UpgradeOK = cp.Utils.EncodeBoolean(cp.Utils.ExecuteAddon(legacyMethodInstallFromLibraryC41))
+                                Else
+                                    '
+                                    ' -- use v5 method
+                                    UpgradeOK = v5InstallController.installCollectionFromLibrary(cp, "{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}", ErrorMessage)
+                                End If
                             End If
                             '
                             '---------------------------------------------------------------------------------------------
                             ' Upload new collection files
                             '---------------------------------------------------------------------------------------------
                             '
-                            cp.Site.
-                            If(cp.privateFiles.saveUpload("metaFile", InstallPath, CollectionFilename)) Then
-                                Dim taskId As Integer = cp.Utils.installCollectionFromFile(InstallPath & CollectionFilename)
-                                form.body &= "<BR>Uploaded collection file [" & CollectionFilename & "]. Queued for processing as task [" & taskId & "]"
-                                UploadsCnt = cp.Doc.GetInteger("UploadCount")
-                                For Ptr = 0 To UploadsCnt - 1
-                                    If (cp.privateFiles.saveUpload("Upload" & Ptr, InstallPath, CollectionFilename)) Then
-                                        taskId = cp.Utils.installCollectionFromFile(CollectionFilename)
-                                        form.body &= "<BR>Uploaded collection file [" & CollectionFilename & "]. Queued for processing as task [" & taskId & "]"
+                            UploadsCnt = cp.Doc.GetInteger("UploadCount")
+                            For Ptr = 0 To UploadsCnt - 1
+                                Dim requestName As String = "Upload" & Ptr
+                                Dim uploadFilename As String = cp.Doc.GetText(requestName)
+                                If (Not String.IsNullOrEmpty(uploadFilename)) Then
+                                    cp.Html.ProcessInputFile("upload" & Ptr, InstallPath & uploadFilename)
+                                    If (cp.Version < "5") Then
+                                        '
+                                        ' -- version 4.1
+                                        cp.Doc.SetProperty("physicalInstallPath", cp.Site.PhysicalFilePath & InstallPath)
+                                        UpgradeOK = cp.Utils.EncodeBoolean(cp.Utils.ExecuteAddon(legacyMethodInstallFromPhysicalInstallPathC41))
+                                        If UpgradeOK Then
+                                            form.body &= "<BR>Installed collection files."
+                                        Else
+                                            form.body &= "<BR>Error installing collection files."
+                                        End If
+                                        cp.File.DeleteVirtual(InstallPath & uploadFilename)
+                                    Else
+                                        '
+                                        ' -- version 5.0
+                                        v5InstallController.installCollectionFromFolder(cp, InstallPath & uploadFilename, ErrorMessage)
                                     End If
-                                Next
-                            End If
-                        End If
-                        '
-                        ' --------------------------------------------------------------------------------
-                        '   Install Library Collections
-                        ' --------------------------------------------------------------------------------
-                        '
-                        If InstallLibCollectionList <> "" Then
-                            InstallLibCollectionList = Mid(InstallLibCollectionList, 2)
-                            LibGuids = Split(InstallLibCollectionList, ",")
-                            cnt = UBound(LibGuids) + 1
-                            For Ptr = 0 To cnt - 1
-                                cp.Utils.installCollectionFromLibrary(LibGuids(Ptr))
+                                End If
                             Next
                         End If
+                        ''
+                        '' --------------------------------------------------------------------------------
+                        ''   Install Library Collections
+                        '' --------------------------------------------------------------------------------
+                        ''
+                        'If InstallLibCollectionList <> "" Then
+                        '    InstallLibCollectionList = Mid(InstallLibCollectionList, 2)
+                        '    LibGuids = Split(InstallLibCollectionList, ",")
+                        '    cnt = UBound(LibGuids) + 1
+                        '    For Ptr = 0 To cnt - 1
+                        '        If (cp.Version < "5") Then
+                        '            '
+                        '            ' -- use [addonManager-InstallFromLibraryC41]
+                        '            cp.Doc.SetProperty("collectionGuid", LibGuids(Ptr))
+                        '            UpgradeOK = cp.Utils.EncodeBoolean(cp.Utils.ExecuteAddon(legacyMethodInstallFromLibraryC41))
+                        '        Else
+                        '            '
+                        '            ' -- use v5 method
+                        '            UpgradeOK = cp.Addon.installCollectionFromLibrary(LibGuids(Ptr), ErrorMessage)
+                        '        End If
+                        '    Next
+                        'End If
                         '
                         ' and delete the install folder if it was created
                         '
-                        If cp.privateFiles.folderExists(InstallPath) Then
-                            Call cp.privateFiles.deleteFolder(InstallPath)
+                        If cp.File.folderExists(InstallPath) Then
+                            'Call cp.File.deleteFolder(InstallPath)
                         End If
                         '
                         ' --------------------------------------------------------------------------------
