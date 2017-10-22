@@ -6,7 +6,7 @@ BEGIN
   DataSourceBehavior  = 0  'vbNone
   MTSTransactionMode  = 0  'NotAnMTSObject
 END
-Attribute VB_Name = "FromPhysicalPathClass"
+Attribute VB_Name = "FromLibraryClass"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
@@ -22,12 +22,10 @@ Public Function Execute(Csv As Object, main As Object, OptionString As String, F
     Dim IISResetRequired As Boolean
     Dim RegisterList As String
     Dim ErrorMessage As String
-    Dim physicalInstallPath As String
-    Dim InstalledCollectionGuid As String
     '
-    physicalInstallPath = GetAddonOptionStringValue("physicalInstallPath", OptionString)
+    collectionGuid = GetAddonOptionStringValue("collectionGuid", OptionString)
     Set AddonInstall = CreateObject("ccUpgrade.AddonInstallClass")
-    Execute = AddonInstall.InstallCollectionFilesFromFolder3(physicalInstallPath, IISResetRequired, main.ApplicationName, ErrorMessage, InstalledCollectionGuid)
+    Execute = AddonInstall.UpgradeAllAppsFromLibCollection(collectionGuid, main.ApplicationName, IISResetRequired, RegisterList, ErrorMessage)
     '
     Exit Function
 ErrorTrap:
@@ -37,5 +35,3 @@ ErrorTrap:
         Call HandleError2(main.ApplicationName, "error trap", "ccWeb3", "AddonManClass", "", Err.Number, Err.Source, Err.Description, True, False, main.ServerLink)
     End If
 End Function
-
-

@@ -3324,34 +3324,34 @@ Private Function LogFileCopyPrep(Source) As String
     LogFileCopyPrep = Copy
 End Function
 ' moved to csv
-''
-''=================================================================================================================
-''   GetAddonOptionStringValue
-''
-''   gets the value from a list matching the name
-''
-''   InstanceOptionstring is an "AddonEncoded" name=AddonEncodedValue[selector]descriptor&name=value string
-''=================================================================================================================
-''
-'Public Function GetAddonOptionStringValue(OptionName As String, AddonOptionString As String) As String
-'    On Error GoTo ErrorTrap
-'    '
-'    Dim Pos As Long
-'    Dim s As String
-'    '
-'    s = GetArgument(OptionName, AddonOptionString, "", "&")
-'    Pos = InStr(1, s, "[")
-'    If Pos > 0 Then
-'        s = Left(s, Pos - 1)
-'    End If
-'    s = decodeNvaArgument(s)
-'    '
-'    GetAddonOptionStringValue = Trim(s)
-'    '
-'    Exit Function
-'ErrorTrap:
-'    Call HandleError2("", "", App.EXEName, "ccCommonModule", "GetAddonOptionStringValue", Err.Number, Err.Source, Err.Description, True, False, "")
-'End Function
+'
+'=================================================================================================================
+'   GetAddonOptionStringValue
+'
+'   gets the value from a list matching the name
+'
+'   InstanceOptionstring is an "AddonEncoded" name=AddonEncodedValue[selector]descriptor&name=value string
+'=================================================================================================================
+'
+Public Function GetAddonOptionStringValue(OptionName As String, AddonOptionString As String) As String
+    On Error GoTo ErrorTrap
+    '
+    Dim Pos As Long
+    Dim s As String
+    '
+    s = getSimpleNameValue(OptionName, AddonOptionString, "", "&")
+    Pos = InStr(1, s, "[")
+    If Pos > 0 Then
+        s = Left(s, Pos - 1)
+    End If
+    s = decodeNvaArgument(s)
+    '
+    GetAddonOptionStringValue = Trim(s)
+    '
+    Exit Function
+ErrorTrap:
+    Call HandleError2("", "", App.EXEName, "ccCommonModule", "GetAddonOptionStringValue", Err.Number, Err.Source, Err.Description, True, False, "")
+End Function
 '
 '
 '
