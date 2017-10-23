@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
-  <Import Project="packages\xunit.runner.visualstudio.2.3.0\build\net20\xunit.runner.visualstudio.props" Condition="Exists('packages\xunit.runner.visualstudio.2.3.0\build\net20\xunit.runner.visualstudio.props')" />
-  <Import Project="packages\xunit.core.2.3.0\build\xunit.core.props" Condition="Exists('packages\xunit.core.2.3.0\build\xunit.core.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -77,12 +75,8 @@
       <HintPath>packages\Contensive.portalApi.1.0.11\lib\net35\adminFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="clibCore, Version=5.0.6126.37847, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\contensive.clib.5.0.0\lib\net451\clibCore.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="CPBase, Version=4.1.2.0, Culture=neutral, PublicKeyToken=10b3c53389b845fb, processorArchitecture=MSIL">
-      <HintPath>packages\contensive.clib.5.0.0\lib\net451\CPBase.dll</HintPath>
+      <HintPath>packages\contensive.clib.5.0.1\lib\net35\CPBase.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="HttpMultipartParser, Version=2.2.4.0, Culture=neutral, PublicKeyToken=6d293681fa6c7a03, processorArchitecture=MSIL">
@@ -184,13 +178,4 @@
     <PostBuildEvent>copy "$(TargetDir)*.dll" "C:\ProgramData\Contensive\AddonAssemblyBypass"
 copy "$(TargetDir)*.dll" "C:\Program Files (x86)\kma\Contensive\Addons"</PostBuildEvent>
   </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('packages\xunit.core.2.3.0\build\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\xunit.core.2.3.0\build\xunit.core.props'))" />
-    <Error Condition="!Exists('packages\xunit.core.2.3.0\build\xunit.core.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\xunit.core.2.3.0\build\xunit.core.targets'))" />
-    <Error Condition="!Exists('packages\xunit.runner.visualstudio.2.3.0\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\xunit.runner.visualstudio.2.3.0\build\net20\xunit.runner.visualstudio.props'))" />
-  </Target>
-  <Import Project="packages\xunit.core.2.3.0\build\xunit.core.targets" Condition="Exists('packages\xunit.core.2.3.0\build\xunit.core.targets')" />
 </Project>

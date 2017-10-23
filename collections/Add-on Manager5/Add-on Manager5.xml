@@ -38,6 +38,62 @@
 
 
 
+
+.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
+    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
+    font-size:14px;
+}
+
+.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
+.amLibraryListCell table {width:100%;padding:0;margin:0;}
+.amLibraryListCell table td {}
+.amLibraryListCell td.amImage {width:202px;height:242px;padding:5px;background-color:#cdc;}
+.amLibraryListCell td.amImage img {width:200px;height:240px; border:1px solid #fff;}
+.amLibraryListCell td.amBody {height:252px;padding:5px 5px 5px 10px;}
+.amLibraryListCell td.amBody .amHeadline {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:24px;
+	font-weight:bold;
+}
+.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
+.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
+.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
+.amLibraryListCell td.amBody .amDescription li {
+    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
+.amLibraryListCell td.amBody div.amDemoLink a {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:18px;
+	font-weight:bold;
+	padding: 20px 0 0 0;
+	}
+.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
+	color: #1B75BB;
+	}
+.amLibraryListCell td.amBody div.amHelpLink {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:18px;
+	font-weight:bold;
+	padding: 20px 0 0 0;
+}
+
+
+.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
+	color: #1B75BB;
+	}
+
+
+
+
+
+
 .amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
     font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
     font-size:14px;
@@ -91,6 +147,62 @@
 ]]></Styles>
 		<StylesLinkHref></StylesLinkHref>
 		<Styles><![CDATA[
+
+
+
+
+.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
+    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
+    font-size:14px;
+}
+
+.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
+.amLibraryListCell table {width:100%;padding:0;margin:0;}
+.amLibraryListCell table td {}
+.amLibraryListCell td.amImage {width:202px;height:242px;padding:5px;background-color:#cdc;}
+.amLibraryListCell td.amImage img {width:200px;height:240px; border:1px solid #fff;}
+.amLibraryListCell td.amBody {height:252px;padding:5px 5px 5px 10px;}
+.amLibraryListCell td.amBody .amHeadline {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:24px;
+	font-weight:bold;
+}
+.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
+.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
+.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
+.amLibraryListCell td.amBody .amDescription li {
+    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
+.amLibraryListCell td.amBody div.amDemoLink a {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:18px;
+	font-weight:bold;
+	padding: 20px 0 0 0;
+	}
+.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
+	color: #1B75BB;
+	}
+.amLibraryListCell td.amBody div.amHelpLink {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:18px;
+	font-weight:bold;
+	padding: 20px 0 0 0;
+}
+
+
+.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
+	color: #1B75BB;
+	}
+
+
+
 
 
 
@@ -182,7 +294,11 @@
 		<Styles></Styles>
 		<StylesLinkHref></StylesLinkHref>
 		<Styles></Styles>
-		<Scripting Language="" EntryPoint="" Timeout="5000"/>
+		<Scripting Language="" EntryPoint="" Timeout="5000">
+			<Code><![CDATA[function m
+cp.response.redirect( "?addonguid=%7BA1BCA00C-2657-42A1-8F98-BED1E5A42025%7D&setPortal=%7Bf732f7f1-03ef-4f58-8e2a-f502bde53606%7D" )
+end function]]></Code>
+		</Scripting>
 	</Addon>
 	<Addon name="addonManager-CollectionLibrary" guid="{556e1660-62dc-4706-a07d-ba1bf3449128}" type="Add-on">
 		<Copy></Copy>
@@ -256,6 +372,75 @@
 		<RemoteAssetLink></RemoteAssetLink>
 		<Styles><![CDATA[
 
+
+		.collectionExport{
+			padding-top:20px;
+		}
+		.collectionExport .mainForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport .responseForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport{
+			padding-top:20px;
+		}
+		.collectionExport .mainForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport .responseForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport{
+			padding-top:20px;
+		}
+		.collectionExport .mainForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport .responseForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+
+
+
+
+
 		.collectionExport{
 			padding-top:20px;
 		}
@@ -324,6 +509,75 @@
 ]]></Styles>
 		<StylesLinkHref></StylesLinkHref>
 		<Styles><![CDATA[
+
+
+		.collectionExport{
+			padding-top:20px;
+		}
+		.collectionExport .mainForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport .responseForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport{
+			padding-top:20px;
+		}
+		.collectionExport .mainForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport .responseForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport{
+			padding-top:20px;
+		}
+		.collectionExport .mainForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport .responseForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+
+
+
+
 
 		.collectionExport{
 			padding-top:20px;
@@ -427,6 +681,60 @@
 		<RemoteAssetLink></RemoteAssetLink>
 		<Styles><![CDATA[
 
+
+.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
+    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
+    font-size:14px;
+}
+
+.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
+.amLibraryListCell table {width:100%;padding:0;margin:0;}
+.amLibraryListCell table td {}
+.amLibraryListCell td.amImage {width:202px;height:242px;padding:5px;background-color:#cdc;}
+.amLibraryListCell td.amImage img {width:200px;height:240px; border:1px solid #fff;}
+.amLibraryListCell td.amBody {height:252px;padding:5px 5px 5px 10px;}
+.amLibraryListCell td.amBody .amHeadline {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:24px;
+	font-weight:bold;
+}
+.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
+.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
+.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
+.amLibraryListCell td.amBody .amDescription li {
+    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
+.amLibraryListCell td.amBody div.amDemoLink a {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:18px;
+	font-weight:bold;
+	padding: 20px 0 0 0;
+	}
+.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
+	color: #1B75BB;
+	}
+.amLibraryListCell td.amBody div.amHelpLink {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:18px;
+	font-weight:bold;
+	padding: 20px 0 0 0;
+}
+
+
+.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
+	color: #1B75BB;
+	}
+
+
+
+
 .amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
     font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
     font-size:14px;
@@ -480,6 +788,60 @@
 ]]></Styles>
 		<StylesLinkHref></StylesLinkHref>
 		<Styles><![CDATA[
+
+
+.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
+    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
+    font-size:14px;
+}
+
+.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
+.amLibraryListCell table {width:100%;padding:0;margin:0;}
+.amLibraryListCell table td {}
+.amLibraryListCell td.amImage {width:202px;height:242px;padding:5px;background-color:#cdc;}
+.amLibraryListCell td.amImage img {width:200px;height:240px; border:1px solid #fff;}
+.amLibraryListCell td.amBody {height:252px;padding:5px 5px 5px 10px;}
+.amLibraryListCell td.amBody .amHeadline {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:24px;
+	font-weight:bold;
+}
+.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
+.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
+.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
+.amLibraryListCell td.amBody .amDescription li {
+    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
+.amLibraryListCell td.amBody div.amDemoLink a {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:18px;
+	font-weight:bold;
+	padding: 20px 0 0 0;
+	}
+.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
+	color: #1B75BB;
+	}
+.amLibraryListCell td.amBody div.amHelpLink {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:18px;
+	font-weight:bold;
+	padding: 20px 0 0 0;
+}
+
+
+.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
+	color: #1B75BB;
+	}
+
+
+
 
 .amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
     font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
@@ -731,12 +1093,12 @@ end function]]></Code>
 			<field name="Active">True</field>
 			<field name="SortOrder"></field>
 			<field name="defaultConfigJson"></field>
-			<field name="defaultFeatureId"></field>
+			<field name="defaultFeatureId">{baaa59b1-986f-4bf2-83bc-085518c1708c}</field>
 		</record>
 		<record content="portal features" guid="{3e8fc5ca-33d7-4f40-9185-5d2f13657926}" name="AddonManager-Export">
 			<field name="Active">True</field>
 			<field name="SortOrder"></field>
-			<field name="portalId"></field>
+			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
 			<field name="addonId">{e716ec0e-b83f-43cc-9933-1a0733fb7641}</field>
 			<field name="Heading"><![CDATA[Export]]></field>
 			<field name="parentFeatureId"></field>
@@ -746,7 +1108,7 @@ end function]]></Code>
 		<record content="portal features" guid="{96b51732-5c24-4a33-8292-b58567b00d42}" name="AddonManager-Data">
 			<field name="Active">True</field>
 			<field name="SortOrder"></field>
-			<field name="portalId"></field>
+			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
 			<field name="addonId"></field>
 			<field name="Heading"><![CDATA[Data]]></field>
 			<field name="parentFeatureId"></field>
@@ -756,7 +1118,7 @@ end function]]></Code>
 		<record content="portal features" guid="{baaa59b1-986f-4bf2-83bc-085518c1708c}" name="AddonManager-CollectionLibrary">
 			<field name="Active">True</field>
 			<field name="SortOrder"></field>
-			<field name="portalId"></field>
+			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
 			<field name="addonId">{556e1660-62dc-4706-a07d-ba1bf3449128}</field>
 			<field name="Heading"><![CDATA[Collection Library]]></field>
 			<field name="parentFeatureId"></field>
@@ -766,7 +1128,7 @@ end function]]></Code>
 		<record content="portal features" guid="{bfc41fa2-c17a-4712-8966-3d42e735c710}" name="AddonManager-Upload">
 			<field name="Active">True</field>
 			<field name="SortOrder"></field>
-			<field name="portalId"></field>
+			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
 			<field name="addonId">{e66d6890-4e1a-499b-9a37-83b767bce19c}</field>
 			<field name="Heading"><![CDATA[Upload]]></field>
 			<field name="parentFeatureId"></field>
@@ -776,7 +1138,7 @@ end function]]></Code>
 		<record content="portal features" guid="{ed348836-b522-4e08-b4ff-9197d48a07eb}" name="AddonManager-Uninstall">
 			<field name="Active">True</field>
 			<field name="SortOrder"></field>
-			<field name="portalId"></field>
+			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
 			<field name="addonId"></field>
 			<field name="Heading"><![CDATA[Uninstall]]></field>
 			<field name="parentFeatureId"></field>
@@ -787,4 +1149,8 @@ end function]]></Code>
 	<ImportCollection name="Portal Framework">{87249F75-A065-4F2F-8DCD-FBBF2CA0DCCD}</ImportCollection>
 	<Resource name="librarynoimage.jpg" type="www" path="addonmanager" />
 	<Resource name="installer41.dll" type="executable" path="" />
+	<Resource name="addonmanager5.dll" type="executable" path="" />
+	<Resource name="adminframework.dll" type="executable" path="" />
+	<Resource name="httpmultipartparser.dll" type="executable" path="" />
+	<Resource name="icsharpcode.sharpziplib.dll" type="executable" path="" />
 </Collection>

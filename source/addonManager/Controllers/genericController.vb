@@ -132,7 +132,7 @@ Namespace Contensive.addonManager
             Try
                 Dim cs As CPCSBaseClass = cp.CSNew
                 '
-                cs.Open("layouts", "ccguid=" & cp.Db.EncodeSQLText(layoutGuid))
+                cs.Open("layouts", "ccguid=" & cp.Db.EncodeSQLText(layoutGuid), "id")
                 If Not cs.OK Then
                     Call cs.Close()
                     If cs.Insert("layouts") Then
