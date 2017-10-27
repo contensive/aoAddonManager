@@ -77,7 +77,7 @@
     </Reference>
     <Reference Include="CPBase, Version=4.1.2.0, Culture=neutral, PublicKeyToken=10b3c53389b845fb, processorArchitecture=MSIL">
       <HintPath>packages\contensive.clib.5.0.1\lib\net35\CPBase.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HttpMultipartParser, Version=2.2.4.0, Culture=neutral, PublicKeyToken=6d293681fa6c7a03, processorArchitecture=MSIL">
       <HintPath>packages\HttpMultipartParser.2.2.4\lib\net46\HttpMultipartParser.dll</HintPath>

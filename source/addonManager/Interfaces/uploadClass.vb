@@ -70,12 +70,14 @@ Namespace Contensive.addonManager
             Dim returnResult As String = ""
             Try
                 '
+                cp.Utils.AppendLogFile("getUpload, enter")
+                '
                 Dim DbUpToDate As Boolean
                 Dim GuidFieldName As String
                 Dim ErrorMessage As String = ""
                 Dim UpgradeOK As Boolean
-                Dim installFolder As String
-                Dim Ptr As Integer
+
+                '   Dim Ptr As Integer
                 Dim cs As CPCSBaseClass = cp.CSNew
                 Dim Button As String
                 Dim ButtonList As String
@@ -115,9 +117,10 @@ Namespace Contensive.addonManager
                     Else
                         '
                         form.body &= "Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added."
-                        installFolder = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "")
-                        InstallPath = installFolder & "\"
                         If (Button = ButtonOK) Then
+                            '
+                            cp.Utils.AppendLogFile("getUpload, button=ok (" & InstallPath & ")")
+                            '
                             '
                             '---------------------------------------------------------------------------------------------
                             ' Reinstall core collection
@@ -141,30 +144,41 @@ Namespace Contensive.addonManager
                             ' Upload new collection files
                             '---------------------------------------------------------------------------------------------
                             '
-                            UploadsCnt = cp.Doc.GetInteger("UploadCount")
-                            For Ptr = 0 To UploadsCnt - 1
-                                Dim requestName As String = "Upload" & Ptr
-                                Dim uploadFilename As String = cp.Doc.GetText(requestName)
-                                If (Not String.IsNullOrEmpty(uploadFilename)) Then
-                                    cp.Html.ProcessInputFile("upload" & Ptr, InstallPath & uploadFilename)
-                                    If (cp.Version < "5") Then
-                                        '
-                                        ' -- version 4.1
-                                        cp.Doc.SetProperty("physicalInstallPath", cp.Site.PhysicalFilePath & InstallPath)
-                                        UpgradeOK = cp.Utils.EncodeBoolean(cp.Utils.ExecuteAddon(legacyMethodInstallFromPhysicalInstallPathC41))
-                                        If UpgradeOK Then
-                                            form.body &= "<BR>Installed collection files."
-                                        Else
-                                            form.body &= "<BR>Error installing collection files."
-                                        End If
-                                        cp.File.DeleteVirtual(InstallPath & uploadFilename)
+                            'UploadsCnt = cp.Doc.GetInteger("UploadCount")
+                            ''
+                            'cp.Utils.AppendLogFile("getUpload, UploadsCnt (" & UploadsCnt & ")")
+                            ''
+                            'If UploadsCnt > 0 Then
+                            '    InstallPath = installFolder & "\"
+                            '    For Ptr = 0 To UploadsCnt - 1
+                            '        Dim requestName As String = "Upload" & Ptr
+                            '    Next
+                            '    'cp.File.DeleteFolder(cp.Site.PhysicalFilePath & InstallPath)
+                            'End If
+                            'Dim uploadFilename As String = cp.Doc.GetText(requestName)
+                            ''
+                            'cp.Utils.AppendLogFile("getUpload, ptr (" & Ptr & "), uploadFilename (" & uploadFilename & ")")
+                            ''
+                            Dim uploadFilename As String = cp.Doc.GetText(rnUploadCollectionFile)
+                            If (Not String.IsNullOrEmpty(uploadFilename)) Then
+                                If (cp.Version < "5") Then
+                                    '
+                                    ' -- version 4.1
+                                    Dim installFolder As String = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "")
+                                    cp.Html.ProcessInputFile(rnUploadCollectionFile, InstallPath & uploadFilename)
+                                    cp.Doc.SetProperty("physicalInstallPath", cp.Site.PhysicalFilePath & InstallPath)
+                                    UpgradeOK = cp.Utils.EncodeBoolean(cp.Utils.ExecuteAddon(legacyMethodInstallFromPhysicalInstallPathC41))
+                                    If UpgradeOK Then
+                                        form.body &= "<BR>Installed collection files."
                                     Else
-                                        '
-                                        ' -- version 5.0
-                                        v5InstallController.installCollectionFromFolder(cp, InstallPath & uploadFilename, ErrorMessage)
+                                        form.body &= "<BR>Error installing collection files."
                                     End If
+                                Else
+                                    '
+                                    ' -- version 5.0, separate class so this project can be built with contensive 5.0 reference, but run against contensive 4.1
+                                    v5InstallController.installCollectionFromUpload(cp, rnUploadCollectionFile, ErrorMessage)
                                 End If
-                            Next
+                            End If
                         End If
                         ''
                         '' --------------------------------------------------------------------------------
@@ -191,9 +205,11 @@ Namespace Contensive.addonManager
                         '
                         ' and delete the install folder if it was created
                         '
-                        If cp.File.folderExists(InstallPath) Then
-                            'Call cp.File.deleteFolder(InstallPath)
-                        End If
+                        'cp.Utils.AppendLogFile("getUpload, calling cp.File.folderExists(" & InstallPath & ")")
+                        'If cp.File.folderExists(InstallPath) Then
+                        '    'Call cp.File.deleteFolder(InstallPath)
+                        'End If
+                        'cp.Utils.AppendLogFile("getUpload, called cp.File.folderExists(" & InstallPath & ")")
                         '
                         ' --------------------------------------------------------------------------------
                         ' Get Form
@@ -208,9 +224,7 @@ Namespace Contensive.addonManager
                         Else
                             form.body &= "" _
                                 & vbCrLf & vbTab & "<table border=""0"" cellpadding=""0"" cellspacing=""1"" width=""100%"">" _
-                                & vbCrLf & vbTab & vbTab & "<tr><td>" & cp.Html.CheckBox("InstallCore") & "Reinstall Core Collection</td></tr>" _
-                                & vbCrLf & vbTab & vbTab & "<tr><td>" & cp.Html.InputFile("MetaFile") & "Add-on Collection File(s)</td></tr>" _
-                                & vbCrLf & vbTab & vbTab & "<tr><td align=""left""><a href=""#"" onClick=""InsertUpload(); return false;"">+ Add more files</a></td></tr>" _
+                                & vbCrLf & vbTab & vbTab & "<tr><td>" & cp.Html.InputFile(rnUploadCollectionFile) & "Add-on Collection File(s)</td></tr>" _
                                 & vbCrLf & vbTab & "</table>" _
                                 & vbCrLf & vbTab & vbTab & cp.Html.Hidden("UploadCount", "1", "UploadCount") _
                             & ""
