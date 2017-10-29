@@ -6,9 +6,8 @@ Imports System
 Imports System.Collections.Generic
 Imports System.Text
 Imports Contensive.BaseClasses
-Imports Contensive.addonManager
 
-Namespace Contensive.addonManager
+Namespace Contensive.Addons.AddonManager
     '
     ' Sample Vb addon
     '
@@ -82,7 +81,7 @@ Namespace Contensive.addonManager
                 Dim addonid As Integer
                 Dim cnt As Integer
                 Dim Ptr As Integer
-                Dim RowPtr As Integer
+                '  Dim RowPtr As Integer
                 Dim Cells(,) As String
                 Dim PageNumber As Integer
                 Dim ColumnCnt As Integer
@@ -104,6 +103,7 @@ Namespace Contensive.addonManager
                 Dim TargetCollectionID As Integer
                 Dim InstallPath As String
                 Dim SiteKey As String
+                Dim form As New adminFramework.reportListClass(cp)
                 '
                 SiteKey = cp.Site.GetText("sitekey", "")
                 If SiteKey = "" Then
@@ -128,8 +128,6 @@ Namespace Contensive.addonManager
                         ButtonList = ButtonCancel
                         BodyHTML = cp.Html.p("You must be an administrator to use this tool.")
                     Else
-                        '
-                        PreTableCopy = "Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added."
                         installFolder = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "")
                         InstallPath = cp.Site.PhysicalFilePath & installFolder & "\"
                         If (Button = ButtonOK) Then
@@ -197,82 +195,52 @@ Namespace Contensive.addonManager
                         End If
                         '
                         ' --------------------------------------------------------------------------------
-                        ' Get Form
-                        ' --------------------------------------------------------------------------------
-                        ' --------------------------------------------------------------------------------
                         ' Current Collections Tab
                         ' --------------------------------------------------------------------------------
                         '
-                        ColumnCnt = 2
-                        PageNumber = 1
-                        ReDim ColCaption(2)
-                        ReDim ColAlign(2)
-                        ReDim ColWidth(2)
-                        ReDim ColSortable(2)
+                        form.addColumn()
+                        form.columnCaption = "Del"
+                        form.columnCaptionClass = adminFramework.afwStyles.afwTextAlignCenter + " " + adminFramework.afwStyles.afwWidth50px
+                        form.columnCellClass = adminFramework.afwStyles.afwTextAlignCenter
+                        form.columnDownloadable = False
+                        form.columnName = ""
+                        form.columnSortable = False
+                        form.columnVisible = True
                         '
-                        ColCaption(0) = "Del"
-                        ColAlign(0) = "center"
-                        ColWidth(0) = "50px"
-                        ColSortable(0) = False
-                        '
-                        ColCaption(1) = "Name"
-                        ColAlign(1) = "left"
-                        ColWidth(1) = ""
-                        ColSortable(1) = False
+                        form.addColumn()
+                        form.columnCaption = "Name"
+                        form.columnCaptionClass = adminFramework.afwStyles.afwTextAlignLeft
+                        form.columnCellClass = adminFramework.afwStyles.afwTextAlignLeft
+                        form.columnDownloadable = False
+                        form.columnName = ""
+                        form.columnSortable = False
+                        form.columnVisible = True
                         '
                         DisplaySystem = False
-                        If Not cp.User.IsDeveloper Then
-                            '
-                            ' non-developers
-                            '
-                            cs.Open("Add-on Collections", "((system is null)or(system=0))", "Name")
-                        Else
-                            '
-                            ' developers
-                            '
-                            DisplaySystem = True
-                            cs.Open("Add-on Collections", , "Name")
-                        End If
-                        ReDim Preserve Cells(cs.GetRowCount(), ColumnCnt)
-                        RowPtr = 0
-                        Do While cs.OK
-                            Cells(RowPtr, 0) = cp.Html.CheckBox("AC" & RowPtr) & cp.Html.Hidden("ACID" & RowPtr, cs.GetInteger("ID").ToString())
-                            'Cells(RowPtr, 1) = "<a href=""" & Main.SiteProperty_AdminURL & "?id=" & cs.getinteger( "ID") & "&cid=" & cs.getinteger( "ContentControlID") & "&af=4""><img src=""/cclib/images/IconContentEdit.gif"" border=0></a>"
-                            Cells(RowPtr, 1) = cs.GetText("name")
-                            If DisplaySystem Then
-                                If cs.GetBoolean("system") Then
-                                    Cells(RowPtr, 1) = Cells(RowPtr, 1) & " (system)"
-                                End If
-                            End If
-                            Call cs.GoNext()
-                            RowPtr = RowPtr + 1
-                        Loop
-                        Call cs.Close()
-                        'BodyHTML = "<div style=""width:100%"">" & AdminUI.GetReport2(main, RowPtr, ColCaption, ColAlign, ColWidth, Cells, RowPtr, 1, "", PostTableCopy, RowPtr, "ccAdmin", ColSortable, 0) & "</div>"
-                        'BodyHTML = AdminUI.GetEditPanel(main, True, "Add-on Collections", "Use this form to uninstall (remove) add-on collections from your site.", BodyHTML)
-                        'BodyHTML = BodyHTML & cp.Html.Hidden("accnt", RowPtr)
-                        'BodyHTML = Replace(BodyHTML, "vertical-align:bottom;text-align:right;", "width:50px;vertical-align:bottom;text-align:right;", , , vbTextCompare)
-                        'Call main.AddLiveTabEntry("Uninstall&nbsp;Collections", BodyHTML, "ccAdminTab")
-                        '
-                        ' --------------------------------------------------------------------------------
-                        ' Build Page from tabs
-                        ' --------------------------------------------------------------------------------
-                        '
-                        ButtonList = ButtonCancel & "," & ButtonOK
+                        Dim addonCollectionList As List(Of Models.addonCollectionModel) = Models.addonCollectionModel.createList(cp, "", "name")
+                        Dim rowPtr As Integer = 0
+                        For Each item In addonCollectionList
+                            form.addRow()
+                            form.setCell(cp.Html.CheckBox("AC" & RowPtr) & cp.Html.Hidden("ACID" & RowPtr, item.id.ToString()))
+                            form.setCell(item.name)
+                            rowPtr += 1
+                        Next
+                        form.addFormButton(ButtonCancel)
+                        form.addFormButton(ButtonOK)
+                        form.addFormHidden("accnt", addonCollectionList.Count.ToString())
                     End If
                     '
                     ' Output the Add-on
                     '
-                    Caption = "Add-on Manager"
-                    Description = "<div>Use the add-on manager to add and remove Add-ons from your Contensive installation.</div>"
+                    form.name = "Uninstall Collections"
+                    form.description = "To remove collections, select them from the list and click the Uninstall button."
                     If Not DbUpToDate Then
-                        Description = Description & "<div style=""Margin-left:50px"">The Add-on Manager is disabled because this site's Database needs to be upgraded.</div>"
+                        form.description &= "<div style=""Margin-left:50px"">The Add-on Manager is disabled because this site's Database needs to be upgraded.</div>"
                     End If
                     If status <> "" Then
-                        Description = Description & "<div style=""Margin-left:50px"">" & status & "</div>"
+                        form.description &= "<div style=""Margin-left:50px"">" & status & "</div>"
                     End If
-                    'GetForm_AddonManager = AdminUI.GetBody(main, Caption, ButtonList, "", False, False, Description, "", 0, Content.Text)
-                    'Call main.AddPageTitle("Add-on Manager")
+                    returnResult = form.getHtml(cp)
                 End If
             Catch ex As Exception
                 cp.Site.ErrorReport(ex)

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="windows-1252"?>
 <Collection name="Add-on Manager5" guid="{e042616a-89ea-4926-8a41-6b8b6631d067}" system="No" updatable="Yes" blockNavigatorNode="No">
-	<HelpLink></HelpLink>
 	<Help>&lt;p&gt;collection.help -this is the long help...&lt;br&gt;collection.help -this is the long help...&lt;br&gt;collection.help -this is the long help...&lt;/p&gt;</Help>
 	<Addon name="Add-on Manager" guid="{1DC06F61-1837-419B-AF36-D5CC41E1C9FD}" type="Add-on">
 		<Copy></Copy>
@@ -14,7 +13,7 @@
 		<HelpLink></HelpLink>
 		<Icon Link="" width="0" height="0" sprites="0" />
 		<InIframe>No</InIframe>
-		<BlockEditTools>Yes</BlockEditTools>
+		<BlockEditTools>No</BlockEditTools>
 		<FormXML></FormXML>
 		<IsInline>No</IsInline>
 		<JavascriptOnLoad></JavascriptOnLoad>
@@ -31,6 +30,7 @@
 		<OnBodyStart>No</OnBodyStart>
 		<OnBodyEnd>No</OnBodyEnd>
 		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
 		<ProcessInterval>0</ProcessInterval>
 		<PageTitle><![CDATA[Add-on Manager]]></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
@@ -39,58 +39,6 @@
 
 
 
-.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size:14px;
-}
-
-.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
-.amLibraryListCell table {width:100%;padding:0;margin:0;}
-.amLibraryListCell table td {}
-.amLibraryListCell td.amImage {width:202px;height:242px;padding:5px;background-color:#cdc;}
-.amLibraryListCell td.amImage img {width:200px;height:240px; border:1px solid #fff;}
-.amLibraryListCell td.amBody {height:252px;padding:5px 5px 5px 10px;}
-.amLibraryListCell td.amBody .amHeadline {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:24px;
-	font-weight:bold;
-}
-.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
-.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
-.amLibraryListCell td.amBody .amDescription li {
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size: 12px;
-    line-height: 1.2;
-}
-
-.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody div.amDemoLink a {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-	}
-.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
-	color: #1B75BB;
-	}
-.amLibraryListCell td.amBody div.amHelpLink {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-}
-
-
-.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
-	color: #1B75BB;
-	}
-
-
-
 
 
 
@@ -144,9 +92,63 @@
 	color: #1B75BB;
 	}
 
-]]></Styles>
-		<StylesLinkHref></StylesLinkHref>
-		<Styles><![CDATA[
+
+
+
+
+
+.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
+    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
+    font-size:14px;
+}
+
+.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
+.amLibraryListCell table {width:100%;padding:0;margin:0;}
+.amLibraryListCell table td {}
+.amLibraryListCell td.amImage {width:202px;height:242px;padding:5px;background-color:#cdc;}
+.amLibraryListCell td.amImage img {width:200px;height:240px; border:1px solid #fff;}
+.amLibraryListCell td.amBody {height:252px;padding:5px 5px 5px 10px;}
+.amLibraryListCell td.amBody .amHeadline {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:24px;
+	font-weight:bold;
+}
+.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
+.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
+.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
+.amLibraryListCell td.amBody .amDescription li {
+    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
+.amLibraryListCell td.amBody div.amDemoLink a {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:18px;
+	font-weight:bold;
+	padding: 20px 0 0 0;
+	}
+.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
+	color: #1B75BB;
+	}
+.amLibraryListCell td.amBody div.amHelpLink {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:18px;
+	font-weight:bold;
+	padding: 20px 0 0 0;
+}
+
+
+.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
+	color: #1B75BB;
+	}
+
+
+
 
 
 
@@ -288,11 +290,10 @@
 		<OnBodyStart>No</OnBodyStart>
 		<OnBodyEnd>No</OnBodyEnd>
 		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
 		<ProcessInterval>0</ProcessInterval>
 		<PageTitle></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<StylesLinkHref></StylesLinkHref>
 		<Styles></Styles>
 		<Scripting Language="" EntryPoint="" Timeout="5000">
 			<Code><![CDATA[function m
@@ -304,7 +305,7 @@ end function]]></Code>
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
-		<DotNetClass><![CDATA[Contensive.addonManager.collectionLibraryClass]]></DotNetClass>
+		<DotNetClass><![CDATA[Contensive.Addons.AddonManager.collectionLibraryClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
 		<Filter>No</Filter>
@@ -330,11 +331,10 @@ end function]]></Code>
 		<OnBodyStart>No</OnBodyStart>
 		<OnBodyEnd>No</OnBodyEnd>
 		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
 		<ProcessInterval>0</ProcessInterval>
 		<PageTitle></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<StylesLinkHref></StylesLinkHref>
 		<Styles></Styles>
 		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
@@ -342,7 +342,7 @@ end function]]></Code>
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
-		<DotNetClass><![CDATA[Contensive.addonManager.exportClass]]></DotNetClass>
+		<DotNetClass><![CDATA[Contensive.Addons.AddonManager.exportClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
 		<Filter>No</Filter>
@@ -367,78 +367,13 @@ end function]]></Code>
 		<OnBodyStart>No</OnBodyStart>
 		<OnBodyEnd>No</OnBodyEnd>
 		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
 		<ProcessInterval>0</ProcessInterval>
 		<PageTitle></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
 		<Styles><![CDATA[
 
 
-		.collectionExport{
-			padding-top:20px;
-		}
-		.collectionExport .mainForm {
-			width:300px;
-			color: #444;
-			background-color:#fee;
-			padding:10px;
-			border:1px solid #444;
-			margin-right:auto;
-			margin-left:auto;
-		}
-		.collectionExport .responseForm {
-			width:300px;
-			color: #444;
-			background-color:#fee;
-			padding:10px;
-			border:1px solid #444;
-			margin-right:auto;
-			margin-left:auto;
-		}
-		.collectionExport{
-			padding-top:20px;
-		}
-		.collectionExport .mainForm {
-			width:300px;
-			color: #444;
-			background-color:#fee;
-			padding:10px;
-			border:1px solid #444;
-			margin-right:auto;
-			margin-left:auto;
-		}
-		.collectionExport .responseForm {
-			width:300px;
-			color: #444;
-			background-color:#fee;
-			padding:10px;
-			border:1px solid #444;
-			margin-right:auto;
-			margin-left:auto;
-		}
-		.collectionExport{
-			padding-top:20px;
-		}
-		.collectionExport .mainForm {
-			width:300px;
-			color: #444;
-			background-color:#fee;
-			padding:10px;
-			border:1px solid #444;
-			margin-right:auto;
-			margin-left:auto;
-		}
-		.collectionExport .responseForm {
-			width:300px;
-			color: #444;
-			background-color:#fee;
-			padding:10px;
-			border:1px solid #444;
-			margin-right:auto;
-			margin-left:auto;
-		}
-
-
-
 
 
 		.collectionExport{
@@ -506,9 +441,76 @@ end function]]></Code>
 		}
 
 
-]]></Styles>
-		<StylesLinkHref></StylesLinkHref>
-		<Styles><![CDATA[
+
+
+
+		.collectionExport{
+			padding-top:20px;
+		}
+		.collectionExport .mainForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport .responseForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport{
+			padding-top:20px;
+		}
+		.collectionExport .mainForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport .responseForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport{
+			padding-top:20px;
+		}
+		.collectionExport .mainForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+		.collectionExport .responseForm {
+			width:300px;
+			color: #444;
+			background-color:#fee;
+			padding:10px;
+			border:1px solid #444;
+			margin-right:auto;
+			margin-left:auto;
+		}
+
+
+
+
 
 
 		.collectionExport{
@@ -676,62 +678,13 @@ end function]]></Code>
 		<OnBodyStart>No</OnBodyStart>
 		<OnBodyEnd>No</OnBodyEnd>
 		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
 		<ProcessInterval>0</ProcessInterval>
 		<PageTitle></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
 		<Styles><![CDATA[
 
 
-.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size:14px;
-}
-
-.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
-.amLibraryListCell table {width:100%;padding:0;margin:0;}
-.amLibraryListCell table td {}
-.amLibraryListCell td.amImage {width:202px;height:242px;padding:5px;background-color:#cdc;}
-.amLibraryListCell td.amImage img {width:200px;height:240px; border:1px solid #fff;}
-.amLibraryListCell td.amBody {height:252px;padding:5px 5px 5px 10px;}
-.amLibraryListCell td.amBody .amHeadline {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:24px;
-	font-weight:bold;
-}
-.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
-.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
-.amLibraryListCell td.amBody .amDescription li {
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size: 12px;
-    line-height: 1.2;
-}
-
-.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody div.amDemoLink a {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-	}
-.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
-	color: #1B75BB;
-	}
-.amLibraryListCell td.amBody div.amHelpLink {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-}
-
-
-.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
-	color: #1B75BB;
-	}
-
 
 
 
@@ -785,9 +738,61 @@ end function]]></Code>
 	color: #1B75BB;
 	}
 
-]]></Styles>
-		<StylesLinkHref></StylesLinkHref>
-		<Styles><![CDATA[
+
+
+
+.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
+    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
+    font-size:14px;
+}
+
+.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
+.amLibraryListCell table {width:100%;padding:0;margin:0;}
+.amLibraryListCell table td {}
+.amLibraryListCell td.amImage {width:202px;height:242px;padding:5px;background-color:#cdc;}
+.amLibraryListCell td.amImage img {width:200px;height:240px; border:1px solid #fff;}
+.amLibraryListCell td.amBody {height:252px;padding:5px 5px 5px 10px;}
+.amLibraryListCell td.amBody .amHeadline {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:24px;
+	font-weight:bold;
+}
+.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
+.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
+.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
+.amLibraryListCell td.amBody .amDescription li {
+    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
+.amLibraryListCell td.amBody div.amDemoLink a {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:18px;
+	font-weight:bold;
+	padding: 20px 0 0 0;
+	}
+.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
+	color: #1B75BB;
+	}
+.amLibraryListCell td.amBody div.amHelpLink {
+	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
+	color: #1B75BB;
+	font-size:18px;
+	font-weight:bold;
+	padding: 20px 0 0 0;
+}
+
+
+.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
+	color: #1B75BB;
+	}
+
+
+
 
 
 .amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
@@ -898,9 +903,9 @@ end function]]></Code>
 	</Addon>
 	<Addon name="addonManager-Uninstall" guid="{38798d20-00d3-4131-9ebf-359fd0118e3e}" type="Add-on">
 		<Copy></Copy>
-		<CopyText><![CDATA[addonManager-Uninstall]]></CopyText>
+		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
-		<DotNetClass></DotNetClass>
+		<DotNetClass><![CDATA[Contensive.Addons.AddonManager.uninstallClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
 		<Filter>No</Filter>
@@ -926,11 +931,10 @@ end function]]></Code>
 		<OnBodyStart>No</OnBodyStart>
 		<OnBodyEnd>No</OnBodyEnd>
 		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
 		<ProcessInterval>0</ProcessInterval>
 		<PageTitle></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<StylesLinkHref></StylesLinkHref>
 		<Styles></Styles>
 		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
@@ -938,7 +942,7 @@ end function]]></Code>
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
-		<DotNetClass><![CDATA[Contensive.addonManager.uploadClass]]></DotNetClass>
+		<DotNetClass><![CDATA[Contensive.Addons.AddonManager.uploadClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
 		<Filter>No</Filter>
@@ -964,11 +968,10 @@ end function]]></Code>
 		<OnBodyStart>No</OnBodyStart>
 		<OnBodyEnd>No</OnBodyEnd>
 		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
 		<ProcessInterval>0</ProcessInterval>
 		<PageTitle></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<StylesLinkHref></StylesLinkHref>
 		<Styles></Styles>
 		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
@@ -1001,11 +1004,10 @@ end function]]></Code>
 		<OnBodyStart>No</OnBodyStart>
 		<OnBodyEnd>No</OnBodyEnd>
 		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
 		<ProcessInterval>0</ProcessInterval>
 		<PageTitle></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<StylesLinkHref></StylesLinkHref>
 		<Styles></Styles>
 		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
@@ -1038,11 +1040,10 @@ end function]]></Code>
 		<OnBodyStart>No</OnBodyStart>
 		<OnBodyEnd>No</OnBodyEnd>
 		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
 		<ProcessInterval>0</ProcessInterval>
 		<PageTitle></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<StylesLinkHref></StylesLinkHref>
 		<Styles></Styles>
 		<Scripting Language="" EntryPoint="" Timeout="5000">
 			<Code><![CDATA[function m
@@ -1080,11 +1081,10 @@ end function]]></Code>
 		<OnBodyStart>No</OnBodyStart>
 		<OnBodyEnd>No</OnBodyEnd>
 		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
 		<ProcessInterval>0</ProcessInterval>
 		<PageTitle></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<StylesLinkHref></StylesLinkHref>
 		<Styles></Styles>
 		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
@@ -1139,10 +1139,30 @@ end function]]></Code>
 			<field name="Active">True</field>
 			<field name="SortOrder"></field>
 			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
-			<field name="addonId"></field>
+			<field name="addonId">{38798d20-00d3-4131-9ebf-359fd0118e3e}</field>
 			<field name="Heading"><![CDATA[Uninstall]]></field>
 			<field name="parentFeatureId"></field>
 			<field name="dataContentId"></field>
+			<field name="addPadding">False</field>
+		</record>
+		<record content="portal features" guid="{419A4CAB-03A7-49E7-A398-77C7A533C53D}" name="Add-on Manager, Data,Add-ons">
+			<field name="Active">True</field>
+			<field name="SortOrder"><![CDATA[Add-ons]]></field>
+			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="addonId"></field>
+			<field name="Heading"><![CDATA[Add-ons]]></field>
+			<field name="parentFeatureId">{96b51732-5c24-4a33-8292-b58567b00d42}</field>
+			<field name="dataContentId">{BEA0C5A8-81A9-405F-9C04-9AA21F899A5D}</field>
+			<field name="addPadding">False</field>
+		</record>
+		<record content="portal features" guid="{A0FDB5B0-E83A-44E8-A984-551DBAD1D4AF}" name="Add-on Manager, Data,Add-on Collections">
+			<field name="Active">True</field>
+			<field name="SortOrder"><![CDATA[Add-on Collections]]></field>
+			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="addonId"></field>
+			<field name="Heading"><![CDATA[Add-on Collections]]></field>
+			<field name="parentFeatureId">{96b51732-5c24-4a33-8292-b58567b00d42}</field>
+			<field name="dataContentId">{726ED098-5A9E-49A9-8840-767A74F41D01}</field>
 			<field name="addPadding">False</field>
 		</record>
 	</data>

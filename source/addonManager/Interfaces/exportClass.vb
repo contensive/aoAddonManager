@@ -4,244 +4,89 @@ Imports System
 Imports System.Collections.Generic
 Imports System.Text
 Imports Contensive.BaseClasses
-Imports Contensive.addonManager
 Imports ICSharpCode.SharpZipLib
 
-Namespace Contensive.addonManager
+Namespace Contensive.Addons.AddonManager
     Public Class exportClass
         Inherits AddonBaseClass
         '
-        ' injected objects -- do not dispose
-        '
-        Private cp As CPBaseClass
-        ' 
-        ' class scope
-        '
-        'Private Const RequestNameButton As String = "button"
-        Private Const CollectionListRootNode As String = "collectionlist"
-        '
-        Private Const ButtonCancel As String = " Cancel "
-        Private Const ButtonOK As String = " OK "
-        '
-        Private Structure NavigatorType
-            Public Name As String
-            Public NameSpacex As String
-        End Structure
-
-        Private Structure Collection2Type
-            Public AddonCnt As Integer
-            Public AddonGuid() As String
-            Public AddonName() As String
-            Public MenuCnt As Integer
-            Public Menus() As String
-            Public NavigatorCnt As Integer
-            Public Navigators() As NavigatorType
-        End Structure
-        '
-        Private CollectionCnt As Integer
-        Private Collections() As Collection2Type
-        Private Const guidAddonManagerLibraryListCell = "{9767F464-3728-4B7D-904B-3442D7FD03BE}"
-        Private Const guidAddonManagerActiveX = "{1DC06F61-1837-419B-AF36-D5CC41E1C9FD}"
-        '
-        ' - update references to your installed version of cpBase
-        ' - Edit project - under application, verify root name space is empty
-        ' - Change the namespace in this file to the collection name
-        ' - Change this class name to the addon name
-        ' - Create a Contensive Addon record, set the dotnet class full name to yourNameSpaceName.yourClassName
-        '
-        Const FormIDSelectCollection As Integer = 0
-        Const FormIDDisplayResults As Integer = 1
-        '
-        Const RequestNameButton As String = "button"
-        Const RequestNameFormID As String = "formid"
-        Const RequestnameExecutableFile As String = "executablefile"
-        Const RequestNameCollectionID As String = "collectionid"
-        '
-        '
-        '-----------------------------------------------------------------------
-        ' ----- Field type Definitions
-        '       Field Types are numeric values that describe how to treat values
-        '       stored as ContentFieldDefinitionType (FieldType property of FieldType Type.. ;)
-        '-----------------------------------------------------------------------
-        '
-        Public Const FieldTypeInteger As Integer = 1       ' An long number
-        Public Const FieldTypeText As Integer = 2          ' A text field (up to 255 characters)
-        Public Const FieldTypeLongText As Integer = 3      ' A memo field (up to 8000 characters)
-        Public Const FieldTypeBoolean As Integer = 4       ' A yes/no field
-        Public Const FieldTypeDate As Integer = 5          ' A date field
-        Public Const FieldTypeFile As Integer = 6          ' A filename of a file in the files directory.
-        Public Const FieldTypeLookup As Integer = 7        ' A lookup is a FieldTypeInteger that indexes into another table
-        Public Const FieldTypeRedirect As Integer = 8      ' creates a link to another section
-        Public Const FieldTypeCurrency As Integer = 9      ' A Float that prints in dollars
-        Public Const FieldTypeTextFile As Integer = 10     ' Text saved in a file in the files area.
-        Public Const FieldTypeImage As Integer = 11        ' A filename of a file in the files directory.
-        Public Const FieldTypeFloat As Integer = 12        ' A float number
-        Public Const FieldTypeAutoIncrement As Integer = 13 'long that automatically increments with the new record
-        Public Const FieldTypeManyToMany As Integer = 14    ' no database field - sets up a relationship through a Rule table to another table
-        Public Const FieldTypeMemberSelect As Integer = 15 ' This ID is a ccMembers record in a group defined by the MemberSelectGroupID field
-        Public Const FieldTypeCSSFile As Integer = 16      ' A filename of a CSS compatible file
-        Public Const FieldTypeXMLFile As Integer = 17      ' the filename of an XML compatible file
-        Public Const FieldTypeJavascriptFile As Integer = 18 ' the filename of a javascript compatible file
-        Public Const FieldTypeLink As Integer = 19           ' Links used in href tags -- can go to pages or resources
-        Public Const FieldTypeResourceLink As Integer = 20   ' Links used in resources, link <img or <object. Should not be pages
-        Public Const FieldTypeHTML As Integer = 21           ' LongText field that expects HTML content
-        Public Const FieldTypeHTMLFile As Integer = 22       ' TextFile field that expects HTML content
-        Public Const FieldTypeMax As Integer = 22
-        '
-        '
-        Public Const FieldDescriptorInteger = "Integer"
-        Public Const FieldDescriptorText = "Text"
-        Public Const FieldDescriptorLongText = "LongText"
-        Public Const FieldDescriptorBoolean = "Boolean"
-        Public Const FieldDescriptorDate = "Date"
-        Public Const FieldDescriptorFile = "File"
-        Public Const FieldDescriptorLookup = "Lookup"
-        Public Const FieldDescriptorRedirect = "Redirect"
-        Public Const FieldDescriptorCurrency = "Currency"
-        Public Const FieldDescriptorImage = "Image"
-        Public Const FieldDescriptorFloat = "Float"
-        Public Const FieldDescriptorManyToMany = "ManyToMany"
-        Public Const FieldDescriptorTextFile = "TextFile"
-        Public Const FieldDescriptorCSSFile = "CSSFile"
-        Public Const FieldDescriptorXMLFile = "XMLFile"
-        Public Const FieldDescriptorJavascriptFile = "JavascriptFile"
-        Public Const FieldDescriptorLink = "Link"
-        Public Const FieldDescriptorResourceLink = "ResourceLink"
-        Public Const FieldDescriptorMemberSelect = "MemberSelect"
-        Public Const FieldDescriptorHTML = "HTML"
-        Public Const FieldDescriptorHTMLFile = "HTMLFile"
-        '
-        Public Const FieldDescriptorLcaseInteger = "integer"
-        Public Const FieldDescriptorLcaseText = "text"
-        Public Const FieldDescriptorLcaseLongText = "longtext"
-        Public Const FieldDescriptorLcaseBoolean = "boolean"
-        Public Const FieldDescriptorLcaseDate = "date"
-        Public Const FieldDescriptorLcaseFile = "file"
-        Public Const FieldDescriptorLcaseLookup = "lookup"
-        Public Const FieldDescriptorLcaseRedirect = "redirect"
-        Public Const FieldDescriptorLcaseCurrency = "currency"
-        Public Const FieldDescriptorLcaseImage = "image"
-        Public Const FieldDescriptorLcaseFloat = "float"
-        Public Const FieldDescriptorLcaseManyToMany = "manytomany"
-        Public Const FieldDescriptorLcaseTextFile = "textfile"
-        Public Const FieldDescriptorLcaseCSSFile = "cssfile"
-        Public Const FieldDescriptorLcaseXMLFile = "xmlfile"
-        Public Const FieldDescriptorLcaseJavascriptFile = "javascriptfile"
-        Public Const FieldDescriptorLcaseLink = "link"
-        Public Const FieldDescriptorLcaseResourceLink = "resourcelink"
-        Public Const FieldDescriptorLcaseMemberSelect = "memberselect"
-        Public Const FieldDescriptorLcaseHTML = "html"
-        Public Const FieldDescriptorLcaseHTMLFile = "htmlfile"
-        '
-        '=====================================================================================
-        ' addon api
-        '=====================================================================================
-        '
+        '====================================================================================================
+        ''' <summary>
+        ''' export collection
+        ''' </summary>
+        ''' <param name="CP"></param>
+        ''' <returns></returns>
         Public Overrides Function Execute(ByVal CP As CPBaseClass) As Object
             Dim returnHtml As String = ""
             Try
-                Me.cp = CP
-                returnHtml = getexport()
+                Dim returnResult As String = ""
+                Try
+                    Dim Button As String = CP.Doc.GetText(RequestNameButton)
+                    If Button = ButtonCancel Then
+                        '
+                        ' ----- redirect back to the root
+                        Call CP.Response.Redirect(CP.Site.GetText("adminUrl"))
+                    Else
+                        '
+                        ' -- create form
+                        Dim form As New adminFramework.formNameValueRowsClass
+                        form.title = "Export Collection"
+                        form.body = CP.Html.p("Use this tool to create an Add-on Collection zip file that can be used to install a collection on another site.")
+                        If Not CP.User.IsAdmin() Then
+                            '
+                            ' -- Put up error message
+                            form.body &= CP.Html.p("You must be an administrator to use this tool.")
+                        ElseIf (CP.Site.GetText("buildVersion") < CP.Version) Then
+                            '
+                            ' -- database needs to be upgraded
+                            form.description &= CP.Html.p("The Add-on Manager is disabled because this site's Database needs to be upgraded.")
+                        Else
+                            '
+                            ' -- Upload tool
+                            If (Button = ButtonOK) Then
+                                '
+                                ' -- export
+                                Dim CollectionID As Integer = CP.Doc.GetInteger(RequestNameCollectionID)
+                                Dim addonCollection As Models.addonCollectionModel = Models.addonCollectionModel.create(CP, CollectionID)
+                                If (addonCollection Is Nothing) Then
+                                    '
+                                    ' -- collection not found
+                                    Call CP.UserError.Add("The collection file you selected could not be found. Please select another.")
+                                Else
+                                    '
+                                    ' -- build collection zip file and return file
+                                    Dim CollectionFilename As String = GetCollectionZipPathFilename(CP, CollectionID)
+                                    If Not CP.UserError.OK Then
+                                        '
+                                        ' -- errors during export
+                                        form.body = CP.Html.div(CP.Html.p("ERRORS during export: ") & CP.Html.ul(CP.UserError.GetList()))
+                                    Else
+                                        '
+                                        ' -- success
+                                        form.body &= CP.Html.p("Export Successful")
+                                        form.body &= CP.Html.p("Click <a href=""" & CP.Site.FilePath & Replace(CollectionFilename, "\", "/") & """>here</a> to download the collection file</p>")
+                                    End If
+                                End If
+                            End If
+                            '
+                            ' Get Form
+                            form.addRow()
+                            form.rowName = "Add-on Collection"
+                            form.rowValue = CP.Html.SelectContent(RequestNameCollectionID, "0", "Add-on Collections")
+                            form.addFormHidden("UploadCount", "1")
+                            form.addFormButton(ButtonOK)
+                            form.addFormButton(ButtonCancel)
+                        End If
+                        returnResult = form.getHtml(CP)
+                    End If
+                Catch ex As Exception
+                    CP.Site.ErrorReport(ex)
+                End Try
+                Return returnResult
             Catch ex As Exception
                 CP.Site.ErrorReport(ex)
             End Try
             Return returnHtml
-        End Function
-
-        '
-        '==========================================================================================================================================
-        '   Addon Manager
-        '       This is a form that lets you export an addon
-        '       Eventually, this should be substituted with a "Addon Manager Addon" - so the interface can be improved with Contensive recompile
-        '==========================================================================================================================================
-        '
-        Private Function getexport() As String
-            Dim returnResult As String = ""
-            Try
-                '
-                Dim body As String
-                Dim form As New adminFramework.formSimpleClass
-                Dim Button As String
-                Dim FormID As Integer
-                Dim CollectionID As Integer
-                Dim CollectionName As String
-                Dim CollectionFilename As String = ""
-                '
-                ' Every form returns a button and a formid
-                '
-                Button = cp.Doc.GetText("button")
-                FormID = cp.Doc.GetInteger("formid")
-                '
-                ' Process the current form submission
-                '
-                If Button <> "" Then
-                    Select Case FormID
-                        Case FormIDDisplayResults
-                            '
-                            ' nothing to process
-                            '
-                        Case Else
-                            '
-                            ' process the Select Collection Form button
-                            '
-                            'hint = hint & ",200"
-                            'Call Main.testpoint("hint=" & hint)
-                            CollectionID = cp.Doc.GetInteger(RequestNameCollectionID)
-                            CollectionName = cp.Content.GetRecordName("Add-on Collections", CollectionID)
-                            If CollectionName = "" Then
-                                Call cp.UserError.Add("The collection file you selected could not be found. Please select another.")
-                            Else
-                                CollectionFilename = GetCollectionZipPathFilename(CollectionID)
-                            End If
-                            If Not cp.UserError.OK() Then
-                                FormID = FormIDSelectCollection
-                            Else
-
-                                FormID = FormIDDisplayResults
-                            End If
-                    End Select
-                End If
-                'hint = hint & ",400"
-                'Call Main.testpoint("hint=" & hint)
-                '
-                ' Reply with the next form
-                '
-                Select Case FormID
-                    Case FormIDDisplayResults
-                        '
-                        ' Diplay the results page
-                        '
-                        'hint = hint & ",500"
-                        'Call Main.testpoint("hint=" & hint)
-                        body = cp.UserError.GetList() _
-                            & vbCrLf & vbTab & "<div class=""responseForm"">" _
-                            & vbCrLf & vbTab & vbTab & "<p>Click <a href=""" & cp.Site.FilePath & Replace(CollectionFilename, "\", "/") & """>here</a> to download the collection file</p>" _
-                            & vbCrLf & vbTab & "</div>"
-                    Case Else
-                        '
-                        ' ask them to select a collectioin to export
-                        '
-                        body = "" _
-                            & vbCrLf & vbTab & "<div class=""mainForm"">" _
-                            & vbCrLf & vbTab & vbTab & cp.UserError.GetList() _
-                            & vbCrLf & vbTab & vbTab & vbTab & "<p>Select a collection to be exported. If the project is being developed and you need to add an executable resource that is not installed as an add-on on this site, use the file upload.</p>" _
-                            & vbCrLf & vbTab & vbTab & vbTab & "<p>" & cp.Html.SelectContent(RequestNameCollectionID, "0", "Add-on Collections") & "<br>The collection to export</p>" _
-                            & vbCrLf & vbTab & vbTab & vbTab & "<p>" & cp.Html.Button("button", "Export Collection") & "</p>" _
-                            & vbCrLf & vbTab & vbTab & "</form>" _
-                            & vbCrLf & vbTab & "</div>"
-                End Select
-                '
-                body = "" _
-                    & vbCrLf & vbTab & "<div class=""collectionExport"">" _
-                    & cp.Html.Form(body) _
-                    & vbCrLf & vbTab & "</div>"
-                form.body &= body
-                form.title = "Add-on Manager Export"
-                returnResult = form.getHtml(cp)
-            Catch ex As Exception
-                cp.Site.ErrorReport(ex)
-            End Try
-            Return returnResult
         End Function
         '
         '====================================================================================================
@@ -263,7 +108,7 @@ Namespace Contensive.addonManager
         End Sub
         '
         '====================================================================================================
-        Private Function GetCollectionZipPathFilename(CollectionID As Integer) As String
+        Private Function GetCollectionZipPathFilename(cp As CPBaseClass, CollectionID As Integer) As String
             Dim collectionZipPathFilename As String = ""
             Try
                 Dim IncludeSharedStyleGuidList As String
@@ -356,22 +201,22 @@ Namespace Contensive.addonManager
                     End If
                     collectionXml = "" _
                         & "<?xml version=""1.0"" encoding=""windows-1252""?>" _
-                        & vbCrLf & "<Collection name=""" & cp.Utils.EncodeHTML(CollectionName) & """ guid=""" & CollectionGuid & """ system=""" & kmaGetYesNo(CS.GetBoolean("system")) & """ updatable=""" & kmaGetYesNo(isUpdatable) & """ blockNavigatorNode=""" & kmaGetYesNo(blockNavigatorNode) & """>"
+                        & vbCrLf & "<Collection name=""" & cp.Utils.EncodeHTML(CollectionName) & """ guid=""" & CollectionGuid & """ system=""" & kmaGetYesNo(cp, CS.GetBoolean("system")) & """ updatable=""" & kmaGetYesNo(cp, isUpdatable) & """ blockNavigatorNode=""" & kmaGetYesNo(cp, blockNavigatorNode) & """>"
                     '
                     ' Archive Filenames
                     '
                     'Call Main.testpoint("getCollection, 200")
                     ArchivePath = cp.Site.PhysicalFilePath & "CollectionExport\"
                     'Call Main.testpoint("getCollection, 201")
-                    InstallFilename = encodeFilename(CollectionName & ".xml")
+                    InstallFilename = encodeFilename(cp, CollectionName & ".xml")
                     'Call Main.testpoint("getCollection, 202")
                     InstallFilename = ArchivePath & InstallFilename
                     'Call Main.testpoint("getCollection, 203")
-                    ArchiveFilename = encodeFilename(CollectionName & ".zip")
+                    ArchiveFilename = encodeFilename(cp, CollectionName & ".zip")
                     'Call Main.testpoint("getCollection, 204")
                     ArchiveFilename = ArchivePath & ArchiveFilename
                     'Call Main.testpoint("getCollection, 205")
-                    collectionZipPathFilename = "CollectionExport\" & encodeFilename(CollectionName & ".zip")
+                    collectionZipPathFilename = "CollectionExport\" & encodeFilename(cp, CollectionName & ".zip")
                     'Call Main.testpoint("getCollection, 207")
                     '
                     ' Delete old archive file
@@ -391,7 +236,7 @@ Namespace Contensive.addonManager
                         '   If installed, source path is collectionpath, if not installed, collectionpath will be empty
                         '   and file will be sourced right from addon path
                         '
-                        Call GetLocalCollectionArgs(CollectionGuid, CollectionPath, LastChangeDate)
+                        Call GetLocalCollectionArgs(cp, CollectionGuid, CollectionPath, LastChangeDate)
                         If CollectionPath <> "" Then
                             CollectionPath = CollectionPath & "\"
                         End If
@@ -424,7 +269,7 @@ Namespace Contensive.addonManager
                         ' If no resources were in the collection record, this might be an old installation
                         ' Add all .dll files in the CollectionPath
                         '
-                        ExecFileListNode = ExecFileListNode & AddCompatibilityResources(AddonPath & CollectionPath, ArchiveFilename, "")
+                        ExecFileListNode = ExecFileListNode & AddCompatibilityResources(cp, AddonPath & CollectionPath, ArchiveFilename, "")
                     End If
                     '
                     ' helpLink
@@ -441,7 +286,7 @@ Namespace Contensive.addonManager
                     '
                     CS2.Open("Add-ons", "collectionid=" & CollectionID, , , "id")
                     Do While CS2.OK()
-                        collectionXml = collectionXml & GetAddonNode(CS2.GetInteger("id"), IncludeModuleGuidList, IncludeSharedStyleGuidList)
+                        collectionXml = collectionXml & GetAddonNode(cp, CS2.GetInteger("id"), IncludeModuleGuidList, IncludeSharedStyleGuidList)
                         Call CS2.GoNext()
                     Loop
                     '
@@ -596,7 +441,7 @@ Namespace Contensive.addonManager
                                                             ' text files
                                                             '
                                                             FieldValue = CSData.GetText(FieldName)
-                                                            FieldValue = EncodeCData(FieldValue)
+                                                            FieldValue = EncodeCData(cp, FieldValue)
                                                         Case FieldTypeInteger
                                                             '
                                                             ' integer
@@ -648,14 +493,14 @@ Namespace Contensive.addonManager
                                                             ' text types
                                                             '
                                                             FieldValue = CSData.GetText(FieldName)
-                                                            FieldValue = EncodeCData(FieldValue)
+                                                            FieldValue = EncodeCData(cp, FieldValue)
                                                     End Select
                                                     FieldNodes = FieldNodes & vbCrLf & vbTab & "<field name=""" & cp.Utils.EncodeHTML(FieldName) & """>" & FieldValue & "</field>"
                                                 Next
                                                 RecordNodes = "" _
                                                     & RecordNodes _
                                                     & vbCrLf & vbTab & "<record content=""" & cp.Utils.EncodeHTML(DataContentName) & """ guid=""" & DataRecordGuid & """ name=""" & cp.Utils.EncodeHTML(DataRecordName) & """>" _
-                                                    & tabIndent(FieldNodes) _
+                                                    & tabIndent(cp, FieldNodes) _
                                                     & vbCrLf & vbTab & "</record>"
                                                 Call CSData.GoNext()
                                             Loop
@@ -669,7 +514,7 @@ Namespace Contensive.addonManager
                             collectionXml = "" _
                                 & collectionXml _
                                 & vbCrLf & vbTab & "<data>" _
-                                & tabIndent(RecordNodes) _
+                                & tabIndent(cp, RecordNodes) _
                                 & vbCrLf & vbTab & "</data>"
                         End If
                     End If
@@ -726,7 +571,7 @@ Namespace Contensive.addonManager
                                 CS2.Open("Scripting Modules", "ccguid=" & cp.Db.EncodeSQLText(ModuleGuid))
                                 If CS2.OK() Then
                                     Code = Trim(CS2.GetText("code"))
-                                    Code = EncodeCData(Code)
+                                    Code = EncodeCData(cp, Code)
                                     collectionXml = collectionXml & vbCrLf & vbTab & "<ScriptingModule Name=""" & cp.Utils.EncodeHTML(CS2.GetText("name")) & """ guid=""" & ModuleGuid & """>" & Code & "</ScriptingModule>"
                                 End If
                                 Call CS2.Close()
@@ -753,7 +598,7 @@ Namespace Contensive.addonManager
                                         & " suffix=""" & cp.Utils.EncodeHTML(CS2.GetText("suffix")) & """" _
                                         & " sortOrder=""" & cp.Utils.EncodeHTML(CS2.GetText("sortOrder")) & """" _
                                         & ">" _
-                                        & EncodeCData(Trim(CS2.GetText("styleFilename"))) _
+                                        & EncodeCData(cp, Trim(CS2.GetText("styleFilename"))) _
                                         & "</SharedStyle>"
                                 End If
                                 Call CS2.Close()
@@ -873,7 +718,7 @@ Namespace Contensive.addonManager
                     If Not AddFileList.Contains(InstallFilename) Then
                         AddFileList.Add(InstallFilename)
                     End If
-                    Call zipFile(ArchiveFilename, AddFileList)
+                    Call zipFile(cp, ArchiveFilename, AddFileList)
                     'Call runAtServer("zipfile", "archive=" & kmaEncodeRequestVariable(ArchiveFilename) & "&add=" & kmaEncodeRequestVariable("@" & AddFileListFilename))
                 End If
             Catch ex As Exception
@@ -884,9 +729,8 @@ Namespace Contensive.addonManager
         '
         '====================================================================================================
 
-        Private Function GetAddonNode(addonid As Integer, ByRef Return_IncludeModuleGuidList As String, ByRef Return_IncludeSharedStyleGuidList As String) As String
-            GetAddonNode = ""
-            Dim s As String = ""
+        Private Function GetAddonNode(cp As CPBaseClass, addonid As Integer, ByRef Return_IncludeModuleGuidList As String, ByRef Return_IncludeSharedStyleGuidList As String) As String
+            Dim result As String = ""
             Try
                 '
                 Dim styleId As Integer
@@ -916,33 +760,33 @@ Namespace Contensive.addonManager
                     '
                     ' ActiveX DLL node is being deprecated. This should be in the collection resource section
                     '
-                    s = s & GetNodeText("Copy", CS.GetText("Copy"))
-                    s = s & GetNodeText("CopyText", CS.GetText("CopyText"))
+                    result = result & GetNodeText(cp, "Copy", CS.GetText("Copy"))
+                    result = result & GetNodeText(cp, "CopyText", CS.GetText("CopyText"))
                     '
                     ' DLL
                     '
 
-                    s = s & GetNodeText("ActiveXProgramID", CS.GetText("objectprogramid"))
-                    s = s & GetNodeText("DotNetClass", CS.GetText("DotNetClass"))
+                    result = result & GetNodeText(cp, "ActiveXProgramID", CS.GetText("objectprogramid"))
+                    result = result & GetNodeText(cp, "DotNetClass", CS.GetText("DotNetClass"))
                     '
                     ' Features
                     '
-                    s = s & GetNodeText("ArgumentList", CS.GetText("ArgumentList"))
-                    s = s & GetNodeBoolean("AsAjax", CS.GetBoolean("AsAjax"))
-                    s = s & GetNodeBoolean("Filter", CS.GetBoolean("Filter"))
-                    s = s & GetNodeText("Help", CS.GetText("Help"))
-                    s = s & GetNodeText("HelpLink", CS.GetText("HelpLink"))
-                    s = s & vbCrLf & vbTab & "<Icon Link=""" & CS.GetText("iconfilename") & """ width=""" & CS.GetInteger("iconWidth") & """ height=""" & CS.GetInteger("iconHeight") & """ sprites=""" & CS.GetInteger("iconSprites") & """ />"
-                    s = s & GetNodeBoolean("InIframe", CS.GetBoolean("InFrame"))
+                    result = result & GetNodeText(cp, "ArgumentList", CS.GetText("ArgumentList"))
+                    result = result & GetNodeBoolean(cp, "AsAjax", CS.GetBoolean("AsAjax"))
+                    result = result & GetNodeBoolean(cp, "Filter", CS.GetBoolean("Filter"))
+                    result = result & GetNodeText(cp, "Help", CS.GetText("Help"))
+                    result = result & GetNodeText(cp, "HelpLink", CS.GetText("HelpLink"))
+                    result = result & vbCrLf & vbTab & "<Icon Link=""" & CS.GetText("iconfilename") & """ width=""" & CS.GetInteger("iconWidth") & """ height=""" & CS.GetInteger("iconHeight") & """ sprites=""" & CS.GetInteger("iconSprites") & """ />"
+                    result = result & GetNodeBoolean(cp, "InIframe", CS.GetBoolean("InFrame"))
                     BlockEditTools = False
                     If CS.FieldOK("BlockEditTools") Then
                         BlockEditTools = CS.GetBoolean("BlockEditTools")
                     End If
-                    s = s & GetNodeBoolean("BlockEditTools", BlockEditTools)
+                    result = result & GetNodeBoolean(cp, "BlockEditTools", BlockEditTools)
                     '
                     ' Form XML
                     '
-                    s = s & GetNodeText("FormXML", CS.GetText("FormXML"))
+                    result = result & GetNodeText(cp, "FormXML", CS.GetText("FormXML"))
                     '
                     NodeInnerText = ""
                     CS2.Open("Add-on Include Rules", "addonid=" & addonid)
@@ -955,42 +799,42 @@ Namespace Contensive.addonManager
                                 Guid = cp.Utils.CreateGuid()
                                 Call CS3.SetField("ccGuid", Guid)
                             End If
-                            s = s & vbCrLf & vbTab & "<IncludeAddon name=""" & cp.Utils.EncodeHTML(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
+                            result = result & vbCrLf & vbTab & "<IncludeAddon name=""" & cp.Utils.EncodeHTML(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
                         End If
                         Call CS3.Close()
                         Call CS2.GoNext()
                     Loop
                     Call CS2.Close()
                     '
-                    s = s & GetNodeBoolean("IsInline", CS.GetBoolean("IsInline"))
-                    s = s & GetNodeText("JavascriptOnLoad", CS.GetText("JavascriptOnLoad"))
-                    s = s & GetNodeText("JavascriptInHead", CS.GetText("JSFilename"))
-                    s = s & GetNodeText("JavascriptBodyEnd", CS.GetText("JavascriptBodyEnd"))
-                    s = s & GetNodeText("MetaDescription", CS.GetText("MetaDescription"))
-                    s = s & GetNodeText("OtherHeadTags", CS.GetText("OtherHeadTags"))
+                    result = result & GetNodeBoolean(cp, "IsInline", CS.GetBoolean("IsInline"))
+                    result = result & GetNodeText(cp, "JavascriptOnLoad", CS.GetText("JavascriptOnLoad"))
+                    result = result & GetNodeText(cp, "JavascriptInHead", CS.GetText("JSFilename"))
+                    result = result & GetNodeText(cp, "JavascriptBodyEnd", CS.GetText("JavascriptBodyEnd"))
+                    result = result & GetNodeText(cp, "MetaDescription", CS.GetText("MetaDescription"))
+                    result = result & GetNodeText(cp, "OtherHeadTags", CS.GetText("OtherHeadTags"))
                     '
                     ' Placements
                     '
-                    s = s & GetNodeBoolean("Content", CS.GetBoolean("Content"))
-                    s = s & GetNodeBoolean("Template", CS.GetBoolean("Template"))
-                    s = s & GetNodeBoolean("Email", CS.GetBoolean("Email"))
-                    s = s & GetNodeBoolean("Admin", CS.GetBoolean("Admin"))
-                    s = s & GetNodeBoolean("OnPageEndEvent", CS.GetBoolean("OnPageEndEvent"))
-                    s = s & GetNodeBoolean("OnPageStartEvent", CS.GetBoolean("OnPageStartEvent"))
-                    s = s & GetNodeBoolean("OnBodyStart", CS.GetBoolean("OnBodyStart"))
-                    s = s & GetNodeBoolean("OnBodyEnd", CS.GetBoolean("OnBodyEnd"))
-                    s = s & GetNodeBoolean("RemoteMethod", CS.GetBoolean("RemoteMethod"))
-                    's = s & GetNodeBoolean("OnNewVisitEvent", CS.GetBoolean( "OnNewVisitEvent"))
+                    result = result & GetNodeBoolean(cp, "Content", CS.GetBoolean("Content"))
+                    result = result & GetNodeBoolean(cp, "Template", CS.GetBoolean("Template"))
+                    result = result & GetNodeBoolean(cp, "Email", CS.GetBoolean("Email"))
+                    result = result & GetNodeBoolean(cp, "Admin", CS.GetBoolean("Admin"))
+                    result = result & GetNodeBoolean(cp, "OnPageEndEvent", CS.GetBoolean("OnPageEndEvent"))
+                    result = result & GetNodeBoolean(cp, "OnPageStartEvent", CS.GetBoolean("OnPageStartEvent"))
+                    result = result & GetNodeBoolean(cp, "OnBodyStart", CS.GetBoolean("OnBodyStart"))
+                    result = result & GetNodeBoolean(cp, "OnBodyEnd", CS.GetBoolean("OnBodyEnd"))
+                    result = result & GetNodeBoolean(cp, "RemoteMethod", CS.GetBoolean("RemoteMethod"))
+                    's = s & GetNodeBoolean( cp, "OnNewVisitEvent", CS.GetBoolean( "OnNewVisitEvent"))
                     '
                     ' Process
                     '
-                    s = s & GetNodeBoolean("ProcessRunOnce", processRunOnce)
-                    s = s & GetNodeInteger("ProcessInterval", CS.GetInteger("ProcessInterval"))
+                    result = result & GetNodeBoolean(cp, "ProcessRunOnce", processRunOnce)
+                    result = result & GetNodeInteger(cp, "ProcessInterval", CS.GetInteger("ProcessInterval"))
                     '
                     ' Meta
                     '
-                    s = s & GetNodeText("PageTitle", CS.GetText("PageTitle"))
-                    s = s & GetNodeText("RemoteAssetLink", CS.GetText("RemoteAssetLink"))
+                    result = result & GetNodeText(cp, "PageTitle", CS.GetText("PageTitle"))
+                    result = result & GetNodeText(cp, "RemoteAssetLink", CS.GetText("RemoteAssetLink"))
                     '
                     ' Styles
                     '
@@ -1006,13 +850,13 @@ Namespace Contensive.addonManager
                             Styles = StylesTest
                         End If
                     End If
-                    s = s & GetNodeText("Styles", Styles)
+                    result = result & GetNodeText(cp, "Styles", Styles)
                     '
                     ' Scripting
                     '
                     NodeInnerText = Trim(CS.GetText("ScriptingCode"))
                     If NodeInnerText <> "" Then
-                        NodeInnerText = vbCrLf & vbTab & vbTab & "<Code>" & EncodeCData(NodeInnerText) & "</Code>"
+                        NodeInnerText = vbCrLf & vbTab & vbTab & "<Code>" & EncodeCData(cp, NodeInnerText) & "</Code>"
                     End If
                     CS2.Open("Add-on Scripting Module Rules", "addonid=" & addonid)
                     Do While CS2.OK()
@@ -1032,9 +876,9 @@ Namespace Contensive.addonManager
                     Loop
                     Call CS2.Close()
                     If NodeInnerText = "" Then
-                        s = s & vbCrLf & vbTab & "<Scripting Language=""" & CS.GetText("ScriptingLanguageID") & """ EntryPoint=""" & CS.GetText("ScriptingEntryPoint") & """ Timeout=""" & CS.GetText("ScriptingTimeout") & """/>"
+                        result = result & vbCrLf & vbTab & "<Scripting Language=""" & CS.GetText("ScriptingLanguageID") & """ EntryPoint=""" & CS.GetText("ScriptingEntryPoint") & """ Timeout=""" & CS.GetText("ScriptingTimeout") & """/>"
                     Else
-                        s = s & vbCrLf & vbTab & "<Scripting Language=""" & CS.GetText("ScriptingLanguageID") & """ EntryPoint=""" & CS.GetText("ScriptingEntryPoint") & """ Timeout=""" & CS.GetText("ScriptingTimeout") & """>" & NodeInnerText & vbCrLf & vbTab & "</Scripting>"
+                        result = result & vbCrLf & vbTab & "<Scripting Language=""" & CS.GetText("ScriptingLanguageID") & """ EntryPoint=""" & CS.GetText("ScriptingEntryPoint") & """ Timeout=""" & CS.GetText("ScriptingTimeout") & """>" & NodeInnerText & vbCrLf & vbTab & "</Scripting>"
                     End If
                     '
                     ' Shared Styles
@@ -1050,7 +894,7 @@ Namespace Contensive.addonManager
                                 Call CS3.SetField("ccGuid", Guid)
                             End If
                             Return_IncludeSharedStyleGuidList = Return_IncludeSharedStyleGuidList & vbCrLf & Guid
-                            s = s & vbCrLf & vbTab & "<IncludeSharedStyle name=""" & cp.Utils.EncodeHTML(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
+                            result = result & vbCrLf & vbTab & "<IncludeSharedStyle name=""" & cp.Utils.EncodeHTML(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
                         End If
                         Call CS3.Close()
                         Call CS2.GoNext()
@@ -1077,7 +921,7 @@ Namespace Contensive.addonManager
                     Loop
                     Call CS2.Close()
                     If NodeInnerText <> "" Then
-                        s = s & vbCrLf & vbTab & "<ProcessTriggers>" & NodeInnerText & vbCrLf & vbTab & "</ProcessTriggers>"
+                        result = result & vbCrLf & vbTab & "<ProcessTriggers>" & NodeInnerText & vbCrLf & vbTab & "</ProcessTriggers>"
                     End If
                     '
                     ' Editors
@@ -1095,7 +939,7 @@ Namespace Contensive.addonManager
                         Loop
                         Call CS2.Close()
                         If NodeInnerText <> "" Then
-                            s = s & vbCrLf & vbTab & "<Editors>" & NodeInnerText & vbCrLf & vbTab & "</Editors>"
+                            result = result & vbCrLf & vbTab & "<Editors>" & NodeInnerText & vbCrLf & vbTab & "</Editors>"
                         End If
                     End If
                     '
@@ -1110,17 +954,16 @@ Namespace Contensive.addonManager
                     If NavType = "" Then
                         NavType = "Add-on"
                     End If
-                    s = "" _
+                    result = "" _
                     & vbCrLf & vbTab & "<Addon name=""" & cp.Utils.EncodeHTML(addonName) & """ guid=""" & Guid & """ type=""" & NavType & """>" _
-                    & tabIndent(s) _
+                    & tabIndent(cp, result) _
                     & vbCrLf & vbTab & "</Addon>"
                 End If
                 Call CS.Close()
-                '
-                GetAddonNode = s
             Catch ex As Exception
                 errorReport(cp, ex, "GetAddonNode")
             End Try
+            Return result
         End Function
         '
         '====================================================================================================
@@ -1131,14 +974,14 @@ Namespace Contensive.addonManager
         ''' <param name="NodeContent"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function GetNodeText(NodeName As String, NodeContent As String) As String
+        Private Function GetNodeText(cp As CPBaseClass, NodeName As String, NodeContent As String) As String
             GetNodeText = ""
             Try
                 GetNodeText = ""
                 If NodeContent = "" Then
                     GetNodeText = GetNodeText & vbCrLf & vbTab & "<" & NodeName & "></" & NodeName & ">"
                 Else
-                    GetNodeText = GetNodeText & vbCrLf & vbTab & "<" & NodeName & ">" & EncodeCData(NodeContent) & "</" & NodeName & ">"
+                    GetNodeText = GetNodeText & vbCrLf & vbTab & "<" & NodeName & ">" & EncodeCData(cp, NodeContent) & "</" & NodeName & ">"
                 End If
             Catch ex As Exception
                 errorReport(cp, ex, "getNodeText")
@@ -1153,10 +996,10 @@ Namespace Contensive.addonManager
         ''' <param name="NodeContent"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function GetNodeBoolean(NodeName As String, NodeContent As Boolean) As String
+        Private Function GetNodeBoolean(cp As CPBaseClass, NodeName As String, NodeContent As Boolean) As String
             GetNodeBoolean = ""
             Try
-                GetNodeBoolean = vbCrLf & vbTab & "<" & NodeName & ">" & kmaGetYesNo(NodeContent) & "</" & NodeName & ">"
+                GetNodeBoolean = vbCrLf & vbTab & "<" & NodeName & ">" & kmaGetYesNo(cp, NodeContent) & "</" & NodeName & ">"
             Catch ex As Exception
                 errorReport(cp, ex, "GetNodeBoolean")
             End Try
@@ -1170,7 +1013,7 @@ Namespace Contensive.addonManager
         ''' <param name="NodeContent"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function GetNodeInteger(NodeName As String, NodeContent As Integer) As String
+        Private Function GetNodeInteger(cp As CPBaseClass, NodeName As String, NodeContent As Integer) As String
             GetNodeInteger = ""
             Try
                 GetNodeInteger = vbCrLf & vbTab & "<" & NodeName & ">" & CStr(NodeContent) & "</" & NodeName & ">"
@@ -1180,7 +1023,7 @@ Namespace Contensive.addonManager
         End Function
         '
         '====================================================================================================
-        Function replaceMany(Source As String, ArrayOfSource() As String, ArrayOfReplacement() As String) As String
+        Function replaceMany(cp As CPBaseClass, Source As String, ArrayOfSource() As String, ArrayOfReplacement() As String) As String
             replaceMany = ""
             Try
                 Dim Count As Integer = UBound(ArrayOfSource) + 1
@@ -1194,7 +1037,7 @@ Namespace Contensive.addonManager
         End Function
         '
         '====================================================================================================
-        Function encodeFilename(Filename As String) As String
+        Function encodeFilename(cp As CPBaseClass, Filename As String) As String
             encodeFilename = ""
             Try
                 Dim Source() As String
@@ -1203,7 +1046,7 @@ Namespace Contensive.addonManager
                 Source = {"""", "*", "/", ":", "<", ">", "?", "\", "|"}
                 Replacement = {"_", "_", "_", "_", "_", "_", "_", "_", "_"}
                 '
-                encodeFilename = replaceMany(Filename, Source, Replacement)
+                encodeFilename = replaceMany(cp, Filename, Source, Replacement)
                 If Len(encodeFilename) > 254 Then
                     encodeFilename = Left(encodeFilename, 254)
                 End If
@@ -1213,7 +1056,7 @@ Namespace Contensive.addonManager
         End Function
         '
         '====================================================================================================
-        Friend Sub GetLocalCollectionArgs(CollectionGuid As String, ByRef Return_CollectionPath As String, ByRef Return_LastChagnedate As Date)
+        Friend Sub GetLocalCollectionArgs(cp As CPBaseClass, CollectionGuid As String, ByRef Return_CollectionPath As String, ByRef Return_LastChagnedate As Date)
             Try
                 Const CollectionListRootNode = "collectionlist"
                 '
@@ -1231,7 +1074,7 @@ Namespace Contensive.addonManager
                 MatchFound = False
                 Return_CollectionPath = ""
                 Return_LastChagnedate = Date.MinValue
-                Call Doc.LoadXml(GetConfig)
+                Call Doc.LoadXml(GetConfig(cp))
                 If True Then
                     If LCase(Doc.DocumentElement.Name) <> LCase(CollectionListRootNode) Then
                         'Call AppendClassLogFile("Server", "", "GetLocalCollectionArgs, Hint=[" & Hint & "], The Collections.xml file has an invalid root node, [" & Doc.documentElement.name & "] was received and [" & CollectionListRootNode & "] was expected.")
@@ -1286,7 +1129,7 @@ Namespace Contensive.addonManager
         End Sub
         '
         '====================================================================================================
-        Public Function GetConfig() As String
+        Public Function GetConfig(cp As CPBaseClass) As String
             GetConfig = ""
             Try
                 Dim AddonPath As String
@@ -1300,7 +1143,7 @@ Namespace Contensive.addonManager
         End Function
         '
         '====================================================================================================
-        Private Function AddCompatibilityResources(CollectionPath As String, ArchiveFilename As String, SubPath As String) As String
+        Private Function AddCompatibilityResources(cp As CPBaseClass, CollectionPath As String, ArchiveFilename As String, SubPath As String) As String
             AddCompatibilityResources = ""
             Dim s As String = ""
             Try
@@ -1328,7 +1171,7 @@ Namespace Contensive.addonManager
                             FolderArgs = Split(Folders(Ptr), ",")
                             Folder = FolderArgs(0)
                             If Folder <> "" Then
-                                s = s & AddCompatibilityResources(CollectionPath, ArchiveFilename, SubPath & Folder & "\")
+                                s = s & AddCompatibilityResources(cp, CollectionPath, ArchiveFilename, SubPath & Folder & "\")
                             End If
                         End If
                     Next
@@ -1399,7 +1242,7 @@ Namespace Contensive.addonManager
         End Function
         '
         '====================================================================================================
-        Friend Function EncodeCData(Source As String) As String
+        Friend Function EncodeCData(cp As CPBaseClass, Source As String) As String
             EncodeCData = ""
             Try
                 EncodeCData = Source
@@ -1412,7 +1255,7 @@ Namespace Contensive.addonManager
         End Function
         '
         '====================================================================================================
-        Public Function kmaGetYesNo(Key As Boolean) As String
+        Public Function kmaGetYesNo(cp As CPBaseClass, Key As Boolean) As String
             If Key Then
                 kmaGetYesNo = "Yes"
             Else
@@ -1426,13 +1269,13 @@ Namespace Contensive.addonManager
         ''' </summary>
         ''' <param name="PathFilename"></param>
         ''' <remarks></remarks>
-        Public Sub UnzipFile(ByVal PathFilename As String)
+        Public Sub UnzipFile(cp As CPBaseClass, ByVal PathFilename As String)
             Try
                 '
                 Dim fastZip As ICSharpCode.SharpZipLib.Zip.FastZip = New ICSharpCode.SharpZipLib.Zip.FastZip()
                 Dim fileFilter As String = Nothing
 
-                fastZip.ExtractZip(PathFilename, getPath(PathFilename), fileFilter)                '
+                fastZip.ExtractZip(PathFilename, getPath(cp, PathFilename), fileFilter)                '
             Catch ex As Exception
                 errorReport(cp, ex, "UnzipFile")
             End Try
@@ -1445,7 +1288,7 @@ Namespace Contensive.addonManager
         ''' <param name="archivePathFilename"></param>
         ''' <param name="addPathFilename"></param>
         ''' <remarks></remarks>
-        Public Sub zipFile(archivePathFilename As String, ByVal addPathFilename As List(Of String))
+        Public Sub zipFile(cp As CPBaseClass, archivePathFilename As String, ByVal addPathFilename As List(Of String))
             Try
                 '
                 'Dim fastZip As FastZip = New ICSharpCode.SharpZipLib.Zip.FastZip()
@@ -1479,7 +1322,7 @@ Namespace Contensive.addonManager
         End Sub        '
         '
         '=======================================================================================
-        Private Function getPath(ByVal pathFilename As String) As String
+        Private Function getPath(cp As CPBaseClass, ByVal pathFilename As String) As String
             getPath = ""
             Try
                 Dim Position As Integer
@@ -1494,7 +1337,7 @@ Namespace Contensive.addonManager
         End Function
         '
         '=======================================================================================
-        Public Function GetFilename(ByVal PathFilename As String) As String
+        Public Function GetFilename(cp As CPBaseClass, ByVal PathFilename As String) As String
             Dim Position As Integer
             '
             GetFilename = PathFilename
@@ -1508,7 +1351,7 @@ Namespace Contensive.addonManager
         '
         '   Indent every line by 1 tab
         '
-        Public Function tabIndent(Source As String) As String
+        Public Function tabIndent(cp As CPBaseClass, Source As String) As String
             Dim posStart As Integer
             Dim posEnd As Integer
             Dim pre As String
@@ -1539,7 +1382,7 @@ Namespace Contensive.addonManager
                         target = Mid(Source, posStart, posEnd - posStart + Len("</textarea>"))
                         post = Mid(Source, posEnd + Len("</textarea>"))
                     End If
-                    tabIndent = tabIndent(pre) & target & tabIndent(post)
+                    tabIndent = tabIndent(cp, pre) & target & tabIndent(cp, post)
                 End If
             Else
                 '
@@ -1554,7 +1397,7 @@ Namespace Contensive.addonManager
                     target = Mid(Source, posStart, posEnd - posStart + Len("]]>"))
                     post = Mid(Source, posEnd + 3)
                 End If
-                tabIndent = tabIndent(pre) & target & tabIndent(post)
+                tabIndent = tabIndent(cp, pre) & target & tabIndent(cp, post)
             End If
             '    kmaIndent = Source
             '    If InStr(1, kmaIndent, "<textarea", vbTextCompare) = 0 Then

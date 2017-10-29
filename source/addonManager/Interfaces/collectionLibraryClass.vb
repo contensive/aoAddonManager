@@ -1,4 +1,6 @@
 ﻿
+Option Explicit On
+Option Strict On
 
 Imports System
 Imports System.Collections.Generic
@@ -7,7 +9,7 @@ Imports Contensive.BaseClasses
 Imports System.Xml
 Imports adminFramework
 
-Namespace Contensive.addonManager
+Namespace Contensive.Addons.AddonManager
     '
     ' Sample Vb addon
     '

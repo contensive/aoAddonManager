@@ -7,7 +7,7 @@ Imports System.Collections.Generic
 Imports System.Text
 Imports Contensive.BaseClasses
 
-Namespace Contensive.addonManager
+Namespace Contensive.Addons.AddonManager
     Public Class xmlController
         '
         '========================================================================
@@ -868,52 +868,52 @@ Namespace Contensive.addonManager
             result = ""
             Try
                 Select Case fieldType
-                    Case exportClass.FieldTypeBoolean
+                    Case FieldTypeBoolean
                         result = FieldDescriptorBoolean
-                    Case exportClass.FieldTypeCurrency
+                    Case FieldTypeCurrency
                         result = FieldDescriptorCurrency
-                    Case exportClass.FieldTypeDate
+                    Case FieldTypeDate
                         result = FieldDescriptorDate
-                    Case exportClass.FieldTypeFile
+                    Case FieldTypeFile
                         result = FieldDescriptorFile
-                    Case exportClass.FieldTypeFloat
+                    Case FieldTypeFloat
                         result = FieldDescriptorFloat
-                    Case exportClass.FieldTypeImage
+                    Case FieldTypeImage
                         result = FieldDescriptorImage
-                    Case exportClass.FieldTypeLink
+                    Case FieldTypeLink
                         result = FieldDescriptorLink
-                    Case exportClass.FieldTypeResourceLink
+                    Case FieldTypeResourceLink
                         result = FieldDescriptorResourceLink
-                    Case exportClass.FieldTypeInteger
+                    Case FieldTypeInteger
                         result = FieldDescriptorInteger
-                    Case exportClass.FieldTypeLongText
+                    Case FieldTypeLongText
                         result = FieldDescriptorLongText
-                    Case exportClass.FieldTypeLookup
+                    Case FieldTypeLookup
                         result = FieldDescriptorLookup
-                    Case exportClass.FieldTypeMemberSelect
+                    Case FieldTypeMemberSelect
                         result = FieldDescriptorMemberSelect
-                    Case exportClass.FieldTypeRedirect
+                    Case FieldTypeRedirect
                         result = FieldDescriptorRedirect
-                    Case exportClass.FieldTypeManyToMany
+                    Case FieldTypeManyToMany
                         result = FieldDescriptorManyToMany
-                    Case exportClass.FieldTypeTextFile
+                    Case FieldTypeTextFile
                         result = FieldDescriptorTextFile
-                    Case exportClass.FieldTypeCSSFile
+                    Case FieldTypeCSSFile
                         result = FieldDescriptorCSSFile
-                    Case exportClass.FieldTypeXMLFile
+                    Case FieldTypeXMLFile
                         result = FieldDescriptorXMLFile
-                    Case exportClass.FieldTypeJavascriptFile
+                    Case FieldTypeJavascriptFile
                         result = FieldDescriptorJavascriptFile
-                    Case exportClass.FieldTypeText
+                    Case FieldTypeText
                         result = FieldDescriptorText
-                    Case exportClass.FieldTypeHTML
+                    Case FieldTypeHTML
                         result = FieldDescriptorHTML
-                    Case exportClass.FieldTypeHTMLFile
+                    Case FieldTypeHTMLFile
                         result = FieldDescriptorHTMLFile
                     Case Else
-                        If fieldType = exportClass.FieldTypeAutoIncrement Then
+                        If fieldType = FieldTypeAutoIncrement Then
                             result = "AutoIncrement"
-                        ElseIf fieldType = exportClass.FieldTypeMemberSelect Then
+                        ElseIf fieldType = FieldTypeMemberSelect Then
                             result = "MemberSelect"
                         Else
                             '

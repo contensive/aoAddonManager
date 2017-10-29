@@ -6,9 +6,8 @@ Imports System
 Imports System.Collections.Generic
 Imports System.Text
 Imports Contensive.BaseClasses
-Imports Contensive.addonManager
 
-Namespace Contensive.addonManager
+Namespace Contensive.Addons.AddonManager
     Public Class v5InstallController
         '
         ' -- method provided here because these methods are not included in the c41 interface, so this call can only be created if v5 code
