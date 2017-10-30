@@ -98,8 +98,10 @@ Namespace Contensive.Addons.AddonManager
                                     '
                                     ' -- version 5.0, separate class so this project can be built with contensive 5.0 reference, but run against contensive 4.1
                                     Dim ErrorMessage As String = ""
-                                    If (Not v5InstallController.installCollectionFromUpload(cp, rnUploadCollectionFile, ErrorMessage)) Then
-                                        form.description &= cp.Html.p("ERROR: " & ErrorMessage)
+                                    If (v5InstallController.installCollectionFromUpload(cp, rnUploadCollectionFile, ErrorMessage)) Then
+                                        form.body &= cp.Html.p("Installed collection files.")
+                                    Else
+                                        form.body &= cp.Html.p("Error installing collection files, ERROR: " & ErrorMessage)
                                     End If
                                 End If
                             End If

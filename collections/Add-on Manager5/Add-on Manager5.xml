@@ -1,6 +1,48 @@
 <?xml version="1.0" encoding="windows-1252"?>
 <Collection name="Add-on Manager5" guid="{e042616a-89ea-4926-8a41-6b8b6631d067}" system="No" updatable="Yes" blockNavigatorNode="No">
+	<HelpLink></HelpLink>
 	<Help>&lt;p&gt;collection.help -this is the long help...&lt;br&gt;collection.help -this is the long help...&lt;br&gt;collection.help -this is the long help...&lt;/p&gt;</Help>
+	<Addon name="_testAddonManager" guid="{760ce8df-da4a-4908-a687-2758be871985}" type="Add-on">
+		<Copy></Copy>
+		<CopyText></CopyText>
+		<ActiveXProgramID></ActiveXProgramID>
+		<DotNetClass></DotNetClass>
+		<ArgumentList></ArgumentList>
+		<AsAjax>No</AsAjax>
+		<Filter>No</Filter>
+		<Help></Help>
+		<HelpLink></HelpLink>
+		<Icon Link="" width="0" height="0" sprites="0" />
+		<InIframe>No</InIframe>
+		<BlockEditTools>No</BlockEditTools>
+		<FormXML></FormXML>
+		<IsInline>No</IsInline>
+		<JavascriptOnLoad></JavascriptOnLoad>
+		<JavascriptInHead></JavascriptInHead>
+		<JavascriptBodyEnd></JavascriptBodyEnd>
+		<MetaDescription></MetaDescription>
+		<OtherHeadTags></OtherHeadTags>
+		<Content>No</Content>
+		<Template>No</Template>
+		<Email>No</Email>
+		<Admin>No</Admin>
+		<OnPageEndEvent>No</OnPageEndEvent>
+		<OnPageStartEvent>No</OnPageStartEvent>
+		<OnBodyStart>No</OnBodyStart>
+		<OnBodyEnd>No</OnBodyEnd>
+		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
+		<ProcessInterval>0</ProcessInterval>
+		<PageTitle></PageTitle>
+		<RemoteAssetLink></RemoteAssetLink>
+		<Styles></Styles>
+		<Scripting Language="" EntryPoint="" Timeout="5000">
+			<Code><![CDATA[function m
+call cp.doc.setProperty( "physicalinstallpath", "c:\temp\" )
+m = cp.utils.executeAddon( "addonManager-InstallFromPhysicalPathC41" )
+end function]]></Code>
+		</Scripting>
+	</Addon>
 	<Addon name="Add-on Manager" guid="{1DC06F61-1837-419B-AF36-D5CC41E1C9FD}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
@@ -35,6 +77,7 @@
 		<PageTitle><![CDATA[Add-on Manager]]></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
 		<Styles><![CDATA[
+
 
 
 
@@ -376,6 +419,7 @@ end function]]></Code>
 
 
 
+
 		.collectionExport{
 			padding-top:20px;
 		}
@@ -688,6 +732,7 @@ end function]]></Code>
 
 
 
+
 .amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
     font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
     font-size:14px;
@@ -901,6 +946,78 @@ end function]]></Code>
 ]]></Styles>
 		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
+	<Addon name="addonManager-InstallFromLibraryC41" guid="{43810D33-2D31-4636-8A49-28F2305F4223}" type="Add-on">
+		<Copy></Copy>
+		<CopyText></CopyText>
+		<ActiveXProgramID><![CDATA[Installer41.FromLibraryClass]]></ActiveXProgramID>
+		<DotNetClass></DotNetClass>
+		<ArgumentList><![CDATA[collectionGuid=]]></ArgumentList>
+		<AsAjax>No</AsAjax>
+		<Filter>No</Filter>
+		<Help></Help>
+		<HelpLink></HelpLink>
+		<Icon Link="" width="0" height="0" sprites="0" />
+		<InIframe>No</InIframe>
+		<BlockEditTools>No</BlockEditTools>
+		<FormXML></FormXML>
+		<IsInline>No</IsInline>
+		<JavascriptOnLoad></JavascriptOnLoad>
+		<JavascriptInHead></JavascriptInHead>
+		<JavascriptBodyEnd></JavascriptBodyEnd>
+		<MetaDescription></MetaDescription>
+		<OtherHeadTags></OtherHeadTags>
+		<Content>No</Content>
+		<Template>No</Template>
+		<Email>No</Email>
+		<Admin>No</Admin>
+		<OnPageEndEvent>No</OnPageEndEvent>
+		<OnPageStartEvent>No</OnPageStartEvent>
+		<OnBodyStart>No</OnBodyStart>
+		<OnBodyEnd>No</OnBodyEnd>
+		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
+		<ProcessInterval>0</ProcessInterval>
+		<PageTitle></PageTitle>
+		<RemoteAssetLink></RemoteAssetLink>
+		<Styles></Styles>
+		<Scripting Language="" EntryPoint="" Timeout="5000"/>
+	</Addon>
+	<Addon name="addonManager-InstallFromPhysicalPathC41" guid="{7C96ED03-1266-4FC4-B08A-F290A8CD9CF5}" type="Add-on">
+		<Copy></Copy>
+		<CopyText></CopyText>
+		<ActiveXProgramID><![CDATA[Installer41.FromPhysicalPathClass]]></ActiveXProgramID>
+		<DotNetClass></DotNetClass>
+		<ArgumentList><![CDATA[physicalInstallPath=]]></ArgumentList>
+		<AsAjax>No</AsAjax>
+		<Filter>No</Filter>
+		<Help></Help>
+		<HelpLink></HelpLink>
+		<Icon Link="" width="0" height="0" sprites="0" />
+		<InIframe>No</InIframe>
+		<BlockEditTools>No</BlockEditTools>
+		<FormXML></FormXML>
+		<IsInline>No</IsInline>
+		<JavascriptOnLoad></JavascriptOnLoad>
+		<JavascriptInHead></JavascriptInHead>
+		<JavascriptBodyEnd></JavascriptBodyEnd>
+		<MetaDescription></MetaDescription>
+		<OtherHeadTags></OtherHeadTags>
+		<Content>No</Content>
+		<Template>No</Template>
+		<Email>No</Email>
+		<Admin>No</Admin>
+		<OnPageEndEvent>No</OnPageEndEvent>
+		<OnPageStartEvent>No</OnPageStartEvent>
+		<OnBodyStart>No</OnBodyStart>
+		<OnBodyEnd>No</OnBodyEnd>
+		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
+		<ProcessInterval>0</ProcessInterval>
+		<PageTitle></PageTitle>
+		<RemoteAssetLink></RemoteAssetLink>
+		<Styles></Styles>
+		<Scripting Language="" EntryPoint="" Timeout="5000"/>
+	</Addon>
 	<Addon name="addonManager-Uninstall" guid="{38798d20-00d3-4131-9ebf-359fd0118e3e}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
@@ -975,195 +1092,82 @@ end function]]></Code>
 		<Styles></Styles>
 		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
-	<Addon name="addonManager-InstallFromLibraryC41" guid="{43810D33-2D31-4636-8A49-28F2305F4223}" type="Add-on">
-		<Copy></Copy>
-		<CopyText></CopyText>
-		<ActiveXProgramID><![CDATA[Installer41.FromLibraryClass]]></ActiveXProgramID>
-		<DotNetClass></DotNetClass>
-		<ArgumentList><![CDATA[collectionGuid=]]></ArgumentList>
-		<AsAjax>No</AsAjax>
-		<Filter>No</Filter>
-		<Help></Help>
-		<HelpLink></HelpLink>
-		<Icon Link="" width="0" height="0" sprites="0" />
-		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
-		<FormXML></FormXML>
-		<IsInline>No</IsInline>
-		<JavascriptOnLoad></JavascriptOnLoad>
-		<JavascriptInHead></JavascriptInHead>
-		<JavascriptBodyEnd></JavascriptBodyEnd>
-		<MetaDescription></MetaDescription>
-		<OtherHeadTags></OtherHeadTags>
-		<Content>No</Content>
-		<Template>No</Template>
-		<Email>No</Email>
-		<Admin>No</Admin>
-		<OnPageEndEvent>No</OnPageEndEvent>
-		<OnPageStartEvent>No</OnPageStartEvent>
-		<OnBodyStart>No</OnBodyStart>
-		<OnBodyEnd>No</OnBodyEnd>
-		<RemoteMethod>No</RemoteMethod>
-		<ProcessRunOnce>No</ProcessRunOnce>
-		<ProcessInterval>0</ProcessInterval>
-		<PageTitle></PageTitle>
-		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<Scripting Language="" EntryPoint="" Timeout="5000"/>
-	</Addon>
-	<Addon name="_testAddonManager" guid="{760ce8df-da4a-4908-a687-2758be871985}" type="Add-on">
-		<Copy></Copy>
-		<CopyText></CopyText>
-		<ActiveXProgramID></ActiveXProgramID>
-		<DotNetClass></DotNetClass>
-		<ArgumentList></ArgumentList>
-		<AsAjax>No</AsAjax>
-		<Filter>No</Filter>
-		<Help></Help>
-		<HelpLink></HelpLink>
-		<Icon Link="" width="0" height="0" sprites="0" />
-		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
-		<FormXML></FormXML>
-		<IsInline>No</IsInline>
-		<JavascriptOnLoad></JavascriptOnLoad>
-		<JavascriptInHead></JavascriptInHead>
-		<JavascriptBodyEnd></JavascriptBodyEnd>
-		<MetaDescription></MetaDescription>
-		<OtherHeadTags></OtherHeadTags>
-		<Content>No</Content>
-		<Template>No</Template>
-		<Email>No</Email>
-		<Admin>No</Admin>
-		<OnPageEndEvent>No</OnPageEndEvent>
-		<OnPageStartEvent>No</OnPageStartEvent>
-		<OnBodyStart>No</OnBodyStart>
-		<OnBodyEnd>No</OnBodyEnd>
-		<RemoteMethod>No</RemoteMethod>
-		<ProcessRunOnce>No</ProcessRunOnce>
-		<ProcessInterval>0</ProcessInterval>
-		<PageTitle></PageTitle>
-		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<Scripting Language="" EntryPoint="" Timeout="5000">
-			<Code><![CDATA[function m
-call cp.doc.setProperty( "physicalinstallpath", "c:\temp\" )
-m = cp.utils.executeAddon( "addonManager-InstallFromPhysicalPathC41" )
-end function]]></Code>
-		</Scripting>
-	</Addon>
-	<Addon name="addonManager-InstallFromPhysicalPathC41" guid="{7C96ED03-1266-4FC4-B08A-F290A8CD9CF5}" type="Add-on">
-		<Copy></Copy>
-		<CopyText></CopyText>
-		<ActiveXProgramID><![CDATA[Installer41.FromPhysicalPathClass]]></ActiveXProgramID>
-		<DotNetClass></DotNetClass>
-		<ArgumentList><![CDATA[physicalInstallPath=]]></ArgumentList>
-		<AsAjax>No</AsAjax>
-		<Filter>No</Filter>
-		<Help></Help>
-		<HelpLink></HelpLink>
-		<Icon Link="" width="0" height="0" sprites="0" />
-		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
-		<FormXML></FormXML>
-		<IsInline>No</IsInline>
-		<JavascriptOnLoad></JavascriptOnLoad>
-		<JavascriptInHead></JavascriptInHead>
-		<JavascriptBodyEnd></JavascriptBodyEnd>
-		<MetaDescription></MetaDescription>
-		<OtherHeadTags></OtherHeadTags>
-		<Content>No</Content>
-		<Template>No</Template>
-		<Email>No</Email>
-		<Admin>No</Admin>
-		<OnPageEndEvent>No</OnPageEndEvent>
-		<OnPageStartEvent>No</OnPageStartEvent>
-		<OnBodyStart>No</OnBodyStart>
-		<OnBodyEnd>No</OnBodyEnd>
-		<RemoteMethod>No</RemoteMethod>
-		<ProcessRunOnce>No</ProcessRunOnce>
-		<ProcessInterval>0</ProcessInterval>
-		<PageTitle></PageTitle>
-		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<Scripting Language="" EntryPoint="" Timeout="5000"/>
-	</Addon>
 	<data>
 		<record content="portals" guid="{f732f7f1-03ef-4f58-8e2a-f502bde53606}" name="Add-on Manager">
-			<field name="Active">True</field>
-			<field name="SortOrder"></field>
-			<field name="defaultConfigJson"></field>
-			<field name="defaultFeatureId">{baaa59b1-986f-4bf2-83bc-085518c1708c}</field>
+			<field name="active">True</field>
+			<field name="defaultconfigjson"></field>
+			<field name="defaultfeatureid">{baaa59b1-986f-4bf2-83bc-085518c1708c}</field>
+			<field name="sortorder"></field>
 		</record>
 		<record content="portal features" guid="{3e8fc5ca-33d7-4f40-9185-5d2f13657926}" name="AddonManager-Export">
-			<field name="Active">True</field>
-			<field name="SortOrder"></field>
-			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
-			<field name="addonId">{e716ec0e-b83f-43cc-9933-1a0733fb7641}</field>
-			<field name="Heading"><![CDATA[Export]]></field>
-			<field name="parentFeatureId"></field>
-			<field name="dataContentId"></field>
-			<field name="addPadding">False</field>
+			<field name="active">True</field>
+			<field name="addonid">{e716ec0e-b83f-43cc-9933-1a0733fb7641}</field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Export]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="sortorder"></field>
 		</record>
 		<record content="portal features" guid="{96b51732-5c24-4a33-8292-b58567b00d42}" name="AddonManager-Data">
-			<field name="Active">True</field>
-			<field name="SortOrder"></field>
-			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
-			<field name="addonId"></field>
-			<field name="Heading"><![CDATA[Data]]></field>
-			<field name="parentFeatureId"></field>
-			<field name="dataContentId"></field>
-			<field name="addPadding">False</field>
+			<field name="active">True</field>
+			<field name="addonid"></field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Data]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="sortorder"></field>
 		</record>
 		<record content="portal features" guid="{baaa59b1-986f-4bf2-83bc-085518c1708c}" name="AddonManager-CollectionLibrary">
-			<field name="Active">True</field>
-			<field name="SortOrder"></field>
-			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
-			<field name="addonId">{556e1660-62dc-4706-a07d-ba1bf3449128}</field>
-			<field name="Heading"><![CDATA[Collection Library]]></field>
-			<field name="parentFeatureId"></field>
-			<field name="dataContentId"></field>
-			<field name="addPadding">False</field>
+			<field name="active">True</field>
+			<field name="addonid">{556e1660-62dc-4706-a07d-ba1bf3449128}</field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Collection Library]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="sortorder"></field>
 		</record>
 		<record content="portal features" guid="{bfc41fa2-c17a-4712-8966-3d42e735c710}" name="AddonManager-Upload">
-			<field name="Active">True</field>
-			<field name="SortOrder"></field>
-			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
-			<field name="addonId">{e66d6890-4e1a-499b-9a37-83b767bce19c}</field>
-			<field name="Heading"><![CDATA[Upload]]></field>
-			<field name="parentFeatureId"></field>
-			<field name="dataContentId"></field>
-			<field name="addPadding">False</field>
+			<field name="active">True</field>
+			<field name="addonid">{e66d6890-4e1a-499b-9a37-83b767bce19c}</field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Upload]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="sortorder"></field>
 		</record>
 		<record content="portal features" guid="{ed348836-b522-4e08-b4ff-9197d48a07eb}" name="AddonManager-Uninstall">
-			<field name="Active">True</field>
-			<field name="SortOrder"></field>
-			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
-			<field name="addonId">{38798d20-00d3-4131-9ebf-359fd0118e3e}</field>
-			<field name="Heading"><![CDATA[Uninstall]]></field>
-			<field name="parentFeatureId"></field>
-			<field name="dataContentId"></field>
-			<field name="addPadding">False</field>
+			<field name="active">True</field>
+			<field name="addonid">{38798d20-00d3-4131-9ebf-359fd0118e3e}</field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Uninstall]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="sortorder"></field>
 		</record>
 		<record content="portal features" guid="{419A4CAB-03A7-49E7-A398-77C7A533C53D}" name="Add-on Manager, Data,Add-ons">
-			<field name="Active">True</field>
-			<field name="SortOrder"><![CDATA[Add-ons]]></field>
-			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
-			<field name="addonId"></field>
-			<field name="Heading"><![CDATA[Add-ons]]></field>
-			<field name="parentFeatureId">{96b51732-5c24-4a33-8292-b58567b00d42}</field>
-			<field name="dataContentId">{BEA0C5A8-81A9-405F-9C04-9AA21F899A5D}</field>
-			<field name="addPadding">False</field>
+			<field name="active">True</field>
+			<field name="addonid"></field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid">{BEA0C5A8-81A9-405F-9C04-9AA21F899A5D}</field>
+			<field name="heading"><![CDATA[Add-ons]]></field>
+			<field name="parentfeatureid">{96b51732-5c24-4a33-8292-b58567b00d42}</field>
+			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="sortorder"><![CDATA[Add-ons]]></field>
 		</record>
 		<record content="portal features" guid="{A0FDB5B0-E83A-44E8-A984-551DBAD1D4AF}" name="Add-on Manager, Data,Add-on Collections">
-			<field name="Active">True</field>
-			<field name="SortOrder"><![CDATA[Add-on Collections]]></field>
-			<field name="portalId">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
-			<field name="addonId"></field>
-			<field name="Heading"><![CDATA[Add-on Collections]]></field>
-			<field name="parentFeatureId">{96b51732-5c24-4a33-8292-b58567b00d42}</field>
-			<field name="dataContentId">{726ED098-5A9E-49A9-8840-767A74F41D01}</field>
-			<field name="addPadding">False</field>
+			<field name="active">True</field>
+			<field name="addonid"></field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid">{726ED098-5A9E-49A9-8840-767A74F41D01}</field>
+			<field name="heading"><![CDATA[Add-on Collections]]></field>
+			<field name="parentfeatureid">{96b51732-5c24-4a33-8292-b58567b00d42}</field>
+			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
+			<field name="sortorder"><![CDATA[Add-on Collections]]></field>
 		</record>
 	</data>
 	<ImportCollection name="Portal Framework">{87249F75-A065-4F2F-8DCD-FBBF2CA0DCCD}</ImportCollection>
