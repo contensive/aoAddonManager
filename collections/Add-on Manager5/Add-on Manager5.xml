@@ -340,7 +340,7 @@ end function]]></Code>
 		<Styles></Styles>
 		<Scripting Language="" EntryPoint="" Timeout="5000">
 			<Code><![CDATA[function m
-cp.response.redirect( "?addonguid=%7BA1BCA00C-2657-42A1-8F98-BED1E5A42025%7D&setPortal=%7Bf732f7f1-03ef-4f58-8e2a-f502bde53606%7D" )
+cp.response.redirect( "?addonguid=%7BA1BCA00C-2657-42A1-8F98-BED1E5A42025%7D&setPortalGuid=%7Bf732f7f1-03ef-4f58-8e2a-f502bde53606%7D" )
 end function]]></Code>
 		</Scripting>
 	</Addon>
