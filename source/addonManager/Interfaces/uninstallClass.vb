@@ -81,20 +81,9 @@ Namespace Contensive.Addons.AddonManager
                 Dim addonid As Integer
                 Dim cnt As Integer
                 Dim Ptr As Integer
-                '  Dim RowPtr As Integer
-                Dim Cells(,) As String
-                Dim PageNumber As Integer
-                Dim ColumnCnt As Integer
-                Dim ColCaption() As String
-                Dim ColAlign() As String
-                Dim ColWidth() As String
-                Dim ColSortable() As Boolean
-                Dim PreTableCopy As String
                 Dim BodyHTML As String
                 Dim cs As CPCSBaseClass = cp.CSNew
                 Dim Button As String
-                Dim Caption As String
-                Dim Description As String
                 Dim ButtonList As String
                 Dim CollectionFilename As String = ""
                 Dim Doc As New Xml.XmlDocument

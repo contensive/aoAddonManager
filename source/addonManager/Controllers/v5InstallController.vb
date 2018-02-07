@@ -12,13 +12,15 @@ Namespace Contensive.Addons.AddonManager
         '
         ' -- method provided here because these methods are not included in the c41 interface, so this call can only be created if v5 code
         Public Shared Function installCollectionFromLibrary(cp As CPBaseClass, collectionGuid As String, ByRef ErrorMessage As String) As Boolean
-            Return cp.Addon.installCollectionFromLibrary(collectionGuid, ErrorMessage)
+            cp.Utils.installCollectionFromLibrary(collectionGuid)
+            ErrorMessage = ""
+            Return True
         End Function
         '
         ' -- method provided here because these methods are not included in the c41 interface, so this call can only be created if v5 code
         Public Shared Function installCollectionFromFolder(cp As CPBaseClass, privatePathFilename As String, ByRef ErrorMessage As String) As Boolean
             '
-            cp.Utils.AppendLogFile("installCollectionFromFolder, privatePathFilename [" & privatePathFilename & "]")
+            cp.Utils.AppendLog("installCollectionFromFolder, privatePathFilename [" & privatePathFilename & "]")
             '
             Try
                 Dim taskId As Integer = cp.Utils.installCollectionFromFile(privatePathFilename)
@@ -32,7 +34,7 @@ Namespace Contensive.Addons.AddonManager
         ' -- method provided here because these methods are not included in the c41 interface, so this call can only be created if v5 code
         Public Shared Function installCollectionFromUpload(cp As CPBaseClass, requestName As String, ByRef ErrorMessage As String) As Boolean
             '
-            cp.Utils.AppendLogFile("installCollectionFromUpload, requestName [" & requestName & "]")
+            cp.Utils.AppendLog("installCollectionFromUpload, requestName [" & requestName & "]")
             Try
                 '
                 Dim privatePath As String = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "") & "\"

@@ -76,12 +76,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="CPBase, Version=4.1.2.0, Culture=neutral, PublicKeyToken=10b3c53389b845fb, processorArchitecture=MSIL">
-      <HintPath>packages\contensive.clib.5.0.1\lib\net35\CPBase.dll</HintPath>
+      <HintPath>packages\contensive.clib.5.0.2\lib\net35\CPBase.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="HttpMultipartParser, Version=2.2.4.0, Culture=neutral, PublicKeyToken=6d293681fa6c7a03, processorArchitecture=MSIL">
-      <HintPath>packages\HttpMultipartParser.2.2.4\lib\net46\HttpMultipartParser.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
