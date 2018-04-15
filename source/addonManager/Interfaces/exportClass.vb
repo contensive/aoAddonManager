@@ -522,42 +522,28 @@ Namespace Contensive.Addons.AddonManager
                     ' CDef
                     '
                     'Call Main.testpoint("getCollection, 700")
-                    CS2.Open("Add-on Collection CDef Rules", "CollectionID=" & CollectionID)
-                    Do While CS2.OK()
-                        ContentName = ""
-                        ContentID = CS2.GetInteger("contentid")
-                        '
-                        ' get name and make sure there is a guid
-                        '
+                    For Each content As Models.ContentModel In Models.ContentModel.createListFromCollection(cp, CollectionID)
                         reload = False
-                        If CS3.OpenRecord("content", ContentID) Then
-                            ContentName = CS3.GetText("name")
-                            If CS3.GetText("ccguid") = "" Then
-                                Call CS3.SetField("ccGuid", cp.Utils.CreateGuid())
-                                reload = True
-                            End If
+                        If (String.IsNullOrEmpty(content.ccguid)) Then
+                            content.ccguid = cp.Utils.CreateGuid()
+                            content.save(cp)
+                            reload = True
                         End If
-                        Call CS3.Close()
+                        Dim xmlTool As New xmlController(cp)
+                        Node = xmlTool.GetXMLContentDefinition3(content.name)
                         '
-                        If Not String.IsNullOrEmpty(ContentName) Then
-                            Dim xmlTool As New xmlController(cp)
-                            Node = xmlTool.GetXMLContentDefinition3(ContentName)
-                            '
-                            ' remove the <collection> top node
-                            '
-                            Pos = InStr(1, Node, "<cdef", vbTextCompare)
+                        ' remove the <collection> top node
+                        '
+                        Pos = InStr(1, Node, "<cdef", vbTextCompare)
+                        If Pos > 0 Then
+                            Node = Mid(Node, Pos)
+                            Pos = InStr(1, Node, "</cdef>", vbTextCompare)
                             If Pos > 0 Then
-                                Node = Mid(Node, Pos)
-                                Pos = InStr(1, Node, "</cdef>", vbTextCompare)
-                                If Pos > 0 Then
-                                    Node = Mid(Node, 1, Pos + 6)
-                                    collectionXml = collectionXml & vbCrLf & vbTab & Node
-                                End If
+                                Node = Mid(Node, 1, Pos + 6)
+                                collectionXml = collectionXml & vbCrLf & vbTab & Node
                             End If
                         End If
-                        Call CS2.GoNext()
-                    Loop
-                    Call CS2.Close()
+                    Next
                     '
                     ' Scripting Modules
                     '

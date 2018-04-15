@@ -102,7 +102,6 @@ public property AllowMetaContent as Boolean
 public property AllowTopicRules as Boolean
 public property AllowWorkflowAuthoring as Boolean
 public property AuthoringTableID as Integer
-
 public property ContentTableID as Integer
 public property DefaultSortMethodID as Integer
 public property DeveloperOnly as Boolean
