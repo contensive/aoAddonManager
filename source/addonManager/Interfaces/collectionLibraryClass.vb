@@ -469,17 +469,17 @@ Namespace Contensive.Addons.AddonManager
                                                         'Cells3(RowPtr, 1) = CollectionName & "&nbsp;(Contensive v" & CollectionContensiveVersion & " needed)"
                                                         'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
                                                         'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
-                                                    ElseIf Not DbUpToDate Then
-                                                        '
-                                                        ' Site needs to by upgraded
-                                                        '
-                                                        showAddon = True
-                                                        CollectionCheckbox = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>&nbsp;Disabled because this website database needs to be upgraded."
-                                                        CollectionName = CollectionName
-                                                        'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>"
-                                                        'Cells3(RowPtr, 1) = CollectionName & "&nbsp;(install disabled)"
-                                                        'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
-                                                        'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
+                                                        'ElseIf Not DbUpToDate Then
+                                                        '    '
+                                                        '    ' Site needs to by upgraded
+                                                        '    '
+                                                        '    showAddon = True
+                                                        '    CollectionCheckbox = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>&nbsp;Disabled because this website database needs to be upgraded."
+                                                        '    CollectionName = CollectionName
+                                                        '    'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>"
+                                                        '    'Cells3(RowPtr, 1) = CollectionName & "&nbsp;(install disabled)"
+                                                        '    'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
+                                                        '    'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
                                                     Else
                                                         '
                                                         ' Not installed yet

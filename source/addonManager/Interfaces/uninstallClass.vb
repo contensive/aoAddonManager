@@ -224,7 +224,7 @@ Namespace Contensive.Addons.AddonManager
                     form.name = "Uninstall Collections"
                     form.description = "To remove collections, select them from the list and click the Uninstall button."
                     If Not DbUpToDate Then
-                        form.description &= "<div style=""Margin-left:50px"">The Add-on Manager is disabled because this site's Database needs to be upgraded.</div>"
+                        form.description &= "<div style=""Margin-left:50px"">Warning: The site's Database needs to be upgraded.</div>"
                     End If
                     If status <> "" Then
                         form.description &= "<div style=""Margin-left:50px"">" & status & "</div>"

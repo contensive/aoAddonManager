@@ -51,11 +51,12 @@ Namespace Contensive.Addons.AddonManager
                         '
                         ' -- Put up error message
                         form.body &= cp.Html.p("You must be an administrator to use this tool.")
-                    ElseIf (cp.Site.GetText("buildVersion") < cp.Version) Then
-                        '
-                        ' -- database needs to be upgraded
-                        form.description &= cp.Html.p("The Add-on Manager is disabled because this site's Database needs to be upgraded.")
                     Else
+                        If (cp.Site.GetText("buildVersion") < cp.Version) Then
+                            '
+                            ' -- database needs to be upgraded
+                            form.description &= cp.Html.p("WARNING: The site database needs to be upgraded. You should do this before installing addon collections.")
+                        End If
                         '
                         ' -- Upload tool
                         If (Button = ButtonOK) Then

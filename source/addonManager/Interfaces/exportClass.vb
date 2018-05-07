@@ -36,48 +36,49 @@ Namespace Contensive.Addons.AddonManager
                             '
                             ' -- Put up error message
                             form.body &= CP.Html.p("You must be an administrator to use this tool.")
-                        ElseIf (CP.Site.GetText("buildVersion") < CP.Version) Then
-                            '
-                            ' -- database needs to be upgraded
-                            form.description &= CP.Html.p("The Add-on Manager is disabled because this site's Database needs to be upgraded.")
                         Else
+                            If (CP.Site.GetText("buildVersion") < CP.Version) Then
+                                '
+                                ' -- database needs to be upgraded
+                                form.description &= CP.Html.p("Warning: The site's Database needs to be upgraded. You should do this before installing addons.")
+                            End If
                             '
                             ' -- Upload tool
                             If (Button = ButtonOK) Then
-                                '
-                                ' -- export
-                                Dim CollectionID As Integer = CP.Doc.GetInteger(RequestNameCollectionID)
-                                Dim addonCollection As Models.addonCollectionModel = Models.addonCollectionModel.create(CP, CollectionID)
-                                If (addonCollection Is Nothing) Then
                                     '
-                                    ' -- collection not found
-                                    Call CP.UserError.Add("The collection file you selected could not be found. Please select another.")
-                                Else
-                                    '
-                                    ' -- build collection zip file and return file
-                                    Dim CollectionFilename As String = GetCollectionZipPathFilename(CP, CollectionID)
-                                    If Not CP.UserError.OK Then
+                                    ' -- export
+                                    Dim CollectionID As Integer = CP.Doc.GetInteger(RequestNameCollectionID)
+                                    Dim addonCollection As Models.addonCollectionModel = Models.addonCollectionModel.create(CP, CollectionID)
+                                    If (addonCollection Is Nothing) Then
                                         '
-                                        ' -- errors during export
-                                        form.body = CP.Html.div(CP.Html.p("ERRORS during export: ") & CP.Html.ul(CP.UserError.GetList()))
+                                        ' -- collection not found
+                                        Call CP.UserError.Add("The collection file you selected could not be found. Please select another.")
                                     Else
                                         '
-                                        ' -- success
-                                        form.body &= CP.Html.p("Export Successful")
-                                        form.body &= CP.Html.p("Click <a href=""" & CP.Site.FilePath & Replace(CollectionFilename, "\", "/") & """>here</a> to download the collection file</p>")
+                                        ' -- build collection zip file and return file
+                                        Dim CollectionFilename As String = GetCollectionZipPathFilename(CP, CollectionID)
+                                        If Not CP.UserError.OK Then
+                                            '
+                                            ' -- errors during export
+                                            form.body = CP.Html.div(CP.Html.p("ERRORS during export: ") & CP.Html.ul(CP.UserError.GetList()))
+                                        Else
+                                            '
+                                            ' -- success
+                                            form.body &= CP.Html.p("Export Successful")
+                                            form.body &= CP.Html.p("Click <a href=""" & CP.Site.FilePath & Replace(CollectionFilename, "\", "/") & """>here</a> to download the collection file</p>")
+                                        End If
                                     End If
                                 End If
+                                '
+                                ' Get Form
+                                form.addRow()
+                                form.rowName = "Add-on Collection"
+                                form.rowValue = CP.Html.SelectContent(RequestNameCollectionID, "0", "Add-on Collections")
+                                form.addFormHidden("UploadCount", "1")
+                                form.addFormButton(ButtonOK)
+                                form.addFormButton(ButtonCancel)
                             End If
-                            '
-                            ' Get Form
-                            form.addRow()
-                            form.rowName = "Add-on Collection"
-                            form.rowValue = CP.Html.SelectContent(RequestNameCollectionID, "0", "Add-on Collections")
-                            form.addFormHidden("UploadCount", "1")
-                            form.addFormButton(ButtonOK)
-                            form.addFormButton(ButtonCancel)
-                        End If
-                        returnResult = form.getHtml(CP)
+                            returnResult = form.getHtml(CP)
                     End If
                 Catch ex As Exception
                     CP.Site.ErrorReport(ex)

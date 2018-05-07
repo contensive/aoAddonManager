@@ -161,3 +161,5 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+source/addonManager/.vs/addonManager/v15/Server/sqlite3/storage.ide
+source/addonManager/.vs/addonManager/v15/Server/sqlite3/db.lock
