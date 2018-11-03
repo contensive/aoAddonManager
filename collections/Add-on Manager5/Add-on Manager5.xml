@@ -46,7 +46,8 @@ end function]]></Code>
 	<Addon name="Add-on Manager" guid="{1DC06F61-1837-419B-AF36-D5CC41E1C9FD}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<ActiveXProgramID><![CDATA[aoAddonMan.AddonManClass]]></ActiveXProgramID>
+		<IncludeAddon name="Add-on Manager5" guid="{3d643ebd-c482-49ac-99ca-03aabb28ee83}"/>
+		<!--<ActiveXProgramID><![CDATA[aoAddonMan.AddonManClass]]></ActiveXProgramID>-->
 		<DotNetClass></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
@@ -63,8 +64,8 @@ end function]]></Code>
 		<JavascriptBodyEnd></JavascriptBodyEnd>
 		<MetaDescription></MetaDescription>
 		<OtherHeadTags></OtherHeadTags>
-		<Content>Yes</Content>
-		<Template>Yes</Template>
+		<Content>no</Content>
+		<Template>no</Template>
 		<Email>No</Email>
 		<Admin>Yes</Admin>
 		<OnPageEndEvent>No</OnPageEndEvent>

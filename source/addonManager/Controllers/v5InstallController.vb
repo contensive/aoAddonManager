@@ -20,7 +20,7 @@ Namespace Contensive.Addons.AddonManager
         ' -- method provided here because these methods are not included in the c41 interface, so this call can only be created if v5 code
         Public Shared Function installCollectionFromFolder(cp As CPBaseClass, privatePathFilename As String, ByRef ErrorMessage As String) As Boolean
             '
-            cp.Utils.AppendLog("installCollectionFromFolder, privatePathFilename [" & privatePathFilename & "]")
+            cp.Utils.AppendLogFile("installCollectionFromFolder, privatePathFilename [" & privatePathFilename & "]")
             '
             Try
                 Dim taskId As Integer = cp.Utils.installCollectionFromFile(privatePathFilename)
@@ -34,13 +34,13 @@ Namespace Contensive.Addons.AddonManager
         ' -- method provided here because these methods are not included in the c41 interface, so this call can only be created if v5 code
         Public Shared Function installCollectionFromUpload(cp As CPBaseClass, requestName As String, ByRef ErrorMessage As String) As Boolean
             '
-            cp.Utils.AppendLog("installCollectionFromUpload, requestName [" & requestName & "]")
+            cp.Utils.AppendLogFile("installCollectionFromUpload, requestName [" & requestName & "]")
             Try
                 '
                 Dim privatePath As String = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "") & "\"
 
                 Dim uploadFilename As String = ""
-                If cp.privateFiles.saveUpload(requestName, privatePath, uploadFilename) Then
+                If cp.PrivateFiles.saveUpload(requestName, privatePath, uploadFilename) Then
                     Return installCollectionFromFolder(cp, privatePath & uploadFilename, ErrorMessage)
                 End If
             Catch ex As Exception
