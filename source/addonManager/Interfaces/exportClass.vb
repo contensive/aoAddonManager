@@ -747,33 +747,33 @@ Namespace Contensive.Addons.AddonManager
                     '
                     ' ActiveX DLL node is being deprecated. This should be in the collection resource section
                     '
-                    result = result & GetNodeText(cp, "Copy", CS.GetText("Copy"))
-                    result = result & GetNodeText(cp, "CopyText", CS.GetText("CopyText"))
+                    result &= GetNodeText(cp, "Copy", CS.GetText("Copy"))
+                    result &= GetNodeText(cp, "CopyText", CS.GetText("CopyText"))
                     '
                     ' DLL
                     '
 
-                    result = result & GetNodeText(cp, "ActiveXProgramID", CS.GetText("objectprogramid"))
-                    result = result & GetNodeText(cp, "DotNetClass", CS.GetText("DotNetClass"))
+                    result &= GetNodeText(cp, "ActiveXProgramID", CS.GetText("objectprogramid"))
+                    result &= GetNodeText(cp, "DotNetClass", CS.GetText("DotNetClass"))
                     '
                     ' Features
                     '
-                    result = result & GetNodeText(cp, "ArgumentList", CS.GetText("ArgumentList"))
-                    result = result & GetNodeBoolean(cp, "AsAjax", CS.GetBoolean("AsAjax"))
-                    result = result & GetNodeBoolean(cp, "Filter", CS.GetBoolean("Filter"))
-                    result = result & GetNodeText(cp, "Help", CS.GetText("Help"))
-                    result = result & GetNodeText(cp, "HelpLink", CS.GetText("HelpLink"))
-                    result = result & vbCrLf & vbTab & "<Icon Link=""" & CS.GetText("iconfilename") & """ width=""" & CS.GetInteger("iconWidth") & """ height=""" & CS.GetInteger("iconHeight") & """ sprites=""" & CS.GetInteger("iconSprites") & """ />"
-                    result = result & GetNodeBoolean(cp, "InIframe", CS.GetBoolean("InFrame"))
+                    result &= GetNodeText(cp, "ArgumentList", CS.GetText("ArgumentList"))
+                    result &= GetNodeBoolean(cp, "AsAjax", CS.GetBoolean("AsAjax"))
+                    result &= GetNodeBoolean(cp, "Filter", CS.GetBoolean("Filter"))
+                    result &= GetNodeText(cp, "Help", CS.GetText("Help"))
+                    result &= GetNodeText(cp, "HelpLink", CS.GetText("HelpLink"))
+                    result &= vbCrLf & vbTab & "<Icon Link=""" & CS.GetText("iconfilename") & """ width=""" & CS.GetInteger("iconWidth") & """ height=""" & CS.GetInteger("iconHeight") & """ sprites=""" & CS.GetInteger("iconSprites") & """ />"
+                    result &= GetNodeBoolean(cp, "InIframe", CS.GetBoolean("InFrame"))
                     BlockEditTools = False
                     If CS.FieldOK("BlockEditTools") Then
                         BlockEditTools = CS.GetBoolean("BlockEditTools")
                     End If
-                    result = result & GetNodeBoolean(cp, "BlockEditTools", BlockEditTools)
+                    result &= GetNodeBoolean(cp, "BlockEditTools", BlockEditTools)
                     '
                     ' Form XML
                     '
-                    result = result & GetNodeText(cp, "FormXML", CS.GetText("FormXML"))
+                    result &= GetNodeText(cp, "FormXML", CS.GetText("FormXML"))
                     '
                     NodeInnerText = ""
                     CS2.Open("Add-on Include Rules", "addonid=" & addonid)
@@ -786,45 +786,54 @@ Namespace Contensive.Addons.AddonManager
                                 Guid = cp.Utils.CreateGuid()
                                 Call CS3.SetField("ccGuid", Guid)
                             End If
-                            result = result & vbCrLf & vbTab & "<IncludeAddon name=""" & cp.Utils.EncodeHTML(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
+                            result &= vbCrLf & vbTab & "<IncludeAddon name=""" & cp.Utils.EncodeHTML(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
                         End If
                         Call CS3.Close()
                         Call CS2.GoNext()
                     Loop
                     Call CS2.Close()
                     '
-                    result = result & GetNodeBoolean(cp, "IsInline", CS.GetBoolean("IsInline"))
-                    result = result & GetNodeText(cp, "JavascriptOnLoad", CS.GetText("JavascriptOnLoad"))
-                    result = result & GetNodeText(cp, "JavascriptInHead", CS.GetText("JSFilename"))
-                    result = result & GetNodeText(cp, "JavascriptBodyEnd", CS.GetText("JavascriptBodyEnd"))
-                    result = result & GetNodeText(cp, "MetaDescription", CS.GetText("MetaDescription"))
-                    result = result & GetNodeText(cp, "OtherHeadTags", CS.GetText("OtherHeadTags"))
+                    result &= GetNodeBoolean(cp, "IsInline", CS.GetBoolean("IsInline"))
                     '
-                    ' Placements
+                    ' -- javascript (xmlnode may not match Db filename)
+                    result &= GetNodeText(cp, "JavascriptInHead", CS.GetText("JSFilename"))
+                    If (cp.Version > "4.2") Then
+                        result &= GetNodeBoolean(cp, "javascriptForceHead", CS.GetBoolean("javascriptForceHead"))
+                        result &= GetNodeText(cp, "JSHeadScriptSrc", CS.GetText("JSHeadScriptSrc"))
+                    Else
+                        result &= GetNodeBoolean(cp, "javascriptForceHead", False)
+                        result &= GetNodeText(cp, "JSHeadScriptSrc", "")
+                    End If
                     '
-                    result = result & GetNodeBoolean(cp, "Content", CS.GetBoolean("Content"))
-                    result = result & GetNodeBoolean(cp, "Template", CS.GetBoolean("Template"))
-                    result = result & GetNodeBoolean(cp, "Email", CS.GetBoolean("Email"))
-                    result = result & GetNodeBoolean(cp, "Admin", CS.GetBoolean("Admin"))
-                    result = result & GetNodeBoolean(cp, "OnPageEndEvent", CS.GetBoolean("OnPageEndEvent"))
-                    result = result & GetNodeBoolean(cp, "OnPageStartEvent", CS.GetBoolean("OnPageStartEvent"))
-                    result = result & GetNodeBoolean(cp, "OnBodyStart", CS.GetBoolean("OnBodyStart"))
-                    result = result & GetNodeBoolean(cp, "OnBodyEnd", CS.GetBoolean("OnBodyEnd"))
-                    result = result & GetNodeBoolean(cp, "RemoteMethod", CS.GetBoolean("RemoteMethod"))
+                    ' -- javascript deprecated
+                    result &= GetNodeText(cp, "JSBodyScriptSrc", CS.GetText("JSBodyScriptSrc"), True)
+                    result &= GetNodeText(cp, "JavascriptBodyEnd", CS.GetText("JavascriptBodyEnd"), True)
+                    result &= GetNodeText(cp, "JavascriptOnLoad", CS.GetText("JavascriptOnLoad"), True)
+                    '
+                    ' -- Placements
+                    result &= GetNodeBoolean(cp, "Content", CS.GetBoolean("Content"))
+                    result &= GetNodeBoolean(cp, "Template", CS.GetBoolean("Template"))
+                    result &= GetNodeBoolean(cp, "Email", CS.GetBoolean("Email"))
+                    result &= GetNodeBoolean(cp, "Admin", CS.GetBoolean("Admin"))
+                    result &= GetNodeBoolean(cp, "OnPageEndEvent", CS.GetBoolean("OnPageEndEvent"))
+                    result &= GetNodeBoolean(cp, "OnPageStartEvent", CS.GetBoolean("OnPageStartEvent"))
+                    result &= GetNodeBoolean(cp, "OnBodyStart", CS.GetBoolean("OnBodyStart"))
+                    result &= GetNodeBoolean(cp, "OnBodyEnd", CS.GetBoolean("OnBodyEnd"))
+                    result &= GetNodeBoolean(cp, "RemoteMethod", CS.GetBoolean("RemoteMethod"))
                     's = s & GetNodeBoolean( cp, "OnNewVisitEvent", CS.GetBoolean( "OnNewVisitEvent"))
                     '
-                    ' Process
-                    '
-                    result = result & GetNodeBoolean(cp, "ProcessRunOnce", processRunOnce)
-                    result = result & GetNodeInteger(cp, "ProcessInterval", CS.GetInteger("ProcessInterval"))
+                    ' -- Process
+                    result &= GetNodeBoolean(cp, "ProcessRunOnce", processRunOnce)
+                    result &= GetNodeInteger(cp, "ProcessInterval", CS.GetInteger("ProcessInterval"))
                     '
                     ' Meta
                     '
-                    result = result & GetNodeText(cp, "PageTitle", CS.GetText("PageTitle"))
-                    result = result & GetNodeText(cp, "RemoteAssetLink", CS.GetText("RemoteAssetLink"))
+                    result &= GetNodeText(cp, "MetaDescription", CS.GetText("MetaDescription"))
+                    result &= GetNodeText(cp, "OtherHeadTags", CS.GetText("OtherHeadTags"))
+                    result &= GetNodeText(cp, "PageTitle", CS.GetText("PageTitle"))
+                    result &= GetNodeText(cp, "RemoteAssetLink", CS.GetText("RemoteAssetLink"))
                     '
                     ' Styles
-                    '
                     Styles = ""
                     If Not CS.GetBoolean("BlockDefaultStyles") Then
                         Styles = Trim(CS.GetText("StylesFilename"))
@@ -837,7 +846,7 @@ Namespace Contensive.Addons.AddonManager
                             Styles = StylesTest
                         End If
                     End If
-                    result = result & GetNodeText(cp, "Styles", Styles)
+                    result &= GetNodeText(cp, "Styles", Styles)
                     '
                     ' Scripting
                     '
@@ -863,9 +872,9 @@ Namespace Contensive.Addons.AddonManager
                     Loop
                     Call CS2.Close()
                     If NodeInnerText = "" Then
-                        result = result & vbCrLf & vbTab & "<Scripting Language=""" & CS.GetText("ScriptingLanguageID") & """ EntryPoint=""" & CS.GetText("ScriptingEntryPoint") & """ Timeout=""" & CS.GetText("ScriptingTimeout") & """/>"
+                        result &= vbCrLf & vbTab & "<Scripting Language=""" & CS.GetText("ScriptingLanguageID") & """ EntryPoint=""" & CS.GetText("ScriptingEntryPoint") & """ Timeout=""" & CS.GetText("ScriptingTimeout") & """/>"
                     Else
-                        result = result & vbCrLf & vbTab & "<Scripting Language=""" & CS.GetText("ScriptingLanguageID") & """ EntryPoint=""" & CS.GetText("ScriptingEntryPoint") & """ Timeout=""" & CS.GetText("ScriptingTimeout") & """>" & NodeInnerText & vbCrLf & vbTab & "</Scripting>"
+                        result &= vbCrLf & vbTab & "<Scripting Language=""" & CS.GetText("ScriptingLanguageID") & """ EntryPoint=""" & CS.GetText("ScriptingEntryPoint") & """ Timeout=""" & CS.GetText("ScriptingTimeout") & """>" & NodeInnerText & vbCrLf & vbTab & "</Scripting>"
                     End If
                     '
                     ' Shared Styles
@@ -881,7 +890,7 @@ Namespace Contensive.Addons.AddonManager
                                 Call CS3.SetField("ccGuid", Guid)
                             End If
                             Return_IncludeSharedStyleGuidList = Return_IncludeSharedStyleGuidList & vbCrLf & Guid
-                            result = result & vbCrLf & vbTab & "<IncludeSharedStyle name=""" & cp.Utils.EncodeHTML(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
+                            result &= vbCrLf & vbTab & "<IncludeSharedStyle name=""" & cp.Utils.EncodeHTML(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
                         End If
                         Call CS3.Close()
                         Call CS2.GoNext()
@@ -908,7 +917,7 @@ Namespace Contensive.Addons.AddonManager
                     Loop
                     Call CS2.Close()
                     If NodeInnerText <> "" Then
-                        result = result & vbCrLf & vbTab & "<ProcessTriggers>" & NodeInnerText & vbCrLf & vbTab & "</ProcessTriggers>"
+                        result &= vbCrLf & vbTab & "<ProcessTriggers>" & NodeInnerText & vbCrLf & vbTab & "</ProcessTriggers>"
                     End If
                     '
                     ' Editors
@@ -926,7 +935,7 @@ Namespace Contensive.Addons.AddonManager
                         Loop
                         Call CS2.Close()
                         If NodeInnerText <> "" Then
-                            result = result & vbCrLf & vbTab & "<Editors>" & NodeInnerText & vbCrLf & vbTab & "</Editors>"
+                            result &= vbCrLf & vbTab & "<Editors>" & NodeInnerText & vbCrLf & vbTab & "</Editors>"
                         End If
                     End If
                     '
@@ -961,14 +970,18 @@ Namespace Contensive.Addons.AddonManager
         ''' <param name="NodeContent"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function GetNodeText(cp As CPBaseClass, NodeName As String, NodeContent As String) As String
+        Private Function GetNodeText(cp As CPBaseClass, NodeName As String, NodeContent As String, Optional deprecated As Boolean = False) As String
             GetNodeText = ""
             Try
+                Dim prefix As String = ""
+                If (deprecated) Then
+                    prefix = "<!-- deprecated -->"
+                End If
                 GetNodeText = ""
                 If NodeContent = "" Then
-                    GetNodeText = GetNodeText & vbCrLf & vbTab & "<" & NodeName & "></" & NodeName & ">"
+                    GetNodeText = GetNodeText & vbCrLf & vbTab & prefix & "<" & NodeName & "></" & NodeName & ">"
                 Else
-                    GetNodeText = GetNodeText & vbCrLf & vbTab & "<" & NodeName & ">" & EncodeCData(cp, NodeContent) & "</" & NodeName & ">"
+                    GetNodeText = GetNodeText & vbCrLf & vbTab & prefix & "<" & NodeName & ">" & EncodeCData(cp, NodeContent) & "</" & NodeName & ">"
                 End If
             Catch ex As Exception
                 errorReport(cp, ex, "getNodeText")
