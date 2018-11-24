@@ -847,6 +847,7 @@ Namespace Contensive.Addons.AddonManager
                         End If
                     End If
                     result &= GetNodeText(cp, "Styles", Styles)
+                    result &= GetNodeText(cp, "styleslinkhref", CS.GetText("styleslinkhref"))
                     '
                     ' Scripting
                     '
