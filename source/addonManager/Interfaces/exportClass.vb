@@ -679,6 +679,7 @@ Namespace Contensive.Addons.AddonManager
                                     Call cp.UserError.Add("There was an error exporting this collection because there were multiple files with the same filename [" & Filename & "]")
                                 Else
                                     AddFileList.Add(AddFilename)
+                                    collectionXml = collectionXml & vbCrLf & vbTab & "<Resource name=""" & cp.Utils.EncodeHTML(Filename) & """ type=""content"" path=""" & cp.Utils.EncodeHTML(Path) & """ />"
                                 End If
                                 ResourceCnt = ResourceCnt + 1
                             End If
