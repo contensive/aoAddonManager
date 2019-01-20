@@ -99,6 +99,7 @@
     <Compile Include="constants.vb" />
     <Compile Include="Controllers\v5InstallController.vb" />
     <Compile Include="Controllers\genericController.vb" />
+    <Compile Include="Interfaces\iisRecycle.vb" />
     <Compile Include="Interfaces\exportClass.vb" />
     <Compile Include="Interfaces\uploadClass.vb" />
     <Compile Include="Interfaces\collectionLibraryClass.vb" />

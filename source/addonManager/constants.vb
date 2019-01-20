@@ -14,6 +14,8 @@ Namespace Contensive.Addons.AddonManager
         Public Const ButtonOK As String = " OK "
         Public Const RequestNameCollectionID As String = "collectionid"
         '
+        Public Const iisRecycleAddonGuid As String = "{fb322f1c71114ef9bb9bdf76d20ded67}"
+        '
         Public Const FieldTypeInteger As Integer = 1       ' An long number
         Public Const FieldTypeText As Integer = 2          ' A text field (up to 255 characters)
         Public Const FieldTypeLongText As Integer = 3      ' A memo field (up to 8000 characters)
