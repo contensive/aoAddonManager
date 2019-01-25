@@ -2,318 +2,6 @@
 <Collection name="Add-on Manager5" guid="{e042616a-89ea-4926-8a41-6b8b6631d067}" system="No" updatable="Yes" blockNavigatorNode="No">
 	<HelpLink></HelpLink>
 	<Help></Help>
-	<Addon name="_testAddonManager" guid="{760ce8df-da4a-4908-a687-2758be871985}" type="Add-on">
-		<Copy></Copy>
-		<CopyText></CopyText>
-		<ActiveXProgramID></ActiveXProgramID>
-		<DotNetClass></DotNetClass>
-		<ArgumentList></ArgumentList>
-		<AsAjax>No</AsAjax>
-		<Filter>No</Filter>
-		<Help></Help>
-		<HelpLink></HelpLink>
-		<Icon Link="" width="0" height="0" sprites="0" />
-		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
-		<FormXML></FormXML>
-		<IsInline>No</IsInline>
-		<JavascriptInHead></JavascriptInHead>
-		<javascriptForceHead>No</javascriptForceHead>
-		<JSHeadScriptSrc></JSHeadScriptSrc>
-		<!-- deprecated --><JSBodyScriptSrc></JSBodyScriptSrc>
-		<!-- deprecated --><JavascriptBodyEnd></JavascriptBodyEnd>
-		<!-- deprecated --><JavascriptOnLoad></JavascriptOnLoad>
-		<Content>No</Content>
-		<Template>No</Template>
-		<Email>No</Email>
-		<Admin>No</Admin>
-		<OnPageEndEvent>No</OnPageEndEvent>
-		<OnPageStartEvent>No</OnPageStartEvent>
-		<OnBodyStart>No</OnBodyStart>
-		<OnBodyEnd>No</OnBodyEnd>
-		<RemoteMethod>No</RemoteMethod>
-		<ProcessRunOnce>No</ProcessRunOnce>
-		<ProcessInterval>0</ProcessInterval>
-		<MetaDescription></MetaDescription>
-		<OtherHeadTags></OtherHeadTags>
-		<PageTitle></PageTitle>
-		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<styleslinkhref></styleslinkhref>
-		<Scripting Language="VBScript" EntryPoint="" Timeout="5000">
-			<Code><![CDATA[function m
-call cp.doc.setProperty( "physicalinstallpath", "c:\temp\" )
-m = cp.utils.executeAddon( "addonManager-InstallFromPhysicalPathC41" )
-end function]]></Code>
-		</Scripting>
-	</Addon>
-	<Addon name="Add-on Manager" guid="{1DC06F61-1837-419B-AF36-D5CC41E1C9FD}" type="Add-on">
-		<Copy></Copy>
-		<CopyText></CopyText>
-		<ActiveXProgramID><![CDATA[aoAddonMan.AddonManClass]]></ActiveXProgramID>
-		<DotNetClass></DotNetClass>
-		<ArgumentList></ArgumentList>
-		<AsAjax>No</AsAjax>
-		<Filter>No</Filter>
-		<Help></Help>
-		<HelpLink></HelpLink>
-		<Icon Link="" width="0" height="0" sprites="0" />
-		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
-		<FormXML></FormXML>
-		<IncludeAddon name="Add-on Manager5" guid="{3d643ebd-c482-49ac-99ca-03aabb28ee83}"/>
-		<IsInline>No</IsInline>
-		<JavascriptInHead></JavascriptInHead>
-		<javascriptForceHead>No</javascriptForceHead>
-		<JSHeadScriptSrc></JSHeadScriptSrc>
-		<!-- deprecated --><JSBodyScriptSrc></JSBodyScriptSrc>
-		<!-- deprecated --><JavascriptBodyEnd></JavascriptBodyEnd>
-		<!-- deprecated --><JavascriptOnLoad></JavascriptOnLoad>
-		<Content>No</Content>
-		<Template>No</Template>
-		<Email>No</Email>
-		<Admin>Yes</Admin>
-		<OnPageEndEvent>No</OnPageEndEvent>
-		<OnPageStartEvent>No</OnPageStartEvent>
-		<OnBodyStart>No</OnBodyStart>
-		<OnBodyEnd>No</OnBodyEnd>
-		<RemoteMethod>No</RemoteMethod>
-		<ProcessRunOnce>No</ProcessRunOnce>
-		<ProcessInterval>0</ProcessInterval>
-		<MetaDescription></MetaDescription>
-		<OtherHeadTags></OtherHeadTags>
-		<PageTitle><![CDATA[Add-on Manager]]></PageTitle>
-		<RemoteAssetLink></RemoteAssetLink>
-		<Styles><![CDATA[
-
-
-
-
-
-
-
-
-
-.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size:14px;
-}
-
-.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
-.amLibraryListCell table {width:100%;padding:0;margin:0;}
-.amLibraryListCell table td {}
-.amLibraryListCell td.amImage {width:202px;height:242px;padding:5px;background-color:#cdc;}
-.amLibraryListCell td.amImage img {width:200px;height:240px; border:1px solid #fff;}
-.amLibraryListCell td.amBody {height:252px;padding:5px 5px 5px 10px;}
-.amLibraryListCell td.amBody .amHeadline {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:24px;
-	font-weight:bold;
-}
-.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
-.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
-.amLibraryListCell td.amBody .amDescription li {
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size: 12px;
-    line-height: 1.2;
-}
-
-.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody div.amDemoLink a {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-	}
-.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
-	color: #1B75BB;
-	}
-.amLibraryListCell td.amBody div.amHelpLink {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-}
-
-
-.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
-	color: #1B75BB;
-	}
-
-
-
-
-
-
-.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size:14px;
-}
-
-.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
-.amLibraryListCell table {width:100%;padding:0;margin:0;}
-.amLibraryListCell table td {}
-.amLibraryListCell td.amImage {width:202px;height:242px;padding:5px;background-color:#cdc;}
-.amLibraryListCell td.amImage img {width:200px;height:240px; border:1px solid #fff;}
-.amLibraryListCell td.amBody {height:252px;padding:5px 5px 5px 10px;}
-.amLibraryListCell td.amBody .amHeadline {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:24px;
-	font-weight:bold;
-}
-.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
-.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
-.amLibraryListCell td.amBody .amDescription li {
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size: 12px;
-    line-height: 1.2;
-}
-
-.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody div.amDemoLink a {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-	}
-.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
-	color: #1B75BB;
-	}
-.amLibraryListCell td.amBody div.amHelpLink {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-}
-
-
-.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
-	color: #1B75BB;
-	}
-
-
-
-
-
-
-
-.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size:14px;
-}
-
-.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
-.amLibraryListCell table {width:100%;padding:0;margin:0;}
-.amLibraryListCell table td {}
-.amLibraryListCell td.amImage {width:202px;height:242px;padding:5px;background-color:#cdc;}
-.amLibraryListCell td.amImage img {width:200px;height:240px; border:1px solid #fff;}
-.amLibraryListCell td.amBody {height:252px;padding:5px 5px 5px 10px;}
-.amLibraryListCell td.amBody .amHeadline {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:24px;
-	font-weight:bold;
-}
-.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
-.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
-.amLibraryListCell td.amBody .amDescription li {
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size: 12px;
-    line-height: 1.2;
-}
-
-.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody div.amDemoLink a {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-	}
-.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
-	color: #1B75BB;
-	}
-.amLibraryListCell td.amBody div.amHelpLink {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-}
-
-
-.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
-	color: #1B75BB;
-	}
-
-
-
-
-
-
-.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size:14px;
-}
-
-.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
-.amLibraryListCell table {width:100%;padding:0;margin:0;}
-.amLibraryListCell table td {}
-.amLibraryListCell td.amImage {width:202px;height:242px;padding:5px;background-color:#cdc;}
-.amLibraryListCell td.amImage img {width:200px;height:240px; border:1px solid #fff;}
-.amLibraryListCell td.amBody {height:252px;padding:5px 5px 5px 10px;}
-.amLibraryListCell td.amBody .amHeadline {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:24px;
-	font-weight:bold;
-}
-.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
-.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
-.amLibraryListCell td.amBody .amDescription li {
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size: 12px;
-    line-height: 1.2;
-}
-
-.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody div.amDemoLink a {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-	}
-.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
-	color: #1B75BB;
-	}
-.amLibraryListCell td.amBody div.amHelpLink {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-}
-
-
-.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
-	color: #1B75BB;
-	}
-
-]]></Styles>
-		<styleslinkhref></styleslinkhref>
-		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
-	</Addon>
 	<Addon name="Add-on Manager5" guid="{3d643ebd-c482-49ac-99ca-03aabb28ee83}" type="Tool">
 		<Copy></Copy>
 		<CopyText></CopyText>
@@ -326,7 +14,7 @@ end function]]></Code>
 		<HelpLink></HelpLink>
 		<Icon Link="" width="0" height="0" sprites="0" />
 		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
+		<BlockEditTools>Yes</BlockEditTools>
 		<FormXML></FormXML>
 		<IsInline>No</IsInline>
 		<JavascriptInHead></JavascriptInHead>
@@ -370,7 +58,7 @@ end function]]></Code>
 		<HelpLink></HelpLink>
 		<Icon Link="" width="0" height="0" sprites="0" />
 		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
+		<BlockEditTools>Yes</BlockEditTools>
 		<FormXML></FormXML>
 		<IncludeAddon name="addonManager-Includes" guid="{5a7c4d78-b4fb-4cc1-9abc-fa52d0e7714a}"/>
 		<IsInline>No</IsInline>
@@ -411,7 +99,7 @@ end function]]></Code>
 		<HelpLink></HelpLink>
 		<Icon Link="" width="0" height="0" sprites="0" />
 		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
+		<BlockEditTools>Yes</BlockEditTools>
 		<FormXML></FormXML>
 		<IsInline>No</IsInline>
 		<JavascriptInHead></JavascriptInHead>
@@ -728,7 +416,7 @@ end function]]></Code>
 		<HelpLink></HelpLink>
 		<Icon Link="" width="0" height="0" sprites="0" />
 		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
+		<BlockEditTools>Yes</BlockEditTools>
 		<FormXML></FormXML>
 		<IsInline>No</IsInline>
 		<JavascriptInHead></JavascriptInHead>
@@ -768,7 +456,7 @@ end function]]></Code>
 		<HelpLink></HelpLink>
 		<Icon Link="" width="0" height="0" sprites="0" />
 		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
+		<BlockEditTools>Yes</BlockEditTools>
 		<FormXML></FormXML>
 		<IsInline>No</IsInline>
 		<JavascriptInHead></JavascriptInHead>
@@ -1014,86 +702,6 @@ end function]]></Code>
 		<styleslinkhref></styleslinkhref>
 		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
 	</Addon>
-	<Addon name="addonManager-InstallFromLibraryC41" guid="{43810D33-2D31-4636-8A49-28F2305F4223}" type="Add-on">
-		<Copy></Copy>
-		<CopyText></CopyText>
-		<ActiveXProgramID><![CDATA[Installer41.FromLibraryClass]]></ActiveXProgramID>
-		<DotNetClass></DotNetClass>
-		<ArgumentList><![CDATA[collectionGuid=]]></ArgumentList>
-		<AsAjax>No</AsAjax>
-		<Filter>No</Filter>
-		<Help></Help>
-		<HelpLink></HelpLink>
-		<Icon Link="" width="0" height="0" sprites="0" />
-		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
-		<FormXML></FormXML>
-		<IsInline>No</IsInline>
-		<JavascriptInHead></JavascriptInHead>
-		<javascriptForceHead>No</javascriptForceHead>
-		<JSHeadScriptSrc></JSHeadScriptSrc>
-		<!-- deprecated --><JSBodyScriptSrc></JSBodyScriptSrc>
-		<!-- deprecated --><JavascriptBodyEnd></JavascriptBodyEnd>
-		<!-- deprecated --><JavascriptOnLoad></JavascriptOnLoad>
-		<Content>No</Content>
-		<Template>No</Template>
-		<Email>No</Email>
-		<Admin>No</Admin>
-		<OnPageEndEvent>No</OnPageEndEvent>
-		<OnPageStartEvent>No</OnPageStartEvent>
-		<OnBodyStart>No</OnBodyStart>
-		<OnBodyEnd>No</OnBodyEnd>
-		<RemoteMethod>No</RemoteMethod>
-		<ProcessRunOnce>No</ProcessRunOnce>
-		<ProcessInterval>0</ProcessInterval>
-		<MetaDescription></MetaDescription>
-		<OtherHeadTags></OtherHeadTags>
-		<PageTitle></PageTitle>
-		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<styleslinkhref></styleslinkhref>
-		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
-	</Addon>
-	<Addon name="addonManager-InstallFromPhysicalPathC41" guid="{7C96ED03-1266-4FC4-B08A-F290A8CD9CF5}" type="Add-on">
-		<Copy></Copy>
-		<CopyText></CopyText>
-		<ActiveXProgramID><![CDATA[Installer41.FromPhysicalPathClass]]></ActiveXProgramID>
-		<DotNetClass></DotNetClass>
-		<ArgumentList><![CDATA[physicalInstallPath=]]></ArgumentList>
-		<AsAjax>No</AsAjax>
-		<Filter>No</Filter>
-		<Help></Help>
-		<HelpLink></HelpLink>
-		<Icon Link="" width="0" height="0" sprites="0" />
-		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
-		<FormXML></FormXML>
-		<IsInline>No</IsInline>
-		<JavascriptInHead></JavascriptInHead>
-		<javascriptForceHead>No</javascriptForceHead>
-		<JSHeadScriptSrc></JSHeadScriptSrc>
-		<!-- deprecated --><JSBodyScriptSrc></JSBodyScriptSrc>
-		<!-- deprecated --><JavascriptBodyEnd></JavascriptBodyEnd>
-		<!-- deprecated --><JavascriptOnLoad></JavascriptOnLoad>
-		<Content>No</Content>
-		<Template>No</Template>
-		<Email>No</Email>
-		<Admin>No</Admin>
-		<OnPageEndEvent>No</OnPageEndEvent>
-		<OnPageStartEvent>No</OnPageStartEvent>
-		<OnBodyStart>No</OnBodyStart>
-		<OnBodyEnd>No</OnBodyEnd>
-		<RemoteMethod>No</RemoteMethod>
-		<ProcessRunOnce>No</ProcessRunOnce>
-		<ProcessInterval>0</ProcessInterval>
-		<MetaDescription></MetaDescription>
-		<OtherHeadTags></OtherHeadTags>
-		<PageTitle></PageTitle>
-		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<styleslinkhref></styleslinkhref>
-		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
-	</Addon>
 	<Addon name="addonManager-Uninstall" guid="{38798d20-00d3-4131-9ebf-359fd0118e3e}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
@@ -1106,7 +714,7 @@ end function]]></Code>
 		<HelpLink></HelpLink>
 		<Icon Link="" width="0" height="0" sprites="0" />
 		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
+		<BlockEditTools>Yes</BlockEditTools>
 		<FormXML></FormXML>
 		<IncludeAddon name="addonManager-Includes" guid="{5a7c4d78-b4fb-4cc1-9abc-fa52d0e7714a}"/>
 		<IsInline>No</IsInline>
@@ -1147,7 +755,7 @@ end function]]></Code>
 		<HelpLink></HelpLink>
 		<Icon Link="" width="0" height="0" sprites="0" />
 		<InIframe>No</InIframe>
-		<BlockEditTools>No</BlockEditTools>
+		<BlockEditTools>Yes</BlockEditTools>
 		<FormXML></FormXML>
 		<IncludeAddon name="addonManager-Includes" guid="{5a7c4d78-b4fb-4cc1-9abc-fa52d0e7714a}"/>
 		<IsInline>No</IsInline>
@@ -1253,10 +861,41 @@ end function]]></Code>
 			<field name="portalid">{f732f7f1-03ef-4f58-8e2a-f502bde53606}</field>
 			<field name="sortorder"><![CDATA[Add-on Collections]]></field>
 		</record>
-	</data>
+		<record content="Navigator Entries" guid="{DDF28878-71E5-40F4-B97D-3A1C68FEC691}" name="Add-on Manager">
+			<field name="active">True</field>
+			<field name="addonid">{3d643ebd-c482-49ac-99ca-03aabb28ee83}</field>
+			<field name="adminonly">False</field>
+			<field name="contentid"></field>
+			<field name="developeronly">False</field>
+			<field name="helpaddonid"></field>
+			<field name="helpcollectionid"></field>
+			<field name="installedbycollectionid"></field>
+			<field name="linkpage"></field>
+			<field name="navicontitle"></field>
+			<field name="navicontype">3</field>
+			<field name="newwindow">False</field>
+			<field name="parentid">{DBA354AB-5D3E-4882-8718-CF23CAAB7927}</field>
+			<field name="sortorder"></field>
+		</record>
+		<record content="Navigator Entries" guid="{484A20C2-A6DF-491D-8FDF-45B6CBEE1720}" name="Add-on Manager">
+			<field name="active">True</field>
+			<field name="addonid">{3d643ebd-c482-49ac-99ca-03aabb28ee83}</field>
+			<field name="adminonly">False</field>
+			<field name="contentid"></field>
+			<field name="developeronly">False</field>
+			<field name="helpaddonid"></field>
+			<field name="helpcollectionid"></field>
+			<field name="installedbycollectionid"></field>
+			<field name="linkpage"></field>
+			<field name="navicontitle"></field>
+			<field name="navicontype">3</field>
+			<field name="newwindow">False</field>
+			<field name="parentid">{801F1F07-20E6-4A5D-AF26-71007CCB834F}</field>
+			<field name="sortorder"></field>
+		</record>
+</data>
 	<ImportCollection name="Portal Framework">{87249F75-A065-4F2F-8DCD-FBBF2CA0DCCD}</ImportCollection>
 	<Resource name="librarynoimage.jpg" type="www" path="addonmanager" />
-	<Resource name="Installer41.dll" type="executable" path="" />
 	<Resource name="addonManager5.dll" type="executable" path="" />
 	<Resource name="adminFramework.dll" type="executable" path="" />
 	<Resource name="ICSharpCode.SharpZipLib.dll" type="executable" path="" />
