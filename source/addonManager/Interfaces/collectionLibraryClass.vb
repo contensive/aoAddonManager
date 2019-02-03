@@ -446,7 +446,7 @@ Namespace Contensive.Addons.AddonManager
                                                     'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
                                                 Else
                                                     'IsOnServer = kmaEncodeBoolean(InStr(1, OnServerGuidList, CollectionGUID, vbTextCompare))
-                                                    cs.Open("Add-on Collections", GuidFieldName & "=" & cp.Db.EncodeSQLText(CollectionGUID), , , "ID")
+                                                    cs.Open("Add-on Collections", GuidFieldName & "=" & cp.Db.EncodeSQLText(CollectionGUID), "", True, "ID")
                                                     IsOnSite = cs.OK
                                                     Call cs.Close()
                                                     If IsOnSite Then

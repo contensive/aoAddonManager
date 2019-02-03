@@ -285,7 +285,7 @@ Namespace Contensive.Addons.AddonManager
                     '
                     ' Addons
                     '
-                    CS2.Open("Add-ons", "collectionid=" & CollectionID, , , "id")
+                    CS2.Open("Add-ons", "collectionid=" & CollectionID, "name", True, "id")
                     Do While CS2.OK()
                         collectionXml = collectionXml & GetAddonNode(cp, CS2.GetInteger("id"), IncludeModuleGuidList, IncludeSharedStyleGuidList)
                         Call CS2.GoNext()

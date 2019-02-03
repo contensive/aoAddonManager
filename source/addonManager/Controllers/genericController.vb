@@ -106,13 +106,13 @@ Namespace Contensive.Addons.AddonManager
                         ParentNameSpace = Mid(NameSpacex, 1, Pos - 1)
                     End If
                     If ParentNameSpace = "" Then
-                        If cs.Open(ContentName, "(name=" & cp.Db.EncodeSQLText(ParentName) & ")and((parentid is null)or(parentid=0))", "ID", , "ID") Then
+                        If cs.Open(ContentName, "(name=" & cp.Db.EncodeSQLText(ParentName) & ")and((parentid is null)or(parentid=0))", "ID", True, "ID") Then
                             result = cs.GetInteger("ID")
                         End If
                         Call cs.Close()
                     Else
                         ParentID = GetParentIDFromNameSpace(cp, ContentName, ParentNameSpace)
-                        If cs.Open(ContentName, "(name=" & cp.Db.EncodeSQLText(ParentName) & ")and(parentid=" & ParentID & ")", "ID",  , "ID") Then
+                        If cs.Open(ContentName, "(name=" & cp.Db.EncodeSQLText(ParentName) & ")and(parentid=" & ParentID & ")", "ID", True, "ID") Then
                             result = cs.GetInteger("ID")
                         End If
                         Call cs.Close()
