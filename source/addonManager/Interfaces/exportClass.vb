@@ -110,128 +110,73 @@ Namespace Contensive.Addons.AddonManager
         '
         '====================================================================================================
         Private Function GetCollectionZipPathFilename(cp As CPBaseClass, CollectionID As Integer) As String
-            Dim collectionZipPathFilename As String = ""
+            Dim cdnExportZipPathFilename As String = ""
             Try
-                Dim IncludeSharedStyleGuidList As String
-                Dim isUpdatable As Boolean
-                Dim fieldLookupListValue As String = ""
-                Dim FieldValueInteger As Integer
-                Dim FieldLookupContentName As String
-                Dim fieldPtr As Integer
-                Dim fieldCnt As Integer
-                Dim fieldNames() As String = {}
-                Dim fieldTypes() As Integer = {}
-                Dim fieldLookupContent() As String = {}
-                Dim fieldLookupList() As String = {}
-                Dim FieldLookupContentID As Integer
-                Dim Criteria As String
-                Dim supportsGuid As Boolean
-                Dim reload As Boolean
-                Dim ContentID As Integer
-                Dim FieldValue As String
-                Dim FieldTypeNumber As Integer
-                Dim DataRecordList As String
-                Dim DataRecords() As String
-                Dim DataRecord As String
-                Dim DataSplit() As String
-                Dim DataContentName As String
-                Dim DataContentId As Integer
-                Dim DataRecordGuid As String
-                Dim DataRecordName As String
-                Dim TestString As String
-                Dim FieldName As String
-                Dim FieldNodes As String
-                Dim RecordNodes As String
-                Dim Modules() As String
-                Dim ModuleGuid As String
-                Dim Code As String
-                Dim ManualFilename As String = ""
-                Dim ResourceCnt As Integer
-                Dim ContentName As String
-                Dim FileList As String
-                Dim Files() As String
-                Dim Ptr As Integer
-                Dim PathFilename As String
-                Dim Filename As String
-                Dim Path As String
-                Dim Pos As Integer
-                Dim collectionXml As String
-                Dim Node As String
-                Dim CollectionGuid As String
-                Dim Guid As String
-                Dim ArchiveFilename As String
-                Dim ArchivePath As String
-                Dim InstallFilename As String
-                Dim CollectionName As String
-                Dim AddFilename As String
-                Dim PhysicalWWWPath As String
-                Dim CollectionPath As String = ""
-                Dim LastChangeDate As Date
-                Dim AddonPath As String
-                Dim AddFileList As New List(Of String)
-                Dim IncludeModuleGuidList As String = ""
-                Dim ExecFileListNode As String = ""
-                Dim blockNavigatorNode As Boolean
-                Dim CSData As CPCSBaseClass = cp.CSNew()
                 Dim CS As CPCSBaseClass = cp.CSNew()
-                Dim CS2 As CPCSBaseClass = cp.CSNew()
-                Dim CS3 As CPCSBaseClass = cp.CSNew()
-                Dim CSlookup As CPCSBaseClass = cp.CSNew()
-                '
-                IncludeSharedStyleGuidList = ""
-                '
                 CS.OpenRecord("Add-on Collections", CollectionID)
                 If Not CS.OK() Then
                     Call cp.UserError.Add("The collection you selected could not be found")
                 Else
-                    CollectionGuid = CS.GetText("ccGuid")
+                    Dim CollectionGuid As String = CS.GetText("ccGuid")
                     If CollectionGuid = "" Then
                         CollectionGuid = cp.Utils.CreateGuid()
                         Call CS.SetField("ccGuid", CollectionGuid)
                     End If
-                    CollectionName = CS.GetText("name")
+                    Dim CollectionName As String = CS.GetText("name")
+                    Dim isUpdatable As Boolean
                     If Not CS.FieldOK("updatable") Then
                         isUpdatable = True
                     Else
                         isUpdatable = CS.GetBoolean("updatable")
                     End If
+                    Dim blockNavigatorNode As Boolean
                     If Not CS.FieldOK("blockNavigatorNode") Then
                         blockNavigatorNode = False
                     Else
                         blockNavigatorNode = CS.GetBoolean("blockNavigatorNode")
                     End If
-                    collectionXml = "" _
+                    Dim collectionXml As String = "" _
                         & "<?xml version=""1.0"" encoding=""windows-1252""?>" _
                         & vbCrLf & "<Collection name=""" & cp.Utils.EncodeHTML(CollectionName) & """ guid=""" & CollectionGuid & """ system=""" & kmaGetYesNo(cp, CS.GetBoolean("system")) & """ updatable=""" & kmaGetYesNo(cp, isUpdatable) & """ blockNavigatorNode=""" & kmaGetYesNo(cp, blockNavigatorNode) & """>"
                     '
                     ' Archive Filenames
+                    '   copy all files to be included into the cdnExportFilesPath folder
+                    '   build the tmp zip file
+                    '   copy it to the cdnZip file
                     '
-                    'Call Main.testpoint("getCollection, 200")
-                    ArchivePath = cp.Site.PhysicalFilePath & "CollectionExport\"
-                    'Call Main.testpoint("getCollection, 201")
-                    InstallFilename = encodeFilename(cp, CollectionName & ".xml")
-                    'Call Main.testpoint("getCollection, 202")
-                    InstallFilename = ArchivePath & InstallFilename
-                    'Call Main.testpoint("getCollection, 203")
-                    ArchiveFilename = encodeFilename(cp, CollectionName & ".zip")
-                    'Call Main.testpoint("getCollection, 204")
-                    ArchiveFilename = ArchivePath & ArchiveFilename
-                    'Call Main.testpoint("getCollection, 205")
-                    collectionZipPathFilename = "CollectionExport\" & encodeFilename(cp, CollectionName & ".zip")
-                    'Call Main.testpoint("getCollection, 207")
+                    Dim cdnExportPath As String = "CollectionExport\"
+                    Dim cdnExportFilesPath As String = "CollectionExport\src\"
+                    Dim cdnExportXmlPathFilename As String = cdnExportPath & encodeFilename(cp, CollectionName & ".xml")
+                    Dim cdnTempZipPathFilename As String = cdnExportPath & encodeFilename(cp, "temp.zip")
+                    cdnExportZipPathFilename = cdnExportPath & encodeFilename(cp, CollectionName & ".zip")
                     '
                     ' Delete old archive file
-                    '
-                    Call cp.File.Delete(ArchiveFilename)
+                    cp.CdnFiles.DeleteFile(cdnExportXmlPathFilename)
+                    cp.CdnFiles.DeleteFile(cdnTempZipPathFilename)
+                    cp.CdnFiles.DeleteFile(cdnExportZipPathFilename)
                     '
                     '
                     ' Build executable file list Resource Node so executables can be added to addons for Version40compatibility
                     '   but save it for the end, executableFileList
                     '
                     'Call Main.testpoint("getCollection, 400")
-                    AddonPath = cp.Site.PhysicalInstallPath & "\addons\"
-                    FileList = CS.GetText("execFileList")
+                    Dim AddonPath As String = "addons\"
+                    Dim FileList As String = CS.GetText("execFileList")
+                    Dim Path As String
+                    Dim Filename As String
+                    Dim PathFilename As String
+                    Dim Ptr As Integer
+                    Dim Files() As String
+                    Dim ResourceCnt As Integer
+                    'Dim ContentName As String
+                    Dim Pos As Integer
+                    Dim AddFileList As New List(Of String)
+                    'Dim PhysicalWWWPath As String
+                    Dim CollectionPath As String = ""
+                    Dim AddFilename As String
+                    Dim ExecFileListNode As String = ""
                     If FileList <> "" Then
+                        Dim LastChangeDate As Date
                         '
                         ' There are executable files to include in the collection
                         '   If installed, source path is collectionpath, if not installed, collectionpath will be empty
@@ -253,6 +198,7 @@ Namespace Contensive.Addons.AddonManager
                                     Filename = Mid(PathFilename, Pos + 1)
                                     Path = Mid(PathFilename, 1, Pos - 1)
                                 End If
+                                Dim ManualFilename As String = ""
                                 If LCase(Filename) <> LCase(ManualFilename) Then
                                     AddFilename = AddonPath & CollectionPath & Filename
                                     If Not AddFileList.Contains(AddFilename) Then
@@ -270,7 +216,7 @@ Namespace Contensive.Addons.AddonManager
                         ' If no resources were in the collection record, this might be an old installation
                         ' Add all .dll files in the CollectionPath
                         '
-                        ExecFileListNode = ExecFileListNode & AddCompatibilityResources(cp, AddonPath & CollectionPath, ArchiveFilename, "")
+                        ExecFileListNode = ExecFileListNode & AddCompatibilityResources(cp, AddonPath & CollectionPath, cdnTempZipPathFilename, "")
                     End If
                     '
                     ' helpLink
@@ -282,10 +228,13 @@ Namespace Contensive.Addons.AddonManager
                     ' Help
                     '
                     collectionXml = collectionXml & vbCrLf & vbTab & "<Help>" & cp.Utils.EncodeHTML(CS.GetText("Help")) & "</Help>"
+                    Dim CS2 As CPCSBaseClass = cp.CSNew()
                     '
                     ' Addons
                     '
                     CS2.Open("Add-ons", "collectionid=" & CollectionID, "name", True, "id")
+                    Dim IncludeModuleGuidList As String = ""
+                    Dim IncludeSharedStyleGuidList As String = ""
                     Do While CS2.OK()
                         collectionXml = collectionXml & GetAddonNode(cp, CS2.GetInteger("id"), IncludeModuleGuidList, IncludeSharedStyleGuidList)
                         Call CS2.GoNext()
@@ -293,31 +242,31 @@ Namespace Contensive.Addons.AddonManager
                     '
                     ' Data Records
                     '
-                    'Call Main.testpoint("getCollection, 600")
-                    DataRecordList = CS.GetText("DataRecordList")
+                    Dim DataRecordList As String = CS.GetText("DataRecordList")
                     If DataRecordList <> "" Then
-                        DataRecords = Split(DataRecordList, vbCrLf)
-                        RecordNodes = ""
+                        Dim DataRecords() As String = Split(DataRecordList, vbCrLf)
+                        Dim RecordNodes As String = ""
                         For Ptr = 0 To UBound(DataRecords)
-                            FieldNodes = ""
-                            DataRecordName = ""
-                            DataRecordGuid = ""
-                            DataRecord = DataRecords(Ptr)
+                            Dim FieldNodes As String = ""
+                            Dim DataRecordName As String = ""
+                            Dim DataRecordGuid As String = ""
+                            Dim DataRecord As String = DataRecords(Ptr)
                             If DataRecord <> "" Then
-                                DataSplit = Split(DataRecord, ",")
+                                Dim DataSplit() As String = Split(DataRecord, ",")
                                 If UBound(DataSplit) >= 0 Then
-                                    DataContentName = Trim(DataSplit(0))
-                                    DataContentId = cp.Content.GetID(DataContentName)
+                                    Dim DataContentName As String = Trim(DataSplit(0))
+                                    Dim DataContentId As Integer = cp.Content.GetID(DataContentName)
                                     If DataContentId <= 0 Then
                                         RecordNodes = "" _
                                             & RecordNodes _
                                             & vbCrLf & vbTab & "<!-- data missing, content not found during export, content=""" & DataContentName & """ guid=""" & DataRecordGuid & """ name=""" & DataRecordName & """ -->"
                                     Else
-                                        supportsGuid = cp.Content.IsField(DataContentName, "ccguid")
+                                        Dim supportsGuid As Boolean = cp.Content.IsField(DataContentName, "ccguid")
+                                        Dim Criteria As String
                                         If UBound(DataSplit) = 0 Then
                                             Criteria = ""
                                         Else
-                                            TestString = Trim(DataSplit(1))
+                                            Dim TestString As String = Trim(DataSplit(1))
                                             If TestString = "" Then
                                                 '
                                                 ' blank is a select all
@@ -362,6 +311,7 @@ Namespace Contensive.Addons.AddonManager
                                                 Criteria = "name=" & cp.Db.EncodeSQLText(DataRecordName)
                                             End If
                                         End If
+                                        Dim CSData As CPCSBaseClass = cp.CSNew()
                                         If Not CSData.Open(DataContentName, Criteria, "id") Then
                                             RecordNodes = "" _
                                                 & RecordNodes _
@@ -370,14 +320,22 @@ Namespace Contensive.Addons.AddonManager
                                             '
                                             ' determine all valid fields
                                             '
-                                            fieldCnt = 0
+                                            Dim fieldCnt As Integer = 0
                                             Dim Sql As String = "select * from ccFields where contentid=" & DataContentId
                                             Dim csFields As CPCSBaseClass = cp.CSNew()
+                                            Dim fieldLookupListValue As String = ""
+                                            Dim fieldNames() As String = {}
+                                            Dim fieldTypes() As Integer = {}
+                                            Dim fieldLookupContent() As String = {}
+                                            Dim fieldLookupList() As String = {}
+                                            Dim FieldLookupContentName As String
+                                            Dim FieldTypeNumber As Integer
+                                            Dim FieldName As String
                                             If csFields.Open("content fields", "contentid=" & DataContentId) Then
                                                 Do
                                                     FieldName = csFields.GetText("name")
                                                     If FieldName <> "" Then
-                                                        FieldLookupContentID = 0
+                                                        Dim FieldLookupContentID As Integer = 0
                                                         FieldLookupContentName = ""
                                                         FieldTypeNumber = csFields.GetInteger("type")
                                                         Select Case LCase(FieldName)
@@ -428,9 +386,12 @@ Namespace Contensive.Addons.AddonManager
                                                         Call CSData.SetField("ccGuid", DataRecordGuid)
                                                     End If
                                                 End If
+                                                Dim fieldPtr As Integer
                                                 For fieldPtr = 0 To fieldCnt - 1
                                                     FieldName = fieldNames(fieldPtr)
                                                     FieldTypeNumber = cp.Utils.EncodeInteger(fieldTypes(fieldPtr))
+                                                    'Dim ContentID As Integer
+                                                    Dim FieldValue As String
                                                     Select Case FieldTypeNumber
                                                         Case FieldTypeBoolean
                                                             '
@@ -463,7 +424,7 @@ Namespace Contensive.Addons.AddonManager
                                                             ' lookup
                                                             '
                                                             FieldValue = ""
-                                                            FieldValueInteger = CSData.GetInteger(FieldName)
+                                                            Dim FieldValueInteger As Integer = CSData.GetInteger(FieldName)
                                                             If (FieldValueInteger <> 0) Then
                                                                 FieldLookupContentName = fieldLookupContent(fieldPtr)
                                                                 fieldLookupListValue = fieldLookupList(fieldPtr)
@@ -472,6 +433,7 @@ Namespace Contensive.Addons.AddonManager
                                                                     ' content lookup
                                                                     '
                                                                     If cp.Content.IsField(FieldLookupContentName, "ccguid") Then
+                                                                        Dim CSlookup As CPCSBaseClass = cp.CSNew()
                                                                         Call CSlookup.OpenRecord(FieldLookupContentName, FieldValueInteger)
                                                                         If CSlookup.OK() Then
                                                                             FieldValue = CSlookup.GetText("ccguid")
@@ -519,12 +481,13 @@ Namespace Contensive.Addons.AddonManager
                                 & vbCrLf & vbTab & "</data>"
                         End If
                     End If
+                    Dim Node As String
                     '
                     ' CDef
                     '
                     'Call Main.testpoint("getCollection, 700")
                     For Each content As Models.ContentModel In Models.ContentModel.createListFromCollection(cp, CollectionID)
-                        reload = False
+                        Dim reload As Boolean = False
                         If (String.IsNullOrEmpty(content.ccguid)) Then
                             content.ccguid = cp.Utils.CreateGuid()
                             content.save(cp)
@@ -551,13 +514,13 @@ Namespace Contensive.Addons.AddonManager
                     'Call Main.testpoint("getCollection, 800")
 
                     If IncludeModuleGuidList <> "" Then
-                        Modules = Split(IncludeModuleGuidList, vbCrLf)
+                        Dim Modules() As String = Split(IncludeModuleGuidList, vbCrLf)
                         For Ptr = 0 To UBound(Modules)
-                            ModuleGuid = Modules(Ptr)
+                            Dim ModuleGuid As String = Modules(Ptr)
                             If ModuleGuid <> "" Then
                                 CS2.Open("Scripting Modules", "ccguid=" & cp.Db.EncodeSQLText(ModuleGuid))
                                 If CS2.OK() Then
-                                    Code = Trim(CS2.GetText("code"))
+                                    Dim Code As String = Trim(CS2.GetText("code"))
                                     Code = EncodeCData(cp, Code)
                                     collectionXml = collectionXml & vbCrLf & vbTab & "<ScriptingModule Name=""" & cp.Utils.EncodeHTML(CS2.GetText("name")) & """ guid=""" & ModuleGuid & """>" & Code & "</ScriptingModule>"
                                 End If
@@ -596,11 +559,12 @@ Namespace Contensive.Addons.AddonManager
                     ' Import Collections
                     '
                     Node = ""
+                    Dim CS3 As CPCSBaseClass = cp.CSNew()
                     If CS3.Open("Add-on Collection Parent Rules", "parentid=" & CollectionID) Then
                         Do
                             CS2.OpenRecord("Add-on Collections", CS3.GetInteger("childid"))
                             If CS2.OK() Then
-                                Guid = CS2.GetText("ccGuid")
+                                Dim Guid As String = CS2.GetText("ccGuid")
                                 If Guid = "" Then
                                     Guid = cp.Utils.CreateGuid()
                                     Call CS2.SetField("ccGuid", Guid)
@@ -619,10 +583,6 @@ Namespace Contensive.Addons.AddonManager
                     ResourceCnt = 0
                     FileList = CS.GetText("wwwFileList")
                     If FileList <> "" Then
-                        PhysicalWWWPath = cp.Site.PhysicalWWWPath
-                        If Right(PhysicalWWWPath, 1) <> "\" Then
-                            PhysicalWWWPath = PhysicalWWWPath & "\"
-                        End If
                         Files = Split(FileList, vbCrLf)
                         For Ptr = 0 To UBound(Files)
                             PathFilename = Files(Ptr)
@@ -641,11 +601,13 @@ Namespace Contensive.Addons.AddonManager
                                     '
                                 Else
                                     PathFilename = Replace(PathFilename, "/", "\")
-                                    AddFilename = PhysicalWWWPath & PathFilename
+                                    AddFilename = PathFilename
                                     If AddFileList.Contains(AddFilename) Then
                                         Call cp.UserError.Add("There was an error exporting this collection because there were multiple files with the same filename [" & Filename & "]")
                                     Else
-                                        AddFileList.Add(AddFilename)
+                                        IO.File.Copy(cp.WwwFiles.)
+                                        cp.WwwFiles.Copy(AddFilename, cdnExportFilesPath & Filename, cp.CdnFiles)
+                                        AddFileList.Add(cdnExportFilesPath & Filename)
                                         collectionXml = collectionXml & vbCrLf & vbTab & "<Resource name=""" & cp.Utils.EncodeHTML(Filename) & """ type=""www"" path=""" & cp.Utils.EncodeHTML(Path) & """ />"
                                     End If
                                     ResourceCnt = ResourceCnt + 1
@@ -674,7 +636,7 @@ Namespace Contensive.Addons.AddonManager
                                 If Left(PathFilename, 1) = "\" Then
                                     PathFilename = Mid(PathFilename, 2)
                                 End If
-                                AddFilename = cp.Site.PhysicalFilePath & PathFilename
+                                AddFilename = PathFilename
                                 If AddFileList.Contains(AddFilename) Then
                                     Call cp.UserError.Add("There was an error exporting this collection because there were multiple files with the same filename [" & Filename & "]")
                                 Else
@@ -702,17 +664,17 @@ Namespace Contensive.Addons.AddonManager
                     '
                     ' Save the installation file and add it to the archive
                     '
-                    Call cp.File.Save(InstallFilename, collectionXml)
-                    If Not AddFileList.Contains(InstallFilename) Then
-                        AddFileList.Add(InstallFilename)
+                    Call cp.CdnFiles.Save(cdnExportXmlPathFilename, collectionXml)
+                    If Not AddFileList.Contains(cdnExportXmlPathFilename) Then
+                        AddFileList.Add(cdnExportXmlPathFilename)
                     End If
-                    Call zipFile(cp, ArchiveFilename, AddFileList)
-                    'Call runAtServer("zipfile", "archive=" & kmaEncodeRequestVariable(ArchiveFilename) & "&add=" & kmaEncodeRequestVariable("@" & AddFileListFilename))
+                    Call zipTempCdnFile(cp, cdnTempZipPathFilename, AddFileList)
+                    cp.CdnFiles.Copy(cdnTempZipPathFilename, cdnExportZipPathFilename)
                 End If
             Catch ex As Exception
                 errorReport(cp, ex, "GetCollection")
             End Try
-            Return collectionZipPathFilename
+            Return cdnExportZipPathFilename
         End Function
         '
         '====================================================================================================
@@ -1290,7 +1252,7 @@ Namespace Contensive.Addons.AddonManager
         ''' <param name="archivePathFilename"></param>
         ''' <param name="addPathFilename"></param>
         ''' <remarks></remarks>
-        Public Sub zipFile(cp As CPBaseClass, archivePathFilename As String, ByVal addPathFilename As List(Of String))
+        Public Sub zipTempCdnFile(cp As CPBaseClass, archivePathFilename As String, ByVal addPathFilename As List(Of String))
             Try
                 '
                 'Dim fastZip As FastZip = New ICSharpCode.SharpZipLib.Zip.FastZip()
