@@ -7,7 +7,7 @@ Imports System.Collections.Generic
 Imports System.Text
 Imports Contensive.BaseClasses
 
-Namespace Contensive.Addons.AddonManager
+Namespace Contensive.Addons.AddonManager51
     Module genericController
         '
         Public Function kmaIndent(source As String) As String

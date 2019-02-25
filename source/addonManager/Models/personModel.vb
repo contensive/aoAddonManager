@@ -7,7 +7,7 @@ Imports System.Collections.Generic
 Imports System.Text
 Imports Contensive.BaseClasses
 
-Namespace Contensive.Addons.AddonManager.Models
+Namespace Contensive.Addons.AddonManager51.Models
     Public Class personModel
         Inherits baseModel
         Implements ICloneable

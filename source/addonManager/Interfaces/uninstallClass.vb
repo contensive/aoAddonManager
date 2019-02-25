@@ -7,7 +7,7 @@ Imports System.Collections.Generic
 Imports System.Text
 Imports Contensive.BaseClasses
 
-Namespace Contensive.Addons.AddonManager
+Namespace Contensive.Addons.AddonManager51
     '
     ' Sample Vb addon
     '
@@ -117,8 +117,8 @@ Namespace Contensive.Addons.AddonManager
                         ButtonList = ButtonCancel
                         BodyHTML = cp.Html.p("You must be an administrator to use this tool.")
                     Else
-                        installFolder = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "")
-                        InstallPath = cp.Site.PhysicalFilePath & installFolder & "\"
+                        'installFolder = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "")
+                        'InstallPath = cp.Site.PhysicalFilePath & installFolder & "\"
                         If (Button = ButtonOK) Then
                             '
                             '---------------------------------------------------------------------------------------------

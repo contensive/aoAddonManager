@@ -7,7 +7,7 @@ Imports System.Collections.Generic
 Imports System.Text
 Imports Contensive.BaseClasses
 
-Namespace Contensive.Addons.AddonManager
+Namespace Contensive.Addons.AddonManager51
     Public Class xmlController
         '
         '========================================================================
@@ -430,28 +430,28 @@ Namespace Contensive.Addons.AddonManager
                                         If (contents.ContainsKey(RecordID)) Then
                                             RecordName = contents(RecordID)
                                         End If
-                                        sb.Append(" LookupContent=""" & cp.Utils.EncodeHTML(RecordName) & """")
+                                        sb.Append(" LookupContent=""" & System.Net.WebUtility.HtmlEncode(RecordName) & """")
                                         '
                                         RecordName = ""
                                         RecordID = CFields.GetInteger("RedirectContentID")
                                         If (contents.ContainsKey(RecordID)) Then
                                             RecordName = contents(RecordID)
                                         End If
-                                        sb.Append(" RedirectContent=""" & cp.Utils.EncodeHTML(RecordName) & """")
+                                        sb.Append(" RedirectContent=""" & System.Net.WebUtility.HtmlEncode(RecordName) & """")
                                         '
                                         RecordName = ""
                                         RecordID = CFields.GetInteger("ManyToManyContentID")
                                         If (contents.ContainsKey(RecordID)) Then
                                             RecordName = contents(RecordID)
                                         End If
-                                        sb.Append(" ManyToManyContent=""" & cp.Utils.EncodeHTML(RecordName) & """")
+                                        sb.Append(" ManyToManyContent=""" & System.Net.WebUtility.HtmlEncode(RecordName) & """")
                                         '
                                         RecordName = ""
                                         RecordID = CFields.GetInteger("ManyToManyRuleContentID")
                                         If (contents.ContainsKey(RecordID)) Then
                                             RecordName = contents(RecordID)
                                         End If
-                                        sb.Append(" ManyToManyRuleContent=""" & cp.Utils.EncodeHTML(RecordName) & """")
+                                        sb.Append(" ManyToManyRuleContent=""" & System.Net.WebUtility.HtmlEncode(RecordName) & """")
                                         '
                                         sb.Append(" >")
                                         '
@@ -759,7 +759,7 @@ Namespace Contensive.Addons.AddonManager
         '
         '
         Private Function EncodeXMLattribute(ByVal Source As String) As String
-            EncodeXMLattribute = cp.Utils.EncodeHTML(Source)
+            EncodeXMLattribute = System.Net.WebUtility.HtmlEncode(Source)
             EncodeXMLattribute = Replace(EncodeXMLattribute, vbCrLf, " ")
             EncodeXMLattribute = Replace(EncodeXMLattribute, vbCr, "")
             EncodeXMLattribute = Replace(EncodeXMLattribute, vbLf, "")

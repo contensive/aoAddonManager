@@ -2,7 +2,7 @@
 Option Explicit On
 Option Strict On
 
-Namespace Contensive.Addons.AddonManager
+Namespace Contensive.Addons.AddonManager51
     Public Module constants
         '
         Public Const cr As String = vbCrLf

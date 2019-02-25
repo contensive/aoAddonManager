@@ -6,7 +6,7 @@ Imports System.Text
 Imports Contensive.BaseClasses
 Imports ICSharpCode.SharpZipLib
 
-Namespace Contensive.Addons.AddonManager
+Namespace Contensive.Addons.AddonManager51
     Public Class iisRecycleClass
         Inherits AddonBaseClass
         '

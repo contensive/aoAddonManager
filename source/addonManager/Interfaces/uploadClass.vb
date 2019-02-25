@@ -4,7 +4,7 @@ Imports System.Collections.Generic
 Imports System.Text
 Imports Contensive.BaseClasses
 
-Namespace Contensive.Addons.AddonManager
+Namespace Contensive.Addons.AddonManager51
     '
     Public Class uploadClass
         Inherits AddonBaseClass
@@ -66,45 +66,23 @@ Namespace Contensive.Addons.AddonManager
                                 '
                                 ' -- Reinstall core collection
                                 Call cp.Content.Delete("Add-on Collections", "ccguid='{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}'")
-                                If (cp.Version < "5") Then
-                                    '
-                                    ' -- use v4 methods, [addonManager-InstallFromLibraryC41]
-                                    cp.Doc.SetProperty("collectionGuid", "{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}")
-                                    If (Not cp.Utils.EncodeBoolean(cp.Utils.ExecuteAddon(legacyMethodInstallFromLibraryC41))) Then
-                                        form.description &= cp.Html.p("ERROR: There was an unknown error installing the collection. Details are in the server log file(s).")
-                                    End If
-                                Else
-                                    '
-                                    ' -- use v5 method
-                                    Dim ErrorMessage As String = ""
-                                    If (Not v5InstallController.installCollectionFromLibrary(cp, "{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}", ErrorMessage)) Then
-                                        form.description &= cp.Html.p("ERROR: " & ErrorMessage)
-                                    End If
+                                '
+                                ' -- use v5 method
+                                Dim ErrorMessage As String = ""
+                                If (Not v5InstallController.installCollectionFromLibrary(cp, "{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}", ErrorMessage)) Then
+                                    form.description &= cp.Html.p("ERROR: " & ErrorMessage)
                                 End If
                             End If
                             Dim uploadFilename As String = cp.Doc.GetText(rnUploadCollectionFile)
                             If (Not String.IsNullOrEmpty(uploadFilename)) Then
-                                If (cp.Version < "5") Then
-                                    '
-                                    ' -- version 4.1
-                                    Dim InstallPath As String = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "") & "\"
-                                    cp.Html.ProcessInputFile(rnUploadCollectionFile, InstallPath)
-                                    cp.Doc.SetProperty("physicalInstallPath", cp.Site.PhysicalFilePath & InstallPath)
-                                    If cp.Utils.EncodeBoolean(cp.Utils.ExecuteAddon(legacyMethodInstallFromPhysicalInstallPathC41)) Then
-                                        form.body &= cp.Html.p("Installed collection files.")
-                                    Else
-                                        form.body &= cp.Html.p("Error installing collection files.")
-                                    End If
+                                '
+                                ' -- version 5.0, separate class so this project can be built with contensive 5.0 reference, but run against contensive 4.1
+                                Dim ErrorMessage As String = ""
+                                If (v5InstallController.installCollectionFromUpload(cp, rnUploadCollectionFile, ErrorMessage)) Then
+                                    cp.Addon.ExecuteAsync(iisRecycleAddonGuid)
+                                    form.body &= cp.Html.p("Installed collection files, iis will recycle in the next few seconds.")
                                 Else
-                                    '
-                                    ' -- version 5.0, separate class so this project can be built with contensive 5.0 reference, but run against contensive 4.1
-                                    Dim ErrorMessage As String = ""
-                                    If (v5InstallController.installCollectionFromUpload(cp, rnUploadCollectionFile, ErrorMessage)) Then
-                                        cp.Utils.ExecuteAddonAsProcess(iisRecycleAddonGuid)
-                                        form.body &= cp.Html.p("Installed collection files, iis will recycle in the next few seconds.")
-                                    Else
-                                        form.body &= cp.Html.p("Error installing collection files, ERROR: " & ErrorMessage)
-                                    End If
+                                    form.body &= cp.Html.p("Error installing collection files, ERROR: " & ErrorMessage)
                                 End If
                             End If
                         End If

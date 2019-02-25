@@ -8,7 +8,7 @@ Imports System.Text
 Imports Contensive.BaseClasses
 Imports System.Reflection
 
-Namespace Contensive.Addons.AddonManager.Models
+Namespace Contensive.Addons.AddonManager51.Models
     Public MustInherit Class baseModel
         '
         '====================================================================================================

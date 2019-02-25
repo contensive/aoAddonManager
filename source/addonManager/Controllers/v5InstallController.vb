@@ -7,13 +7,12 @@ Imports System.Collections.Generic
 Imports System.Text
 Imports Contensive.BaseClasses
 
-Namespace Contensive.Addons.AddonManager
+Namespace Contensive.Addons.AddonManager51
     Public Class v5InstallController
         '
         ' -- method provided here because these methods are not included in the c41 interface, so this call can only be created if v5 code
         Public Shared Function installCollectionFromLibrary(cp As CPBaseClass, collectionGuid As String, ByRef ErrorMessage As String) As Boolean
-            cp.Utils.installCollectionFromLibrary(collectionGuid)
-            ErrorMessage = ""
+            cp.Addon.InstallCollectionFromLibrary(collectionGuid, ErrorMessage)
             Return True
         End Function
         '
@@ -23,8 +22,7 @@ Namespace Contensive.Addons.AddonManager
             cp.Utils.AppendLog("installCollectionFromFolder, privatePathFilename [" & privatePathFilename & "]")
             '
             Try
-                Dim taskId As Integer = cp.Utils.installCollectionFromFile(privatePathFilename)
-                ErrorMessage = ""
+                Return cp.Addon.InstallCollectionFile(privatePathFilename, ErrorMessage)
             Catch ex As Exception
                 cp.Site.ErrorReport(ex)
             End Try
@@ -40,7 +38,7 @@ Namespace Contensive.Addons.AddonManager
                 Dim privatePath As String = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "") & "\"
 
                 Dim uploadFilename As String = ""
-                If cp.PrivateFiles.saveUpload(requestName, privatePath, uploadFilename) Then
+                If cp.PrivateFiles.SaveUpload(requestName, privatePath, uploadFilename) Then
                     Return installCollectionFromFolder(cp, privatePath & uploadFilename, ErrorMessage)
                 End If
             Catch ex As Exception

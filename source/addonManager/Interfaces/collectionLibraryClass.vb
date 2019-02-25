@@ -9,7 +9,7 @@ Imports Contensive.BaseClasses
 Imports System.Xml
 Imports adminFramework
 
-Namespace Contensive.Addons.AddonManager
+Namespace Contensive.Addons.AddonManager51
     '
     ' Sample Vb addon
     '
@@ -166,16 +166,9 @@ Namespace Contensive.Addons.AddonManager
                                 LibGuids = Split(InstallLibCollectionList, ",")
                                 cnt = UBound(LibGuids) + 1
                                 For Ptr = 0 To cnt - 1
-                                    If (cp.Version < "5") Then
-                                        '
-                                        ' -- use [addonManager-InstallFromLibraryC41]
-                                        cp.Doc.SetProperty("collectionGuid", LibGuids(Ptr))
-                                        UpgradeOK = cp.Utils.EncodeBoolean(cp.Utils.ExecuteAddon(legacyMethodInstallFromLibraryC41))
-                                    Else
-                                        '
-                                        ' -- use v5 method
-                                        UpgradeOK = v5InstallController.installCollectionFromLibrary(cp, LibGuids(Ptr), ErrorMessage)
-                                    End If
+                                    '
+                                    ' -- use v5 method
+                                    UpgradeOK = v5InstallController.installCollectionFromLibrary(cp, LibGuids(Ptr), ErrorMessage)
                                 Next
                             End If
 
