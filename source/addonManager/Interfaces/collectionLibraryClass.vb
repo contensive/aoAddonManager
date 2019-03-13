@@ -342,16 +342,17 @@ Namespace Contensive.Addons.AddonManager51
                                 '
                                 RowPtr = 0
                                 'Content = ""
-                                cellTemplate = getLayout(cp, guidAddonManagerLibraryListCell, "Addon Manager Library List Cell")
+                                Dim cellTemplate As String = My.Resources.AddonManagerLibraryListCell
                                 For Each CDef_Node As Xml.XmlNode In LibCollections.DocumentElement.ChildNodes
-                                    Cell = cellTemplate
-                                    CollectionImageLink = ""
-                                    CollectionCheckbox = ""
-                                    CollectionName = ""
-                                    CollectionLastChangeDate = ""
-                                    CollectionDescription = ""
-                                    CollectionHelpLink = ""
-                                    CollectionDemoLink = ""
+                                    Dim Cell As String = cellTemplate
+                                    Dim CollectionImageLink As String = ""
+                                    Dim CollectionCheckbox As String = ""
+                                    Dim CollectionName As String = ""
+                                    Dim CollectionLastChangeDate As Date = Date.MinValue
+                                    Dim CollectionLastChangeDateCaption As String = ""
+                                    Dim CollectionDescription As String = ""
+                                    Dim CollectionHelpLink As String = ""
+                                    Dim CollectionDemoLink As String = ""
                                     Select Case LCase(CDef_Node.Name)
                                         Case "collection"
                                             '
@@ -403,21 +404,22 @@ Namespace Contensive.Addons.AddonManager51
                                                         '
                                                         ' Version
                                                         '
-                                                        CollectionLastChangeDate = CollectionNode.InnerText
-                                                        If IsDate(CollectionLastChangeDate) Then
-                                                            DateValue = CDate(CollectionLastChangeDate)
-                                                            CollectionLastChangeDate = DateValue.Date.ToShortDateString
+                                                        CollectionLastChangeDate = Date.MinValue
+                                                        If IsDate(CollectionNode.InnerText) Then
+                                                            CollectionLastChangeDate = CDate(CollectionNode.InnerText)
                                                         End If
-                                                        If CollectionLastChangeDate = "" Then
-                                                            CollectionLastChangeDate = "unknown"
+                                                        If (CollectionLastChangeDate <= Date.MinValue) Then
+                                                            CollectionLastChangeDateCaption = "unknown"
+                                                        Else
+                                                            CollectionLastChangeDateCaption = CollectionLastChangeDate.Date.ToShortDateString
                                                         End If
                                                 End Select
                                             Next
                                             If CollectionImageLink = "" Then
                                                 CollectionImageLink = "/addonManager/libraryNoImage.jpg"
                                             End If
-                                            If CollectionLastChangeDate = "" Then
-                                                CollectionLastChangeDate = "unknown"
+                                            If CollectionLastChangeDateCaption = "" Then
+                                                CollectionLastChangeDateCaption = "unknown"
                                             End If
                                             If CollectionDescription = "" Then
                                                 CollectionDescription = "No description is available for this add-on collection."
@@ -438,51 +440,30 @@ Namespace Contensive.Addons.AddonManager51
                                                     'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
                                                     'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
                                                 Else
-                                                    'IsOnServer = kmaEncodeBoolean(InStr(1, OnServerGuidList, CollectionGUID, vbTextCompare))
-                                                    cs.Open("Add-on Collections", GuidFieldName & "=" & cp.Db.EncodeSQLText(CollectionGUID), "", True, "ID")
-                                                    IsOnSite = cs.OK
+                                                    Dim cs As CPCSBaseClass = cp.CSNew
+                                                    Dim modifiedDate As Date = Date.MinValue
+                                                    Dim IsOnSite As Boolean = False
+                                                    If cs.Open("Add-on Collections", GuidFieldName & "=" & cp.Db.EncodeSQLText(CollectionGUID), "", True, "ID,ModifiedDate") Then
+                                                        modifiedDate = cs.GetDate("ModifiedDate")
+                                                        IsOnSite = True
+                                                    End If
                                                     Call cs.Close()
-                                                    If IsOnSite Then
+                                                    CollectionCheckbox = "<input TYPE=""CheckBox"" NAME=""LibraryRow"" VALUE=""" & RowPtr & """ onClick=""clearLibraryRows('" & RowPtr & "');"">" & cp.Html.Hidden("LibraryRowGuid" & RowPtr, CollectionGUID) & cp.Html.Hidden("LibraryRowName" & RowPtr, CollectionName)
+                                                    If (Not IsOnSite) Then
                                                         '
-                                                        ' Already installed
-                                                        '
+                                                        ' -- not installed
                                                         showAddon = True
-                                                        CollectionCheckbox = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""1"" disabled>&nbsp;Already installed."
-                                                        'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""1"" disabled>"
-                                                        'Cells3(RowPtr, 1) = CollectionName & "&nbsp;(installed already)"
-                                                        'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
-                                                        'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
-                                                    ElseIf ((CollectionContensiveVersion <> "") And (CollectionContensiveVersion > cp.Version)) Then
+                                                        CollectionCheckbox &= "&nbsp;Install"
+                                                    ElseIf (IsOnSite And (modifiedDate >= CollectionLastChangeDate)) Then
                                                         '
-                                                        ' wrong version
-                                                        '
+                                                        ' -- up to date, reinstall
                                                         showAddon = True
-                                                        CollectionCheckbox = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>&nbsp;Disabled because this server needs to be upgraded. Contensive v" & CollectionContensiveVersion & " is required."
-                                                        'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>"
-                                                        'Cells3(RowPtr, 1) = CollectionName & "&nbsp;(Contensive v" & CollectionContensiveVersion & " needed)"
-                                                        'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
-                                                        'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
-                                                        'ElseIf Not DbUpToDate Then
-                                                        '    '
-                                                        '    ' Site needs to by upgraded
-                                                        '    '
-                                                        '    showAddon = True
-                                                        '    CollectionCheckbox = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>&nbsp;Disabled because this website database needs to be upgraded."
-                                                        '    CollectionName = CollectionName
-                                                        '    'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>"
-                                                        '    'Cells3(RowPtr, 1) = CollectionName & "&nbsp;(install disabled)"
-                                                        '    'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
-                                                        '    'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
-                                                    Else
+                                                        CollectionCheckbox &= "&nbsp;Reinstall"
+                                                    ElseIf (IsOnSite And (modifiedDate >= CollectionLastChangeDate)) Then
                                                         '
-                                                        ' Not installed yet
-                                                        '
+                                                        ' -- old version, upgrade
                                                         showAddon = True
-                                                        CollectionCheckbox = "<input TYPE=""CheckBox"" NAME=""LibraryRow"" VALUE=""" & RowPtr & """ onClick=""clearLibraryRows('" & RowPtr & "');"">" & cp.Html.Hidden("LibraryRowGuid" & RowPtr, CollectionGUID) & cp.Html.Hidden("LibraryRowName" & RowPtr, CollectionName) & "&nbsp;Install"
-                                                        'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow"" VALUE=""" & RowPtr & """ onClick=""clearLibraryRows('" & RowPtr & "');"">" & cp.html.Hidden("LibraryRowGuid" & RowPtr, CollectionGUID) & cp.html.Hidden("LibraryRowName" & RowPtr, CollectionName)
-                                                        'Cells3(RowPtr, 1) = CollectionName & "&nbsp;"
-                                                        'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
-                                                        'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
+                                                        CollectionCheckbox &= "&nbsp;Upgrade"
                                                     End If
                                                 End If
                                             End If
@@ -496,7 +477,7 @@ Namespace Contensive.Addons.AddonManager51
                                                 Cell = Replace(Cell, "##imageLink##", CollectionImageLink)
                                                 Cell = Replace(Cell, "##checkbox##", CollectionCheckbox)
                                                 Cell = Replace(Cell, "##name##", CollectionName)
-                                                Cell = Replace(Cell, "##date##", CollectionLastChangeDate)
+                                                Cell = Replace(Cell, "##date##", CollectionLastChangeDateCaption)
                                                 Cell = Replace(Cell, "##description##", CollectionDescription)
                                                 BodyHTML = BodyHTML & Cell
                                             End If

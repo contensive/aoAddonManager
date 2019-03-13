@@ -22,7 +22,7 @@ Namespace My.Resources
     '''<summary>
     '''  A strongly-typed resource class, for looking up localized strings, etc.
     '''</summary>
-    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0"),  _
+    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0"),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
      Global.Microsoft.VisualBasic.HideModuleNameAttribute()>  _
@@ -58,6 +58,30 @@ Namespace My.Resources
             Set
                 resourceCulture = value
             End Set
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to &lt;div class=&quot;amLibraryListCell&quot;&gt;
+        '''			&lt;table&gt;
+        '''				&lt;tbody&gt;
+        '''					&lt;tr&gt;
+        '''						&lt;td class=&quot;amImage&quot;&gt;&lt;img src=&quot;##imageLink##&quot; data-image=&quot;la3p7077q2lx&quot;&gt;&lt;/td&gt;
+        '''						&lt;td class=&quot;amBody&quot;&gt;
+        '''							&lt;div class=&quot;amHeadline&quot;&gt;##name##&lt;/div&gt;
+        '''							&lt;div class=&quot;amButton&quot;&gt;##button##&lt;/div&gt;
+        '''							&lt;div class=&quot;amCheckbox&quot;&gt;##checkbox##&lt;/div&gt;
+        '''							&lt;div class=&quot;amDate&quot;&gt;Last updated: ##date##&lt;/div&gt;
+        '''							&lt;div class=&quot;amDescription&quot;&gt;##description##&lt;/div&gt;
+        '''						&lt;/td&gt;
+        '''					&lt;/tr&gt;
+        '''				&lt;/tbody&gt;
+        '''			&lt;/table&gt;
+        '''&lt;/div&gt;.
+        '''</summary>
+        Friend ReadOnly Property AddonManagerLibraryListCell() As String
+            Get
+                Return ResourceManager.GetString("AddonManagerLibraryListCell", resourceCulture)
+            End Get
         End Property
     End Module
 End Namespace
