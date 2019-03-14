@@ -301,12 +301,12 @@ Namespace Contensive.Addons.AddonManager
                                                         ' -- not installed
                                                         showAddon = True
                                                         CollectionCheckbox &= "&nbsp;Install"
-                                                    ElseIf (IsOnSite And (modifiedDate >= CollectionLastChangeDate)) Then
+                                                    ElseIf (modifiedDate >= CollectionLastChangeDate) Then
                                                         '
                                                         ' -- up to date, reinstall
                                                         showAddon = True
                                                         CollectionCheckbox &= "&nbsp;Reinstall"
-                                                    ElseIf (IsOnSite And (modifiedDate >= CollectionLastChangeDate)) Then
+                                                    Else
                                                         '
                                                         ' -- old version, upgrade
                                                         showAddon = True
