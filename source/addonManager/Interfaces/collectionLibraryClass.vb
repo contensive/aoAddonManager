@@ -75,26 +75,26 @@ Namespace Contensive.Addons.AddonManager51
                 '
                 Dim form As New formSimpleClass
                 Dim showAddon As Boolean
-                Dim cellTemplate As String
-                Dim Cell As String
-                Dim CollectionCheckbox As String
-                Dim IsOnSite As Boolean
+                'Dim cellTemplate As String
+                'Dim Cell As String
+                'Dim CollectionCheckbox As String
+                'Dim IsOnSite As Boolean
                 'Dim DisplaySystem As Boolean
                 Dim DbUpToDate As Boolean
                 Dim GuidFieldName As String
-                Dim DateValue As Date
+                'Dim DateValue As Date
                 Dim ErrorMessage As String = ""
                 Dim UpgradeOK As Boolean
                 Dim LibCollections As Xml.XmlDocument
                 Dim installFolder As String
                 Dim LibGuids() As String
-                Dim CollectionName As String
+                'Dim CollectionName As String
                 Dim CollectionGUID As String = ""
                 Dim CollectionVersion As String
-                Dim CollectionDescription As String
-                Dim CollectionImageLink As String
+                'Dim CollectionDescription As String
+                'Dim CollectionImageLink As String
                 Dim CollectionContensiveVersion As String = ""
-                Dim CollectionLastChangeDate As String
+                'Dim CollectionLastChangeDate As String
                 Dim cnt As Integer
                 Dim Ptr As Integer
                 Dim RowPtr As Integer
@@ -106,7 +106,7 @@ Namespace Contensive.Addons.AddonManager51
                 Dim ColSortable() As Boolean
                 Dim PreTableCopy As String
                 Dim BodyHTML As String = ""
-                Dim cs As CPCSBaseClass = cp.CSNew
+                'Dim cs As CPCSBaseClass = cp.CSNew
                 Dim UserError As String
                 Dim Button As String
                 Dim ButtonList As String
@@ -118,8 +118,8 @@ Namespace Contensive.Addons.AddonManager51
                 Dim InstallLibCollectionList As String = ""
                 Dim InstallPath As String
                 Dim SiteKey As String
-                Dim CollectionHelpLink As String
-                Dim CollectionDemoLink As String
+                'Dim CollectionHelpLink As String
+                'Dim CollectionDemoLink As String
                 '
                 SiteKey = cp.Site.GetText("sitekey", "")
                 If SiteKey = "" Then
@@ -454,12 +454,12 @@ Namespace Contensive.Addons.AddonManager51
                                                         ' -- not installed
                                                         showAddon = True
                                                         CollectionCheckbox &= "&nbsp;Install"
-                                                    ElseIf (IsOnSite And (modifiedDate >= CollectionLastChangeDate)) Then
+                                                    ElseIf (modifiedDate >= CollectionLastChangeDate) Then
                                                         '
                                                         ' -- up to date, reinstall
                                                         showAddon = True
                                                         CollectionCheckbox &= "&nbsp;Reinstall"
-                                                    ElseIf (IsOnSite And (modifiedDate >= CollectionLastChangeDate)) Then
+                                                    Else
                                                         '
                                                         ' -- old version, upgrade
                                                         showAddon = True
