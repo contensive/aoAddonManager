@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="windows-1252"?>
-<Collection name="Add-on Manager5" guid="{e042616a-89ea-4926-8a41-6b8b6631d067}" system="No" updatable="Yes" blockNavigatorNode="No">
+<Collection name="Add-on Manager v5.0" guid="{e042616a-89ea-4926-8a41-6b8b6631d067}" system="No" updatable="Yes" blockNavigatorNode="No">
 	<HelpLink></HelpLink>
 	<Help></Help>
-	<Addon name="Add-on Manager5" guid="{3d643ebd-c482-49ac-99ca-03aabb28ee83}" type="Tool">
+	<Addon name="Add-on Manager v5.0" guid="{3d643ebd-c482-49ac-99ca-03aabb28ee83}" type="Tool">
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
@@ -487,7 +487,7 @@ end function]]></Code>
     font-size:14px;
 }
 
-.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
+.amLibraryListCell {margin:4px; border: 1px solid #222; padding:10px;background-color:#fafafa;}
 .amLibraryListCell table {width:100%;padding:0;margin:0;}
 .amLibraryListCell table td {}
 .amLibraryListCell td.amImage {width:101px;height:121px;padding:5px;background-color:#444;}

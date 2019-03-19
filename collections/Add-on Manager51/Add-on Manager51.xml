@@ -278,7 +278,7 @@ end function]]></Code>
     font-size:14px;
 }
 
-.amLibraryListCell {margin:4px; border: 1px solid #484; padding:10px;background-color:#fafafa;}
+.amLibraryListCell {margin:4px; border: 1px solid #333; padding:10px;background-color:#fafafa;}
 .amLibraryListCell table {width:100%;padding:0;margin:0;}
 .amLibraryListCell table td {}
 .amLibraryListCell td.amImage {width:101px;height:121px;padding:5px;background-color:#444;}

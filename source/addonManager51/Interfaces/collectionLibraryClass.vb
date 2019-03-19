@@ -225,8 +225,8 @@ Namespace Contensive.Addons.AddonManager51
                                     Dim CollectionImageLink As String = ""
                                     Dim CollectionCheckbox As String = ""
                                     Dim CollectionName As String = ""
-                                    Dim CollectionLastChangeDate As Date = Date.MinValue
-                                    Dim CollectionLastChangeDateCaption As String = ""
+                                    Dim CollectionModifiedDate As Date = Date.MinValue
+                                    Dim CollectionModifiedDateCaption As String = ""
                                     Dim CollectionDescription As String = ""
                                     Dim CollectionHelpLink As String = ""
                                     Dim CollectionDemoLink As String = ""
@@ -279,24 +279,28 @@ Namespace Contensive.Addons.AddonManager51
                                                         CollectionContensiveVersion = CollectionNode.InnerText
                                                     Case "lastchangedate"
                                                         '
-                                                        ' Version
+                                                        ' last change - legacy field used by 4.1 to auto install, no longer updated
                                                         '
-                                                        CollectionLastChangeDate = Date.MinValue
+                                                    Case "lastmodifieddate"
+                                                        '
+                                                        ' last modified
+                                                        '
+                                                        CollectionModifiedDate = Date.MinValue
                                                         If IsDate(CollectionNode.InnerText) Then
-                                                            CollectionLastChangeDate = CDate(CollectionNode.InnerText)
+                                                            CollectionModifiedDate = CDate(CollectionNode.InnerText)
                                                         End If
-                                                        If (CollectionLastChangeDate <= Date.MinValue) Then
-                                                            CollectionLastChangeDateCaption = "unknown"
+                                                        If (CollectionModifiedDate <= Date.MinValue) Then
+                                                            CollectionModifiedDateCaption = "unknown"
                                                         Else
-                                                            CollectionLastChangeDateCaption = CollectionLastChangeDate.Date.ToShortDateString
+                                                            CollectionModifiedDateCaption = CollectionModifiedDate.Date.ToShortDateString
                                                         End If
                                                 End Select
                                             Next
                                             If CollectionImageLink = "" Then
                                                 CollectionImageLink = "/addonManager/libraryNoImage.jpg"
                                             End If
-                                            If CollectionLastChangeDateCaption = "" Then
-                                                CollectionLastChangeDateCaption = "unknown"
+                                            If CollectionModifiedDateCaption = "" Then
+                                                CollectionModifiedDateCaption = "unknown"
                                             End If
                                             If CollectionDescription = "" Then
                                                 CollectionDescription = "No description is available for this add-on collection."
@@ -320,7 +324,7 @@ Namespace Contensive.Addons.AddonManager51
                                                         ' -- not installed
                                                         showAddon = True
                                                         CollectionCheckbox &= "&nbsp;Install"
-                                                    ElseIf (modifiedDate >= CollectionLastChangeDate) Then
+                                                    ElseIf (modifiedDate >= CollectionModifiedDate) Then
                                                         '
                                                         ' -- up to date, reinstall
                                                         showAddon = True
@@ -343,7 +347,7 @@ Namespace Contensive.Addons.AddonManager51
                                                 Cell = Replace(Cell, "##imageLink##", CollectionImageLink)
                                                 Cell = Replace(Cell, "##checkbox##", CollectionCheckbox)
                                                 Cell = Replace(Cell, "##name##", CollectionName)
-                                                Cell = Replace(Cell, "##date##", CollectionLastChangeDateCaption)
+                                                Cell = Replace(Cell, "##date##", CollectionModifiedDateCaption)
                                                 Cell = Replace(Cell, "##description##", CollectionDescription)
                                                 BodyHTML = BodyHTML & Cell
                                             End If
