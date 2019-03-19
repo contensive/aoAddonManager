@@ -171,129 +171,7 @@ Namespace Contensive.Addons.AddonManager51
                                     UpgradeOK = v5InstallController.installCollectionFromLibrary(cp, LibGuids(Ptr), ErrorMessage)
                                 Next
                             End If
-
-
-                            ''
-                            ''---------------------------------------------------------------------------------------------
-                            '' Delete collections
-                            ''   Before deleting each addon, make sure it is not in another collection
-                            ''---------------------------------------------------------------------------------------------
-                            ''
-                            'cnt = cp.Doc.GetInteger("accnt")
-                            'If cnt > 0 Then
-                            '    For Ptr = 0 To cnt - 1
-                            '        If cp.Doc.GetBoolean("ac" & Ptr) Then
-                            '            TargetCollectionID = cp.Doc.GetInteger("acID" & Ptr)
-                            '            TargetCollectionName = cp.Content.GetRecordName("Add-on Collections", TargetCollectionID)
-                            '            '
-                            '            ' Clean up rules associating this collection to other objects
-                            '            '
-                            '            Call cp.Content.Delete("Add-on Collection CDef Rules", "collectionid=" & TargetCollectionID)
-                            '            Call cp.Content.Delete("Add-on Collection Module Rules", "collectionid=" & TargetCollectionID)
-                            '            '
-                            '            ' Delete any addons from this collection
-                            '            '
-                            '            If cs.Open("add-ons", "collectionid=" & TargetCollectionID) Then
-                            '                Do
-                            '                    '
-                            '                    ' Clean up the rules that might have pointed to the addon
-                            '                    '
-                            '                    addonid = cs.GetInteger("id")
-                            '                    Call cp.Content.Delete("Admin Menuing", "addonid=" & addonid)
-                            '                    Call cp.Content.Delete("Shared Styles Add-on Rules", "addonid=" & addonid)
-                            '                    Call cp.Content.Delete("Add-on Scripting Module Rules", "addonid=" & addonid)
-                            '                    Call cp.Content.Delete("Add-on Include Rules", "addonid=" & addonid)
-                            '                    Call cp.Content.Delete("Add-on Include Rules", "includedaddonid=" & addonid)
-                            '                    cs.GoNext()
-                            '                Loop While cs.OK
-                            '            End If
-                            '            cs.Close()
-                            '            Call cp.Content.Delete("add-ons", "collectionid=" & TargetCollectionID)
-                            '            '
-                            '            ' Delete the navigator entry for the collection under 'Add-ons'
-                            '            '
-                            '            If TargetCollectionID > 0 Then
-                            '                AddonNavigatorID = 0
-                            '                cs.Open("Navigator Entries", "name='Manage Add-ons' and ((parentid=0)or(parentid is null))")
-                            '                If cs.OK Then
-                            '                    AddonNavigatorID = cs.GetInteger("ID")
-                            '                End If
-                            '                Call cs.Close()
-                            '                If AddonNavigatorID > 0 Then
-                            '                    Call GetForm_AddonManager_DeleteNavigatorBranch(cp, TargetCollectionName, AddonNavigatorID)
-                            '                End If
-                            '                '
-                            '                ' Now delete the Collection record
-                            '                '
-                            '                cp.Content.Delete("Add-on Collections", "id=" & TargetCollectionID)
-                            '                '
-                            '                ' Delete Navigator Entries set as installed by the collection (this may be all that is needed)
-                            '                '
-                            '                Call cp.Content.Delete("Navigator Entries", "installedbycollectionid=" & TargetCollectionID)
-                            '            End If
-                            '        End If
-                            '    Next
-                            'End If
-                            ''
-                            ''---------------------------------------------------------------------------------------------
-                            '' Delete Add-on Collections
-                            ''---------------------------------------------------------------------------------------------
-                            ''
-                            'cnt = cp.Doc.GetInteger("aocnt")
-                            'If cnt > 0 Then
-                            '    For Ptr = 0 To cnt - 1
-                            '        If cp.Doc.GetBoolean("ao" & Ptr) Then
-                            '            cp.Content.Delete("Add-on Collections", "id=" & cp.Doc.GetInteger("aoID" & Ptr))
-                            '        End If
-                            '    Next
-                            'End If
-                            ''
-                            ''---------------------------------------------------------------------------------------------
-                            '' Reinstall core collection
-                            ''---------------------------------------------------------------------------------------------
-                            ''
-                            'If cp.User.IsDeveloper And cp.Doc.GetBoolean("InstallCore") Then
-                            '    Call cp.Content.Delete("Add-on Collections", "ccguid='{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}'")
-                            '    UpgradeOK = cp.Addon.installCollectionFromLibrary("{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}", ErrorMessage)
-                            'End If
-                            ''
-                            ''---------------------------------------------------------------------------------------------
-                            '' Upload new collection files
-                            ''---------------------------------------------------------------------------------------------
-                            ''
-                            'Dim ignoreTaskId As Integer
-                            'cp.privateFiles.saveUpload("metafile", installFolder, CollectionFilename)
-                            'If (cp.privateFiles.saveUpload("metafile", installFolder, CollectionFilename)) Then
-                            '    ignoreTaskId = cp.Utils.installCollectionFromFile(installFolder & CollectionFilename)
-                            '    status &= "<BR>Uploaded collection file [" & CollectionFilename & "]. Queued for processing as task [" & ignoreTaskId & "]"
-                            'End If
-                            'UploadsCnt = cp.Doc.GetInteger("UploadCount")
-                            'For Ptr = 0 To UploadsCnt - 1
-                            '    If (cp.privateFiles.saveUpload("Upload" & Ptr, installFolder, CollectionFilename)) Then
-                            '        ignoreTaskId = cp.Utils.installCollectionFromFile(CollectionFilename)
-                            '        status &= "<BR>Uploaded collection file [" & CollectionFilename & "]. Queued for processing as task [" & ignoreTaskId & "]"
-                            '    End If
-                            'Next
                         End If
-                        ''
-                        '' --------------------------------------------------------------------------------
-                        ''   Install Library Collections
-                        '' --------------------------------------------------------------------------------
-                        ''
-                        'If InstallLibCollectionList <> "" Then
-                        '    InstallLibCollectionList = Mid(InstallLibCollectionList, 2)
-                        '    LibGuids = Split(InstallLibCollectionList, ",")
-                        '    cnt = UBound(LibGuids) + 1
-                        '    For Ptr = 0 To cnt - 1
-                        '        cp.Utils.installCollectionFromLibrary(LibGuids(Ptr))
-                        '    Next
-                        'End If
-                        ''
-                        '' and delete the install folder if it was created
-                        ''
-                        'If cp.privateFiles.folderExists(InstallPath) Then
-                        '    Call cp.privateFiles.deleteFolder(InstallPath)
-                        'End If
                         '
                         ' --------------------------------------------------------------------------------
                         ' Get Form
@@ -307,7 +185,6 @@ Namespace Contensive.Addons.AddonManager51
                         ReDim ColAlign(3)
                         ReDim ColWidth(3)
                         ReDim ColSortable(3)
-                        'ReDim Cells3(10, 4)
                         '
                         ColCaption(0) = "Install"
                         ColAlign(0) = "center"
@@ -424,21 +301,10 @@ Namespace Contensive.Addons.AddonManager51
                                             If CollectionDescription = "" Then
                                                 CollectionDescription = "No description is available for this add-on collection."
                                             End If
-                                            'If RowPtr >= UBound(Cells3, 1) Then
-                                            '    ReDim Preserve Cells3(RowPtr + 100, ColumnCnt)
-                                            'End If
                                             showAddon = False
                                             If CollectionName = "" Then
-                                                'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>"
-                                                'Cells3(RowPtr, 1) = "no name"
-                                                'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
-                                                'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
                                             Else
                                                 If CollectionGUID = "" Then
-                                                    'Cells3(RowPtr, 0) = "<input TYPE=""CheckBox"" NAME=""LibraryRow" & RowPtr & """ VALUE=""0"" disabled>"
-                                                    'Cells3(RowPtr, 1) = CollectionName & " (no guid)"
-                                                    'Cells3(RowPtr, 2) = CollectionLastChangeDate & "&nbsp;"
-                                                    'Cells3(RowPtr, 3) = CollectionDescription & "&nbsp;"
                                                 Else
                                                     Dim cs As CPCSBaseClass = cp.CSNew
                                                     Dim modifiedDate As Date = Date.MinValue
