@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "addonManager50", "addonManager50\addonManager50.vbproj", "{81CBA607-8779-433A-B301-3270ECF5127F}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "addonManager51", "addonManager51\addonManager51.vbproj", "{CD39A4F8-C7B7-4A06-BEDF-14F11AF92E44}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{81CBA607-8779-433A-B301-3270ECF5127F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81CBA607-8779-433A-B301-3270ECF5127F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81CBA607-8779-433A-B301-3270ECF5127F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81CBA607-8779-433A-B301-3270ECF5127F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD39A4F8-C7B7-4A06-BEDF-14F11AF92E44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD39A4F8-C7B7-4A06-BEDF-14F11AF92E44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD39A4F8-C7B7-4A06-BEDF-14F11AF92E44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD39A4F8-C7B7-4A06-BEDF-14F11AF92E44}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {736CF97B-5058-4E77-8A6C-56F0721423CC}
+	EndGlobalSection
+EndGlobal
