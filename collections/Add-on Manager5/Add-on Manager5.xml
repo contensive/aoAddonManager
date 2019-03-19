@@ -87,7 +87,7 @@ end function]]></Code>
 		<styleslinkhref></styleslinkhref>
 		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
 	</Addon>
-	<Addon name="addonManager-Export" guid="{e716ec0e-b83f-43cc-9933-1a0733fb7641}" type="Tool">
+	<Addon name="addonManager-Export" guid="{e716ec0e-b83f-43cc-9933-1a0733fb7641}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
@@ -111,7 +111,7 @@ end function]]></Code>
 		<Content>No</Content>
 		<Template>No</Template>
 		<Email>No</Email>
-		<Admin>Yes</Admin>
+		<Admin>No</Admin>
 		<OnPageEndEvent>No</OnPageEndEvent>
 		<OnPageStartEvent>No</OnPageStartEvent>
 		<OnBodyStart>No</OnBodyStart>
