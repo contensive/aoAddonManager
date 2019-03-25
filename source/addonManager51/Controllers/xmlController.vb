@@ -388,6 +388,8 @@ Namespace Contensive.Addons.AddonManager51
                                     Exit Do
                                 ElseIf (FieldContentID = ContentID) And (fieldId <> LastFieldID) Then
                                     If IncludeBaseFields Or (InStr(1, ",id,ContentCategoryID,dateadded,createdby,modifiedby,EditBlank,EditArchive,EditSourceID,ContentControlID,CreateKey,ModifiedDate,ccguid,", "," & FieldName & ",", vbTextCompare) = 0) Then
+                                        Dim memberSelectGroupId As Integer = CFields.GetInteger("MemberSelectGroupID")
+                                        Dim memberSelectGroup As String = If(memberSelectGroupId <= 0, "", cp.Group.GetName(memberSelectGroupId.ToString()))
                                         sb.Append(vbCrLf & vbTab & vbTab & "<Field")
                                         fieldType = csv_GetFieldDescriptorByType(CFields.GetInteger("Type"))
                                         sb.Append(" Name=""" & FieldName & """")
@@ -411,7 +413,7 @@ Namespace Contensive.Addons.AddonManager51
                                         sb.Append(" DefaultValue=""" & CFields.GetText("DefaultValue") & """")
                                         sb.Append(" RSSTitle=""" & CFields.GetBoolean("RSSTitleField") & """")
                                         sb.Append(" RSSDescription=""" & CFields.GetBoolean("RSSDescriptionField") & """")
-                                        sb.Append(" MemberSelectGroupID=""" & CFields.GetText("MemberSelectGroupID") & """")
+                                        sb.Append(" MemberSelectGroup=""" & memberSelectGroup & """")
                                         sb.Append(" EditTab=""" & CFields.GetText("EditTab") & """")
                                         sb.Append(" Scramble=""" & CFields.GetBoolean("Scramble") & """")
                                         sb.Append(" LookupList=""" & CFields.GetText("LookupList") & """")
