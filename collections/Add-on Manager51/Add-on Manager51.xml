@@ -282,7 +282,7 @@ end function]]></Code>
 .amLibraryListCell table {width:100%;padding:0;margin:0;}
 .amLibraryListCell table td {}
 .amLibraryListCell td.amImage {width:101px;height:121px;padding:5px;background-color:#444;}
-.amLibraryListCell td.amImage img {width:100px;height:120px; border:1px solid #fff;}
+.amLibraryListCell td.amImage img {width:100px;}
 .amLibraryListCell td.amBody {height:126px;padding:5px 5px 5px 10px;}
 .amLibraryListCell td.amBody .amHeadline {
 	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
