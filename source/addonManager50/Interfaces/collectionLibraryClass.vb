@@ -290,7 +290,7 @@ Namespace Contensive.Addons.AddonManager
                                                     Dim cs As CPCSBaseClass = cp.CSNew
                                                     Dim modifiedDate As Date = Date.MinValue
                                                     Dim IsOnSite As Boolean = False
-                                                    If cs.Open("Add-on Collections", GuidFieldName & "=" & cp.Db.EncodeSQLText(CollectionGUID), "", True, "ID,ModifiedDate") Then
+                                                    If cs.Open("Add-on Collections", GuidFieldName & "=" & cp.Db.EncodeSQLText(CollectionGUID), "", True, "ID,ModifiedDate", 9990, 1) Then
                                                         modifiedDate = cs.GetDate("ModifiedDate")
                                                         IsOnSite = True
                                                     End If
