@@ -14,12 +14,20 @@ Namespace Contensive.Addons.AddonManager
         Public Overrides Function Execute(ByVal CP As CPBaseClass) As Object
             Dim returnHtml As String = ""
             Try
-                Using myProcess As New Process
-                    myProcess.StartInfo.UseShellExecute = False
-                    myProcess.StartInfo.FileName = "c:\windows\system32\inetsrv\appcmd recycle apppool """ & CP.Site.Name & """"
-                    myProcess.StartInfo.CreateNoWindow = True
-                    myProcess.Start()
+                Using iisManager As ServerManager = New ServerManager()
+                    Dim sites As SiteCollection = iisManager.sites
+                    For Each site As Site In sites
+                        If (site.name = CP.Site.Name) Then
+                            iisManager.ApplicationPools(site.Applications("/").ApplicationPoolName).Recycle()
+                        End If
+                    Next
                 End Using
+                'Using myProcess As New Process
+                '    myProcess.StartInfo.UseShellExecute = False
+                '    myProcess.StartInfo.FileName = "c:\windows\system32\inetsrv\appcmd.exe recycle apppool """ & CP.Site.Name & """"
+                '    myProcess.StartInfo.CreateNoWindow = True
+                '    myProcess.Start()
+                'End Using
             Catch ex As Exception
                 CP.Site.ErrorReport(ex)
             End Try
