@@ -5,6 +5,7 @@ Imports System.Collections.Generic
 Imports System.Text
 Imports Contensive.BaseClasses
 Imports ICSharpCode.SharpZipLib
+Imports Microsoft.Web.Administration
 
 Namespace Contensive.Addons.AddonManager
     Public Class iisRecycleClass
@@ -15,9 +16,9 @@ Namespace Contensive.Addons.AddonManager
             Dim returnHtml As String = ""
             Try
                 Using iisManager As ServerManager = New ServerManager()
-                    Dim sites As SiteCollection = iisManager.sites
+                    Dim sites As SiteCollection = iisManager.Sites
                     For Each site As Site In sites
-                        If (site.name = CP.Site.Name) Then
+                        If (site.Name = CP.Site.Name) Then
                             iisManager.ApplicationPools(site.Applications("/").ApplicationPoolName).Recycle()
                         End If
                     Next

@@ -373,7 +373,7 @@ Namespace Contensive.Addons.AddonManager
                                             fieldCnt = 0
                                             Dim Sql As String = "select * from ccFields where contentid=" & DataContentId
                                             Dim csFields As CPCSBaseClass = cp.CSNew()
-                                            If csFields.Open("content fields", "contentid=" & DataContentId) Then
+                                            If csFields.Open("content fields", "contentid=" & DataContentId, "id") Then
                                                 Do
                                                     FieldName = csFields.GetText("name")
                                                     If FieldName <> "" Then
@@ -555,7 +555,7 @@ Namespace Contensive.Addons.AddonManager
                         For Ptr = 0 To UBound(Modules)
                             ModuleGuid = Modules(Ptr)
                             If ModuleGuid <> "" Then
-                                CS2.Open("Scripting Modules", "ccguid=" & cp.Db.EncodeSQLText(ModuleGuid))
+                                CS2.Open("Scripting Modules", "ccguid=" & cp.Db.EncodeSQLText(ModuleGuid), "id")
                                 If CS2.OK() Then
                                     Code = Trim(CS2.GetText("code"))
                                     Code = EncodeCData(cp, Code)
@@ -575,7 +575,7 @@ Namespace Contensive.Addons.AddonManager
                         For Ptr = 0 To UBound(recordGuids)
                             recordGuid = recordGuids(Ptr)
                             If recordGuid <> "" Then
-                                CS2.Open("Shared Styles", "ccguid=" & cp.Db.EncodeSQLText(recordGuid))
+                                CS2.Open("Shared Styles", "ccguid=" & cp.Db.EncodeSQLText(recordGuid), "id")
                                 If CS2.OK() Then
                                     collectionXml = collectionXml & vbCrLf & vbTab & "<SharedStyle" _
                                         & " Name=""" & cp.Utils.EncodeHTML(CS2.GetText("name")) & """" _
@@ -596,7 +596,7 @@ Namespace Contensive.Addons.AddonManager
                     ' Import Collections
                     '
                     Node = ""
-                    If CS3.Open("Add-on Collection Parent Rules", "parentid=" & CollectionID) Then
+                    If CS3.Open("Add-on Collection Parent Rules", "parentid=" & CollectionID, "id") Then
                         Do
                             CS2.OpenRecord("Add-on Collections", CS3.GetInteger("childid"))
                             If CS2.OK() Then
@@ -777,10 +777,10 @@ Namespace Contensive.Addons.AddonManager
                     result &= GetNodeText(cp, "FormXML", CS.GetText("FormXML"))
                     '
                     NodeInnerText = ""
-                    CS2.Open("Add-on Include Rules", "addonid=" & addonid)
+                    CS2.Open("Add-on Include Rules", "addonid=" & addonid, "id")
                     Do While CS2.OK()
                         IncludedAddonID = CS2.GetInteger("IncludedAddonID")
-                        CS3.Open("Add-ons", "ID=" & IncludedAddonID)
+                        CS3.Open("Add-ons", "ID=" & IncludedAddonID, "id")
                         If CS3.OK() Then
                             Guid = CS3.GetText("ccGuid")
                             If Guid = "" Then
@@ -856,10 +856,10 @@ Namespace Contensive.Addons.AddonManager
                     If NodeInnerText <> "" Then
                         NodeInnerText = vbCrLf & vbTab & vbTab & "<Code>" & EncodeCData(cp, NodeInnerText) & "</Code>"
                     End If
-                    CS2.Open("Add-on Scripting Module Rules", "addonid=" & addonid)
+                    CS2.Open("Add-on Scripting Module Rules", "addonid=" & addonid, "id")
                     Do While CS2.OK()
                         ScriptingModuleID = CS2.GetInteger("ScriptingModuleID")
-                        CS3.Open("Scripting Modules", "ID=" & ScriptingModuleID)
+                        CS3.Open("Scripting Modules", "ID=" & ScriptingModuleID, "id")
                         If CS3.OK() Then
                             Guid = CS3.GetText("ccGuid")
                             If Guid = "" Then
@@ -881,10 +881,10 @@ Namespace Contensive.Addons.AddonManager
                     '
                     ' Shared Styles
                     '
-                    CS2.Open("Shared Styles Add-on Rules", "addonid=" & addonid)
+                    CS2.Open("Shared Styles Add-on Rules", "addonid=" & addonid, "id")
                     Do While CS2.OK()
                         styleId = CS2.GetInteger("styleId")
-                        CS3.Open("shared styles", "ID=" & styleId)
+                        CS3.Open("shared styles", "ID=" & styleId, "id")
                         If CS3.OK() Then
                             Guid = CS3.GetText("ccGuid")
                             If Guid = "" Then
@@ -902,10 +902,10 @@ Namespace Contensive.Addons.AddonManager
                     ' Process Triggers
                     '
                     NodeInnerText = ""
-                    CS2.Open("Add-on Content Trigger Rules", "addonid=" & addonid)
+                    CS2.Open("Add-on Content Trigger Rules", "addonid=" & addonid, "id")
                     Do While CS2.OK()
                         TriggerContentID = CS2.GetInteger("ContentID")
-                        CS3.Open("content", "ID=" & TriggerContentID)
+                        CS3.Open("content", "ID=" & TriggerContentID, "id")
                         If CS3.OK() Then
                             Guid = CS3.GetText("ccGuid")
                             If Guid = "" Then
@@ -926,7 +926,7 @@ Namespace Contensive.Addons.AddonManager
                     '
                     If cp.Content.IsField("Add-on Content Field Type Rules", "id") Then
                         NodeInnerText = ""
-                        CS2.Open("Add-on Content Field Type Rules", "addonid=" & addonid)
+                        CS2.Open("Add-on Content Field Type Rules", "addonid=" & addonid, "id")
                         Do While CS2.OK()
                             fieldTypeID = CS2.GetInteger("contentFieldTypeID")
                             fieldType = cp.Content.GetRecordName("Content Field Types", fieldTypeID)
