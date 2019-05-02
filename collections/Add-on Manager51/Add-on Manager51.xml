@@ -487,38 +487,6 @@ end function]]></Code>
 			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
 			<field name="sortorder"><![CDATA[Add-on Collections]]></field>
 		</record>
-		<record content="Navigator Entries" guid="{7D19971D-C6F7-4652-825B-0395A11BA365}" name="Add-on Manager51">
-			<field name="active">True</field>
-			<field name="addonid">{4DD876E7-BCC4-4AF0-B32E-59FFAB816478}</field>
-			<field name="adminonly">False</field>
-			<field name="contentid"></field>
-			<field name="developeronly">False</field>
-			<field name="helpaddonid"></field>
-			<field name="helpcollectionid"></field>
-			<field name="installedbycollectionid"></field>
-			<field name="linkpage"></field>
-			<field name="navicontitle"></field>
-			<field name="navicontype">3</field>
-			<field name="newwindow">False</field>
-			<field name="parentid">{DBA354AB-5D3E-4882-8718-CF23CAAB7927}</field>
-			<field name="sortorder"></field>
-		</record>
-		<record content="Navigator Entries" guid="{16822EFF-7CD6-48E9-BFEA-BDB1DD768CA1}" name="Add-on Manager51">
-			<field name="active">True</field>
-			<field name="addonid">{4DD876E7-BCC4-4AF0-B32E-59FFAB816478}</field>
-			<field name="adminonly">False</field>
-			<field name="contentid"></field>
-			<field name="developeronly">False</field>
-			<field name="helpaddonid"></field>
-			<field name="helpcollectionid"></field>
-			<field name="installedbycollectionid"></field>
-			<field name="linkpage"></field>
-			<field name="navicontitle"></field>
-			<field name="navicontype">3</field>
-			<field name="newwindow">False</field>
-			<field name="parentid">{801F1F07-20E6-4A5D-AF26-71007CCB834F}</field>
-			<field name="sortorder"></field>
-		</record>
 </data>
 	<ImportCollection name="Portal Framework">{87249F75-A065-4F2F-8DCD-FBBF2CA0DCCD}</ImportCollection>
 	<Resource name="librarynoimage.jpg" type="www" path="addonmanager" />
