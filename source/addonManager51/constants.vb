@@ -14,7 +14,7 @@ Namespace Contensive.Addons.AddonManager51
         Public Const ButtonOK As String = " OK "
         Public Const RequestNameCollectionID As String = "collectionid"
         '
-        Public Const iisRecycleAddonGuid As String = "{fb322f1c71114ef9bb9bdf76d20ded67}"
+        Public Const iisRecycleAddonGuid As String = "{164C4B6F-2A89-4A0D-AAA0-7B34BB2DD77D}"
         '
         Public Const FieldTypeInteger As Integer = 1       ' An long number
         Public Const FieldTypeText As Integer = 2          ' A text field (up to 255 characters)
