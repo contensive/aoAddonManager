@@ -111,6 +111,7 @@
     <Compile Include="Models\personModel.vb" />
     <Compile Include="Models\addonCollectionModel.vb" />
     <Compile Include="Models\ContentModel.vb" />
+    <Compile Include="Models\AddonModel.vb" />
     <Compile Include="Models\_blankModel.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">

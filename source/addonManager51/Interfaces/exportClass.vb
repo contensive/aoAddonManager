@@ -3,6 +3,7 @@
 Imports System
 Imports System.Collections.Generic
 Imports System.Text
+Imports Contensive.Addons.AddonManager51.Models
 Imports Contensive.BaseClasses
 Imports ICSharpCode.SharpZipLib
 
@@ -45,15 +46,15 @@ Namespace Contensive.Addons.AddonManager51
                             '
                             ' -- Upload tool
                             If (Button = ButtonOK) Then
+                                '
+                                ' -- export
+                                Dim CollectionID As Integer = CP.Doc.GetInteger(RequestNameCollectionID)
+                                Dim addonCollection As Models.addonCollectionModel = Models.addonCollectionModel.create(CP, CollectionID)
+                                If (addonCollection Is Nothing) Then
                                     '
-                                    ' -- export
-                                    Dim CollectionID As Integer = CP.Doc.GetInteger(RequestNameCollectionID)
-                                    Dim addonCollection As Models.addonCollectionModel = Models.addonCollectionModel.create(CP, CollectionID)
-                                    If (addonCollection Is Nothing) Then
-                                        '
-                                        ' -- collection not found
-                                        Call CP.UserError.Add("The collection file you selected could not be found. Please select another.")
-                                    Else
+                                    ' -- collection not found
+                                    Call CP.UserError.Add("The collection file you selected could not be found. Please select another.")
+                                Else
                                     '
                                     ' -- build collection zip file and return file
                                     Dim CollectionFilename As String = createCollectionZip_returnCdnPathFilename(CP, CollectionID)
@@ -116,49 +117,52 @@ Namespace Contensive.Addons.AddonManager51
         ''' <param name="CollectionID"></param>
         ''' <returns></returns>
         Private Function createCollectionZip_returnCdnPathFilename(cp As CPBaseClass, CollectionID As Integer) As String
-            Dim cdnExportZipPathFilename As String = ""
+            Dim cdnExportZip_Filename As String = ""
             Try
                 Dim CS As CPCSBaseClass = cp.CSNew()
                 CS.OpenRecord("Add-on Collections", CollectionID)
                 If Not CS.OK() Then
                     Call cp.UserError.Add("The collection you selected could not be found")
                 Else
+                    Dim collectionXml As String = "<?xml version=""1.0"" encoding=""windows-1252""?>"
+                    '
+                    Dim CollectionName As String = CS.GetText("name")
                     Dim CollectionGuid As String = CS.GetText("ccGuid")
                     If CollectionGuid = "" Then
                         CollectionGuid = cp.Utils.CreateGuid()
                         Call CS.SetField("ccGuid", CollectionGuid)
                     End If
-                    Dim CollectionName As String = CS.GetText("name")
-                    Dim isUpdatable As Boolean
-                    If Not CS.FieldOK("updatable") Then
-                        isUpdatable = True
-                    Else
-                        isUpdatable = CS.GetBoolean("updatable")
+                    Dim onInstallAddonGuid As String = ""
+                    If (CS.FieldOK("onInstallAddonId")) Then
+                        Dim onInstallAddonId As Integer = CS.GetInteger("onInstallAddonId")
+                        If (onInstallAddonId > 0) Then
+                            Dim addon As AddonModel = AddonModel.create(cp, onInstallAddonId)
+                            onInstallAddonGuid = addon.ccguid
+                        End If
                     End If
-                    Dim blockNavigatorNode As Boolean
-                    If Not CS.FieldOK("blockNavigatorNode") Then
-                        blockNavigatorNode = False
-                    Else
-                        blockNavigatorNode = CS.GetBoolean("blockNavigatorNode")
-                    End If
-                    Dim collectionXml As String = "" _
-                        & "<?xml version=""1.0"" encoding=""windows-1252""?>" _
-                        & vbCrLf & "<Collection name=""" & System.Net.WebUtility.HtmlEncode(CollectionName) & """ guid=""" & CollectionGuid & """ system=""" & kmaGetYesNo(cp, CS.GetBoolean("system")) & """ updatable=""" & kmaGetYesNo(cp, isUpdatable) & """ blockNavigatorNode=""" & kmaGetYesNo(cp, blockNavigatorNode) & """>"
+                    collectionXml &= vbCrLf & "<Collection"
+                    collectionXml &= " name=""" & CollectionName & """"
+                    collectionXml &= " guid=""" & CollectionGuid & """"
+                    collectionXml &= " system=""" & kmaGetYesNo(cp, CS.GetBoolean("system")) & """"
+                    collectionXml &= " updatable=""" & kmaGetYesNo(cp, CS.GetBoolean("updatable")) & """"
+                    collectionXml &= " blockNavigatorNode=""" & kmaGetYesNo(cp, CS.GetBoolean("blockNavigatorNode")) & """"
+                    collectionXml &= " onInstallAddonGuid=""" & onInstallAddonGuid & """"
+                    collectionXml &= ">"
                     '
                     ' Archive Filenames
                     '   copy all files to be included into the cdnExportFilesPath folder
                     '   build the tmp zip file
                     '   copy it to the cdnZip file
                     '
-                    Dim tempExportPath As String = "CollectionExport\"
-                    Dim tempExportXmlPathFilename As String = tempExportPath & encodeFilename(cp, CollectionName & ".xml")
-                    Dim tempExportZipPathFilename As String = tempExportPath & encodeFilename(cp, CollectionName & ".zip")
-                    cdnExportZipPathFilename = tempExportPath & encodeFilename(cp, CollectionName & ".zip")
+                    Dim tempExportPath As String = "CollectionExport" & Guid.NewGuid().ToString() & "\"
+                    Dim tempExportXml_Filename As String = encodeFilename(cp, CollectionName & ".xml")
+                    Dim tempExportZip_Filename As String = encodeFilename(cp, CollectionName & ".zip")
+                    cdnExportZip_Filename = encodeFilename(cp, CollectionName & ".zip")
                     '
                     ' Delete old archive file
-                    cp.TempFiles.DeleteFile(tempExportXmlPathFilename)
-                    cp.TempFiles.DeleteFile(tempExportZipPathFilename)
-                    cp.CdnFiles.DeleteFile(cdnExportZipPathFilename)
+                    'cp.TempFiles.DeleteFile(tempExportXml_Filename)
+                    'cp.TempFiles.DeleteFile(tempExportZipPathFilename)
+                    'cp.CdnFiles.DeleteFile(cdnExportZipPathFilename)
                     '
                     '
                     ' Build executable file list Resource Node so executables can be added to addons for Version40compatibility
@@ -175,10 +179,9 @@ Namespace Contensive.Addons.AddonManager51
                     Dim ResourceCnt As Integer
                     'Dim ContentName As String
                     Dim Pos As Integer
-                    Dim tempFileList As New List(Of String)
+                    Dim tempPathFileList As New List(Of String)
                     'Dim PhysicalWWWPath As String
                     Dim CollectionPath As String = ""
-                    Dim AddFilename As String
                     Dim ExecFileListNode As String = ""
                     If FileList <> "" Then
                         Dim LastChangeDate As Date
@@ -205,9 +208,10 @@ Namespace Contensive.Addons.AddonManager51
                                 End If
                                 Dim ManualFilename As String = ""
                                 If LCase(Filename) <> LCase(ManualFilename) Then
-                                    AddFilename = AddonPath & CollectionPath & Filename
-                                    If Not tempFileList.Contains(AddFilename) Then
-                                        tempFileList.Add(AddFilename)
+                                    'AddFilename = AddonPath & CollectionPath & Filename
+                                    cp.PrivateFiles.Copy(AddonPath & CollectionPath & Filename, tempExportPath & Filename, cp.TempFiles)
+                                    If Not tempPathFileList.Contains(tempExportPath & Filename) Then
+                                        tempPathFileList.Add(tempExportPath & Filename)
                                         ExecFileListNode = ExecFileListNode & vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""executable"" path=""" & System.Net.WebUtility.HtmlEncode(Path) & """ />"
                                     End If
                                 End If
@@ -606,12 +610,11 @@ Namespace Contensive.Addons.AddonManager51
                                     '
                                 Else
                                     PathFilename = Replace(PathFilename, "/", "\")
-                                    AddFilename = PathFilename
-                                    If tempFileList.Contains(AddFilename) Then
+                                    If tempPathFileList.Contains(tempExportPath & Filename) Then
                                         Call cp.UserError.Add("There was an error exporting this collection because there were multiple files with the same filename [" & Filename & "]")
                                     Else
-                                        cp.WwwFiles.Copy(AddFilename, tempExportPath & Filename, cp.TempFiles)
-                                        tempFileList.Add(tempExportPath & Filename)
+                                        cp.WwwFiles.Copy(PathFilename, tempExportPath & Filename, cp.TempFiles)
+                                        tempPathFileList.Add(tempExportPath & Filename)
                                         collectionXml = collectionXml & vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""www"" path=""" & System.Net.WebUtility.HtmlEncode(Path) & """ />"
                                     End If
                                     ResourceCnt = ResourceCnt + 1
@@ -636,15 +639,15 @@ Namespace Contensive.Addons.AddonManager51
                                     Filename = Mid(PathFilename, Pos + 1)
                                     Path = Mid(PathFilename, 1, Pos - 1)
                                 End If
-                                PathFilename = Replace(PathFilename, "/", "\")
-                                If Left(PathFilename, 1) = "\" Then
-                                    PathFilename = Mid(PathFilename, 2)
-                                End If
-                                AddFilename = PathFilename
-                                If tempFileList.Contains(AddFilename) Then
+                                'PathFilename = Replace(PathFilename, "/", "\")
+                                'If Left(PathFilename, 1) = "\" Then
+                                '    PathFilename = Mid(PathFilename, 2)
+                                'End If
+                                If tempPathFileList.Contains(tempExportPath & Filename) Then
                                     Call cp.UserError.Add("There was an error exporting this collection because there were multiple files with the same filename [" & Filename & "]")
                                 Else
-                                    tempFileList.Add(AddFilename)
+                                    cp.CdnFiles.Copy(PathFilename, tempExportPath + Filename, cp.TempFiles)
+                                    tempPathFileList.Add(tempExportPath & Filename)
                                     collectionXml = collectionXml & vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""content"" path=""" & System.Net.WebUtility.HtmlEncode(Path) & """ />"
                                 End If
                                 ResourceCnt = ResourceCnt + 1
@@ -668,17 +671,24 @@ Namespace Contensive.Addons.AddonManager51
                     '
                     ' Save the installation file and add it to the archive
                     '
-                    Call cp.TempFiles.Save(tempExportXmlPathFilename, collectionXml)
-                    If Not tempFileList.Contains(tempExportXmlPathFilename) Then
-                        tempFileList.Add(tempExportXmlPathFilename)
+                    Call cp.TempFiles.Save(tempExportPath & tempExportXml_Filename, collectionXml)
+                    If Not tempPathFileList.Contains(tempExportPath & tempExportXml_Filename) Then
+                        tempPathFileList.Add(tempExportPath & tempExportXml_Filename)
                     End If
-                    Call zipTempCdnFile(cp, tempExportZipPathFilename, tempFileList)
-                    cp.TempFiles.Copy(tempExportZipPathFilename, cdnExportZipPathFilename, cp.CdnFiles)
+                    '
+                    ' -- zip up the folder to make the collection zip file in temp filesystem
+                    Call zipTempCdnFile(cp, tempExportPath & tempExportZip_Filename, tempPathFileList)
+                    '
+                    ' -- copy the collection zip file to the cdn filesystem as the download link
+                    cp.TempFiles.Copy(tempExportPath & tempExportZip_Filename, cdnExportZip_Filename, cp.CdnFiles)
+                    '
+                    ' -- delete the temp folder
+                    cp.TempFiles.DeleteFolder(tempExportPath)
                 End If
             Catch ex As Exception
                 errorReport(cp, ex, "GetCollection")
             End Try
-            Return cdnExportZipPathFilename
+            Return cdnExportZip_Filename
         End Function
         '
         '====================================================================================================
