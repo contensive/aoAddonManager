@@ -17,7 +17,7 @@ Namespace Contensive.Addons.AddonManager51
         End Function
         '
         ' -- method provided here because these methods are not included in the c41 interface, so this call can only be created if v5 code
-        Public Shared Function installCollectionFromFolder(cp As CPBaseClass, privatePathFilename As String, ByRef ErrorMessage As String) As Boolean
+        Public Shared Function installCollectionFromFolder(cp As CPBaseClass, privatePathFilename As String, reinstallDependencies As Boolean, ByRef ErrorMessage As String) As Boolean
             '
             cp.Utils.AppendLog("installCollectionFromFolder, privatePathFilename [" & privatePathFilename & "]")
             '
@@ -30,17 +30,19 @@ Namespace Contensive.Addons.AddonManager51
         End Function
         '
         ' -- method provided here because these methods are not included in the c41 interface, so this call can only be created if v5 code
-        Public Shared Function installCollectionFromUpload(cp As CPBaseClass, requestName As String, ByRef ErrorMessage As String) As Boolean
+        Public Shared Function installCollectionFromUpload(cp As CPBaseClass, reinstallDependencies As Boolean, requestName As String, ByRef ErrorMessage As String) As Boolean
             '
             cp.Utils.AppendLog("installCollectionFromUpload, requestName [" & requestName & "]")
             Try
                 '
                 Dim privatePath As String = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "") & "\"
-
                 Dim uploadFilename As String = ""
+                Dim result As Boolean = False
                 If cp.PrivateFiles.SaveUpload(requestName, privatePath, uploadFilename) Then
-                    Return installCollectionFromFolder(cp, privatePath & uploadFilename, ErrorMessage)
+                    result = installCollectionFromFolder(cp, privatePath & uploadFilename, reinstallDependencies, ErrorMessage)
                 End If
+                cp.PrivateFiles.DeleteFolder(privatePath)
+                Return result
             Catch ex As Exception
                 cp.Site.ErrorReport(ex)
             End Try

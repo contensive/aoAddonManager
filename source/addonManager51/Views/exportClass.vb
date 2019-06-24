@@ -797,6 +797,8 @@ Namespace Contensive.Addons.AddonManager51
                     result &= GetNodeBoolean(cp, "OnBodyStart", CS.GetBoolean("OnBodyStart"))
                     result &= GetNodeBoolean(cp, "OnBodyEnd", CS.GetBoolean("OnBodyEnd"))
                     result &= GetNodeBoolean(cp, "RemoteMethod", CS.GetBoolean("RemoteMethod"))
+                    result &= GetNodeBoolean(cp, "Diagnostic", If((cp.Version >= "5.01.00007101"), CS.GetBoolean("Diagnostic"), False))
+                    result &= If(cp.Version >= "5.01.00007101", GetNodeBoolean(cp, "Diagnostic", CS.GetBoolean("Diagnostic")), "")
                     's = s & GetNodeBoolean( cp, "OnNewVisitEvent", CS.GetBoolean( "OnNewVisitEvent"))
                     '
                     ' -- Process

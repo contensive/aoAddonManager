@@ -103,10 +103,10 @@
     <Compile Include="constants.vb" />
     <Compile Include="Controllers\v5InstallController.vb" />
     <Compile Include="Controllers\genericController.vb" />
-    <Compile Include="Interfaces\iisRecycle.vb" />
-    <Compile Include="Interfaces\exportClass.vb" />
-    <Compile Include="Interfaces\uploadClass.vb" />
-    <Compile Include="Interfaces\collectionLibraryClass.vb" />
+    <Compile Include="Views\iisRecycle.vb" />
+    <Compile Include="Views\exportClass.vb" />
+    <Compile Include="Views\uploadClass.vb" />
+    <Compile Include="Views\collectionLibraryClass.vb" />
     <Compile Include="Models\baseModel.vb" />
     <Compile Include="Models\personModel.vb" />
     <Compile Include="Models\addonCollectionModel.vb" />
@@ -128,7 +128,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Interfaces\uninstallClass.vb" />
+    <Compile Include="Views\uninstallClass.vb" />
     <Compile Include="Controllers\xmlController.vb" />
   </ItemGroup>
   <ItemGroup>

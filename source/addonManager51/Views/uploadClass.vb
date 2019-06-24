@@ -78,7 +78,8 @@ Namespace Contensive.Addons.AddonManager51
                                 '
                                 ' -- version 5.0, separate class so this project can be built with contensive 5.0 reference, but run against contensive 4.1
                                 Dim ErrorMessage As String = ""
-                                If (v5InstallController.installCollectionFromUpload(cp, rnUploadCollectionFile, ErrorMessage)) Then
+                                Dim reinstallDependencies As Boolean = cp.Doc.GetBoolean(rnUploadReinstallDependencies)
+                                If (v5InstallController.installCollectionFromUpload(cp, rnUploadCollectionFile, reinstallDependencies, ErrorMessage)) Then
                                     cp.Addon.ExecuteAsync(iisRecycleAddonGuid)
                                     form.body &= cp.Html.p("Installed collection files, iis will recycle in the next few seconds.")
                                 Else
@@ -91,6 +92,8 @@ Namespace Contensive.Addons.AddonManager51
                         form.addRow()
                         form.rowName = "Add-on Collection File"
                         form.rowValue = cp.Html.InputFile(rnUploadCollectionFile)
+                        form.rowName = "Reinstall Dependent Collections"
+                        form.rowValue = cp.Html.CheckBox(rnUploadReinstallDependencies)
                         form.addFormHidden("UploadCount", "1")
                         form.addFormButton(ButtonOK)
                         form.addFormButton(ButtonCancel)
