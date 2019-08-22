@@ -74,7 +74,7 @@ Namespace Contensive.Addons.AddonManager51
                             ' Get Form
                             form.addRow()
                             form.rowName = "Add-on Collection"
-                            form.rowValue = CP.Html.SelectContent(RequestNameCollectionID, "0", "Add-on Collections")
+                            form.rowValue = CP.Html.SelectContent(RequestNameCollectionID, "0", "Add-on Collections", "", "Select Collection To Export", "form-control")
                             form.addFormHidden("UploadCount", "1")
                             form.addFormButton(ButtonOK)
                             form.addFormButton(ButtonCancel)
