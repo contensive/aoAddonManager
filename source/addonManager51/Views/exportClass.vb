@@ -1,8 +1,4 @@
 
-
-Imports System
-Imports System.Collections.Generic
-Imports System.Text
 Imports Contensive.Addons.AddonManager51.Models
 Imports Contensive.BaseClasses
 Imports ICSharpCode.SharpZipLib
@@ -143,9 +139,9 @@ Namespace Contensive.Addons.AddonManager51
                     collectionXml &= vbCrLf & "<Collection"
                     collectionXml &= " name=""" & CollectionName & """"
                     collectionXml &= " guid=""" & CollectionGuid & """"
-                    collectionXml &= " system=""" & kmaGetYesNo(cp, CS.GetBoolean("system")) & """"
-                    collectionXml &= " updatable=""" & kmaGetYesNo(cp, CS.GetBoolean("updatable")) & """"
-                    collectionXml &= " blockNavigatorNode=""" & kmaGetYesNo(cp, CS.GetBoolean("blockNavigatorNode")) & """"
+                    collectionXml &= " system=""" & getYesNo(cp, CS.GetBoolean("system")) & """"
+                    collectionXml &= " updatable=""" & getYesNo(cp, CS.GetBoolean("updatable")) & """"
+                    collectionXml &= " blockNavigatorNode=""" & getYesNo(cp, CS.GetBoolean("blockNavigatorNode")) & """"
                     collectionXml &= " onInstallAddonGuid=""" & onInstallAddonGuid & """"
                     collectionXml &= ">"
                     '
@@ -245,7 +241,7 @@ Namespace Contensive.Addons.AddonManager51
                     Dim IncludeModuleGuidList As String = ""
                     Dim IncludeSharedStyleGuidList As String = ""
                     Do While CS2.OK()
-                        collectionXml = collectionXml & GetAddonNode(cp, CS2.GetInteger("id"), IncludeModuleGuidList, IncludeSharedStyleGuidList)
+                        collectionXml = collectionXml & getAddonNode(cp, CS2.GetInteger("id"), IncludeModuleGuidList, IncludeSharedStyleGuidList)
                         Call CS2.GoNext()
                     Loop
                     '
@@ -693,248 +689,236 @@ Namespace Contensive.Addons.AddonManager51
         '
         '====================================================================================================
 
-        Private Function GetAddonNode(cp As CPBaseClass, addonid As Integer, ByRef Return_IncludeModuleGuidList As String, ByRef Return_IncludeSharedStyleGuidList As String) As String
+        Private Function getAddonNode(cp As CPBaseClass, addonid As Integer, ByRef Return_IncludeModuleGuidList As String, ByRef Return_IncludeSharedStyleGuidList As String) As String
             Dim result As String = ""
             Try
-                '
-                Dim styleId As Integer
-                Dim fieldType As String
-                Dim fieldTypeID As Integer
-                Dim TriggerContentID As Integer
-                Dim StylesTest As String
-                Dim BlockEditTools As Boolean
-                Dim NavType As String
-                Dim Styles As String
-                Dim NodeInnerText As String
-                Dim IncludedAddonID As Integer
-                Dim ScriptingModuleID As Integer
-                Dim Guid As String
-                Dim addonName As String
-                Dim processRunOnce As Boolean
-                Dim CS As CPCSBaseClass = cp.CSNew()
-                Dim CS2 As CPCSBaseClass = cp.CSNew()
-                Dim CS3 As CPCSBaseClass = cp.CSNew()
-                '
-                If CS.OpenRecord("Add-ons", addonid) Then
-                    addonName = CS.GetText("name")
-                    processRunOnce = CS.GetBoolean("ProcessRunOnce")
-                    If ((LCase(addonName) = "oninstall") Or (LCase(addonName) = "_oninstall")) Then
-                        processRunOnce = True
-                    End If
-                    '
-                    ' ActiveX DLL node is being deprecated. This should be in the collection resource section
-                    '
-                    result &= GetNodeText(cp, "Copy", CS.GetText("Copy"))
-                    result &= GetNodeText(cp, "CopyText", CS.GetText("CopyText"))
-                    '
-                    ' DLL
-                    '
-
-                    result &= GetNodeText(cp, "ActiveXProgramID", CS.GetText("objectprogramid"))
-                    result &= GetNodeText(cp, "DotNetClass", CS.GetText("DotNetClass"))
-                    '
-                    ' Features
-                    '
-                    result &= GetNodeText(cp, "ArgumentList", CS.GetText("ArgumentList"))
-                    result &= GetNodeBoolean(cp, "AsAjax", CS.GetBoolean("AsAjax"))
-                    result &= GetNodeBoolean(cp, "Filter", CS.GetBoolean("Filter"))
-                    result &= GetNodeText(cp, "Help", CS.GetText("Help"))
-                    result &= GetNodeText(cp, "HelpLink", CS.GetText("HelpLink"))
-                    result &= vbCrLf & vbTab & "<Icon Link=""" & CS.GetText("iconfilename") & """ width=""" & CS.GetInteger("iconWidth") & """ height=""" & CS.GetInteger("iconHeight") & """ sprites=""" & CS.GetInteger("iconSprites") & """ />"
-                    result &= GetNodeBoolean(cp, "InIframe", CS.GetBoolean("InFrame"))
-                    BlockEditTools = False
-                    If CS.FieldOK("BlockEditTools") Then
-                        BlockEditTools = CS.GetBoolean("BlockEditTools")
-                    End If
-                    result &= GetNodeBoolean(cp, "BlockEditTools", BlockEditTools)
-                    '
-                    ' Form XML
-                    '
-                    result &= GetNodeText(cp, "FormXML", CS.GetText("FormXML"))
-                    '
-                    NodeInnerText = ""
-                    CS2.Open("Add-on Include Rules", "addonid=" & addonid)
-                    Do While CS2.OK()
-                        IncludedAddonID = CS2.GetInteger("IncludedAddonID")
-                        CS3.Open("Add-ons", "ID=" & IncludedAddonID)
-                        If CS3.OK() Then
-                            Guid = CS3.GetText("ccGuid")
-                            If Guid = "" Then
-                                Guid = cp.Utils.CreateGuid()
-                                Call CS3.SetField("ccGuid", Guid)
-                            End If
-                            result &= vbCrLf & vbTab & "<IncludeAddon name=""" & System.Net.WebUtility.HtmlEncode(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
+                Using CS As CPCSBaseClass = cp.CSNew()
+                    If CS.OpenRecord("Add-ons", addonid) Then
+                        Dim addonName As String = CS.GetText("name")
+                        Dim processRunOnce As Boolean = CS.GetBoolean("ProcessRunOnce")
+                        If ((LCase(addonName) = "oninstall") Or (LCase(addonName) = "_oninstall")) Then
+                            processRunOnce = True
                         End If
-                        Call CS3.Close()
-                        Call CS2.GoNext()
-                    Loop
-                    Call CS2.Close()
-                    '
-                    result &= GetNodeBoolean(cp, "IsInline", CS.GetBoolean("IsInline"))
-                    '
-                    ' -- javascript (xmlnode may not match Db filename)
-                    result &= GetNodeText(cp, "JavascriptInHead", CS.GetText("JSFilename"))
-                    If (cp.Version > "4.2") Then
-                        result &= GetNodeBoolean(cp, "javascriptForceHead", CS.GetBoolean("javascriptForceHead"))
-                        result &= GetNodeText(cp, "JSHeadScriptSrc", CS.GetText("JSHeadScriptSrc"))
-                    Else
-                        result &= GetNodeBoolean(cp, "javascriptForceHead", False)
-                        result &= GetNodeText(cp, "JSHeadScriptSrc", "")
-                    End If
-                    '
-                    ' -- javascript deprecated
-                    result &= GetNodeText(cp, "JSBodyScriptSrc", CS.GetText("JSBodyScriptSrc"), True)
-                    result &= GetNodeText(cp, "JavascriptBodyEnd", CS.GetText("JavascriptBodyEnd"), True)
-                    result &= GetNodeText(cp, "JavascriptOnLoad", CS.GetText("JavascriptOnLoad"), True)
-                    '
-                    ' -- Placements
-                    result &= GetNodeBoolean(cp, "Content", CS.GetBoolean("Content"))
-                    result &= GetNodeBoolean(cp, "Template", CS.GetBoolean("Template"))
-                    result &= GetNodeBoolean(cp, "Email", CS.GetBoolean("Email"))
-                    result &= GetNodeBoolean(cp, "Admin", CS.GetBoolean("Admin"))
-                    result &= GetNodeBoolean(cp, "OnPageEndEvent", CS.GetBoolean("OnPageEndEvent"))
-                    result &= GetNodeBoolean(cp, "OnPageStartEvent", CS.GetBoolean("OnPageStartEvent"))
-                    result &= GetNodeBoolean(cp, "OnBodyStart", CS.GetBoolean("OnBodyStart"))
-                    result &= GetNodeBoolean(cp, "OnBodyEnd", CS.GetBoolean("OnBodyEnd"))
-                    result &= GetNodeBoolean(cp, "RemoteMethod", CS.GetBoolean("RemoteMethod"))
-                    result &= If(cp.Version >= "5.01.00007101", GetNodeBoolean(cp, "Diagnostic", CS.GetBoolean("Diagnostic")), "")
-                    's = s & GetNodeBoolean( cp, "OnNewVisitEvent", CS.GetBoolean( "OnNewVisitEvent"))
-                    '
-                    ' -- Process
-                    result &= GetNodeBoolean(cp, "ProcessRunOnce", processRunOnce)
-                    result &= GetNodeInteger(cp, "ProcessInterval", CS.GetInteger("ProcessInterval"))
-                    '
-                    ' Meta
-                    '
-                    result &= GetNodeText(cp, "MetaDescription", CS.GetText("MetaDescription"))
-                    result &= GetNodeText(cp, "OtherHeadTags", CS.GetText("OtherHeadTags"))
-                    result &= GetNodeText(cp, "PageTitle", CS.GetText("PageTitle"))
-                    result &= GetNodeText(cp, "RemoteAssetLink", CS.GetText("RemoteAssetLink"))
-                    '
-                    ' Styles
-                    Styles = ""
-                    If Not CS.GetBoolean("BlockDefaultStyles") Then
-                        Styles = Trim(CS.GetText("StylesFilename"))
-                    End If
-                    StylesTest = Trim(CS.GetText("CustomStylesFilename"))
-                    If StylesTest <> "" Then
-                        If Styles <> "" Then
-                            Styles = Styles & vbCrLf & StylesTest
-                        Else
-                            Styles = StylesTest
+                        '
+                        ' ActiveX DLL node is being deprecated. This should be in the collection resource section
+                        result &= getNodeText(cp, "Copy", CS.GetText("Copy"))
+                        result &= getNodeText(cp, "CopyText", CS.GetText("CopyText"))
+                        '
+                        ' DLL
+                        result &= getNodeText(cp, "ActiveXProgramID", CS.GetText("objectprogramid"), True)
+                        result &= getNodeText(cp, "DotNetClass", CS.GetText("DotNetClass"))
+                        '
+                        ' Features
+                        result &= getNodeText(cp, "ArgumentList", CS.GetText("ArgumentList"))
+                        result &= getNodeBoolean(cp, "AsAjax", CS.GetBoolean("AsAjax"))
+                        result &= getNodeBoolean(cp, "Filter", CS.GetBoolean("Filter"))
+                        result &= getNodeText(cp, "Help", CS.GetText("Help"))
+                        result &= getNodeText(cp, "HelpLink", CS.GetText("HelpLink"))
+                        result &= vbCrLf & vbTab & "<Icon Link=""" & CS.GetText("iconfilename") & """ width=""" & CS.GetInteger("iconWidth") & """ height=""" & CS.GetInteger("iconHeight") & """ sprites=""" & CS.GetInteger("iconSprites") & """ />"
+                        result &= getNodeBoolean(cp, "InIframe", CS.GetBoolean("InFrame"))
+                        result &= If(CS.FieldOK("BlockEditTools"), getNodeBoolean(cp, "BlockEditTools", CS.GetBoolean("BlockEditTools")), "")
+                        result &= If(CS.FieldOK("aliasList"), getNodeText(cp, "AliasList", CS.GetText("aliasList")), "")
+                        '
+                        ' -- Form XML
+                        result &= getNodeText(cp, "FormXML", CS.GetText("FormXML"))
+                        '
+                        ' -- addon dependencies
+                        Using CS2 As CPCSBaseClass = cp.CSNew()
+                            CS2.Open("Add-on Include Rules", "addonid=" & addonid)
+                            Do While CS2.OK()
+                                Dim IncludedAddonID As Integer = CS2.GetInteger("IncludedAddonID")
+                                Using CS3 As CPCSBaseClass = cp.CSNew()
+                                    CS3.Open("Add-ons", "ID=" & IncludedAddonID)
+                                    If CS3.OK() Then
+                                        Dim Guid As String = CS3.GetText("ccGuid")
+                                        If Guid = "" Then
+                                            Guid = cp.Utils.CreateGuid()
+                                            Call CS3.SetField("ccGuid", Guid)
+                                        End If
+                                        result &= vbCrLf & vbTab & "<IncludeAddon name=""" & System.Net.WebUtility.HtmlEncode(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
+                                    End If
+                                    Call CS3.Close()
+                                End Using
+                                Call CS2.GoNext()
+                            Loop
+                            Call CS2.Close()
+                        End Using
+                        '
+                        ' -- is inline/block
+                        result &= getNodeBoolean(cp, "IsInline", CS.GetBoolean("IsInline"))
+                        '
+                        ' -- javascript (xmlnode may not match Db filename)
+                        result &= getNodeText(cp, "JavascriptInHead", CS.GetText("JSFilename"))
+                        result &= getNodeBoolean(cp, "javascriptForceHead", CS.GetBoolean("javascriptForceHead"))
+                        result &= getNodeText(cp, "JSHeadScriptSrc", CS.GetText("JSHeadScriptSrc"))
+                        '
+                        ' -- javascript deprecated
+                        result &= getNodeText(cp, "JSBodyScriptSrc", CS.GetText("JSBodyScriptSrc"), True)
+                        result &= getNodeText(cp, "JavascriptBodyEnd", CS.GetText("JavascriptBodyEnd"), True)
+                        result &= getNodeText(cp, "JavascriptOnLoad", CS.GetText("JavascriptOnLoad"), True)
+                        '
+                        ' -- Placements
+                        result &= getNodeBoolean(cp, "Content", CS.GetBoolean("Content"))
+                        result &= getNodeBoolean(cp, "Template", CS.GetBoolean("Template"))
+                        result &= getNodeBoolean(cp, "Email", CS.GetBoolean("Email"))
+                        result &= getNodeBoolean(cp, "Admin", CS.GetBoolean("Admin"))
+                        result &= getNodeBoolean(cp, "OnPageEndEvent", CS.GetBoolean("OnPageEndEvent"))
+                        result &= getNodeBoolean(cp, "OnPageStartEvent", CS.GetBoolean("OnPageStartEvent"))
+                        result &= getNodeBoolean(cp, "OnBodyStart", CS.GetBoolean("OnBodyStart"))
+                        result &= getNodeBoolean(cp, "OnBodyEnd", CS.GetBoolean("OnBodyEnd"))
+                        result &= getNodeBoolean(cp, "RemoteMethod", CS.GetBoolean("RemoteMethod"))
+                        result &= If(CS.FieldOK("Diagnostic"), getNodeBoolean(cp, "Diagnostic", CS.GetBoolean("Diagnostic")), "")
+                        '
+                        ' -- Process
+                        result &= getNodeBoolean(cp, "ProcessRunOnce", processRunOnce)
+                        result &= GetNodeInteger(cp, "ProcessInterval", CS.GetInteger("ProcessInterval"))
+                        '
+                        ' Meta
+                        '
+                        result &= getNodeText(cp, "MetaDescription", CS.GetText("MetaDescription"))
+                        result &= getNodeText(cp, "OtherHeadTags", CS.GetText("OtherHeadTags"))
+                        result &= getNodeText(cp, "PageTitle", CS.GetText("PageTitle"))
+                        result &= getNodeText(cp, "RemoteAssetLink", CS.GetText("RemoteAssetLink"))
+                        '
+                        ' Styles
+                        Dim Styles As String = ""
+                        If Not CS.GetBoolean("BlockDefaultStyles") Then
+                            Styles = Trim(CS.GetText("StylesFilename"))
                         End If
-                    End If
-                    result &= GetNodeText(cp, "Styles", Styles)
-                    result &= GetNodeText(cp, "styleslinkhref", CS.GetText("styleslinkhref"))
-                    '
-                    ' Scripting
-                    '
-                    NodeInnerText = Trim(CS.GetText("ScriptingCode"))
-                    If NodeInnerText <> "" Then
-                        NodeInnerText = vbCrLf & vbTab & vbTab & "<Code>" & EncodeCData(cp, NodeInnerText) & "</Code>"
-                    End If
-                    CS2.Open("Add-on Scripting Module Rules", "addonid=" & addonid)
-                    Do While CS2.OK()
-                        ScriptingModuleID = CS2.GetInteger("ScriptingModuleID")
-                        CS3.Open("Scripting Modules", "ID=" & ScriptingModuleID)
-                        If CS3.OK() Then
-                            Guid = CS3.GetText("ccGuid")
-                            If Guid = "" Then
-                                Guid = cp.Utils.CreateGuid()
-                                Call CS3.SetField("ccGuid", Guid)
+                        Dim StylesTest As String = Trim(CS.GetText("CustomStylesFilename"))
+                        If StylesTest <> "" Then
+                            If Styles <> "" Then
+                                Styles = Styles & vbCrLf & StylesTest
+                            Else
+                                Styles = StylesTest
                             End If
-                            Return_IncludeModuleGuidList = Return_IncludeModuleGuidList & vbCrLf & Guid
-                            NodeInnerText = NodeInnerText & vbCrLf & vbTab & vbTab & "<IncludeModule name=""" & System.Net.WebUtility.HtmlEncode(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
                         End If
-                        Call CS3.Close()
-                        Call CS2.GoNext()
-                    Loop
-                    Call CS2.Close()
-                    If NodeInnerText = "" Then
-                        result &= vbCrLf & vbTab & "<Scripting Language=""" & CS.GetText("ScriptingLanguageID") & """ EntryPoint=""" & CS.GetText("ScriptingEntryPoint") & """ Timeout=""" & CS.GetText("ScriptingTimeout") & """/>"
-                    Else
-                        result &= vbCrLf & vbTab & "<Scripting Language=""" & CS.GetText("ScriptingLanguageID") & """ EntryPoint=""" & CS.GetText("ScriptingEntryPoint") & """ Timeout=""" & CS.GetText("ScriptingTimeout") & """>" & NodeInnerText & vbCrLf & vbTab & "</Scripting>"
-                    End If
-                    '
-                    ' Shared Styles
-                    '
-                    CS2.Open("Shared Styles Add-on Rules", "addonid=" & addonid)
-                    Do While CS2.OK()
-                        styleId = CS2.GetInteger("styleId")
-                        CS3.Open("shared styles", "ID=" & styleId)
-                        If CS3.OK() Then
-                            Guid = CS3.GetText("ccGuid")
-                            If Guid = "" Then
-                                Guid = cp.Utils.CreateGuid()
-                                Call CS3.SetField("ccGuid", Guid)
-                            End If
-                            Return_IncludeSharedStyleGuidList = Return_IncludeSharedStyleGuidList & vbCrLf & Guid
-                            result &= vbCrLf & vbTab & "<IncludeSharedStyle name=""" & System.Net.WebUtility.HtmlEncode(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
-                        End If
-                        Call CS3.Close()
-                        Call CS2.GoNext()
-                    Loop
-                    Call CS2.Close()
-                    '
-                    ' Process Triggers
-                    '
-                    NodeInnerText = ""
-                    CS2.Open("Add-on Content Trigger Rules", "addonid=" & addonid)
-                    Do While CS2.OK()
-                        TriggerContentID = CS2.GetInteger("ContentID")
-                        CS3.Open("content", "ID=" & TriggerContentID)
-                        If CS3.OK() Then
-                            Guid = CS3.GetText("ccGuid")
-                            If Guid = "" Then
-                                Guid = cp.Utils.CreateGuid()
-                                Call CS3.SetField("ccGuid", Guid)
-                            End If
-                            NodeInnerText = NodeInnerText & vbCrLf & vbTab & vbTab & "<ContentChange name=""" & System.Net.WebUtility.HtmlEncode(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
-                        End If
-                        Call CS3.Close()
-                        Call CS2.GoNext()
-                    Loop
-                    Call CS2.Close()
-                    If NodeInnerText <> "" Then
-                        result &= vbCrLf & vbTab & "<ProcessTriggers>" & NodeInnerText & vbCrLf & vbTab & "</ProcessTriggers>"
-                    End If
-                    '
-                    ' Editors
-                    '
-                    If cp.Content.IsField("Add-on Content Field Type Rules", "id") Then
-                        NodeInnerText = ""
-                        CS2.Open("Add-on Content Field Type Rules", "addonid=" & addonid)
-                        Do While CS2.OK()
-                            fieldTypeID = CS2.GetInteger("contentFieldTypeID")
-                            fieldType = cp.Content.GetRecordName("Content Field Types", fieldTypeID)
-                            If fieldType <> "" Then
-                                NodeInnerText = NodeInnerText & vbCrLf & vbTab & vbTab & "<type>" & fieldType & "</type>"
-                            End If
-                            Call CS2.GoNext()
-                        Loop
-                        Call CS2.Close()
+                        result &= getNodeText(cp, "Styles", Styles)
+                        result &= getNodeText(cp, "styleslinkhref", CS.GetText("styleslinkhref"))
+                        '
+                        '
+                        ' Scripting
+                        '
+                        Dim NodeInnerText As String = Trim(CS.GetText("ScriptingCode"))
                         If NodeInnerText <> "" Then
-                            result &= vbCrLf & vbTab & "<Editors>" & NodeInnerText & vbCrLf & vbTab & "</Editors>"
+                            NodeInnerText = vbCrLf & vbTab & vbTab & "<Code>" & EncodeCData(cp, NodeInnerText) & "</Code>"
                         End If
+                        Using CS2 As CPCSBaseClass = cp.CSNew()
+                            CS2.Open("Add-on Scripting Module Rules", "addonid=" & addonid)
+                            Do While CS2.OK()
+                                Dim ScriptingModuleID As Integer = CS2.GetInteger("ScriptingModuleID")
+                                Using CS3 As CPCSBaseClass = cp.CSNew()
+                                    CS3.Open("Scripting Modules", "ID=" & ScriptingModuleID)
+                                    If CS3.OK() Then
+                                        Dim Guid As String = CS3.GetText("ccGuid")
+                                        If Guid = "" Then
+                                            Guid = cp.Utils.CreateGuid()
+                                            Call CS3.SetField("ccGuid", Guid)
+                                        End If
+                                        Return_IncludeModuleGuidList = Return_IncludeModuleGuidList & vbCrLf & Guid
+                                        NodeInnerText = NodeInnerText & vbCrLf & vbTab & vbTab & "<IncludeModule name=""" & System.Net.WebUtility.HtmlEncode(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
+                                    End If
+                                    Call CS3.Close()
+                                End Using
+                                Call CS2.GoNext()
+                            Loop
+                            Call CS2.Close()
+                        End Using
+                        If NodeInnerText = "" Then
+                            result &= vbCrLf & vbTab & "<Scripting Language=""" & CS.GetText("ScriptingLanguageID") & """ EntryPoint=""" & CS.GetText("ScriptingEntryPoint") & """ Timeout=""" & CS.GetText("ScriptingTimeout") & """/>"
+                        Else
+                            result &= vbCrLf & vbTab & "<Scripting Language=""" & CS.GetText("ScriptingLanguageID") & """ EntryPoint=""" & CS.GetText("ScriptingEntryPoint") & """ Timeout=""" & CS.GetText("ScriptingTimeout") & """>" & NodeInnerText & vbCrLf & vbTab & "</Scripting>"
+                        End If
+                        '
+                        ' Shared Styles
+                        '
+                        Using CS2 As CPCSBaseClass = cp.CSNew()
+                            CS2.Open("Shared Styles Add-on Rules", "addonid=" & addonid)
+                            Do While CS2.OK()
+                                Dim styleId As Integer = CS2.GetInteger("styleId")
+                                Using CS3 As CPCSBaseClass = cp.CSNew()
+                                    CS3.Open("shared styles", "ID=" & styleId)
+                                    If CS3.OK() Then
+                                        Dim Guid As String = CS3.GetText("ccGuid")
+                                        If Guid = "" Then
+                                            Guid = cp.Utils.CreateGuid()
+                                            Call CS3.SetField("ccGuid", Guid)
+                                        End If
+                                        Return_IncludeSharedStyleGuidList = Return_IncludeSharedStyleGuidList & vbCrLf & Guid
+                                        result &= vbCrLf & vbTab & "<IncludeSharedStyle name=""" & System.Net.WebUtility.HtmlEncode(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
+                                    End If
+                                    Call CS3.Close()
+                                End Using
+                                Call CS2.GoNext()
+                            Loop
+                            Call CS2.Close()
+                        End Using
+                        '
+                        ' Process Triggers
+                        '
+                        NodeInnerText = ""
+                        Using CS2 As CPCSBaseClass = cp.CSNew()
+                            CS2.Open("Add-on Content Trigger Rules", "addonid=" & addonid)
+                            Do While CS2.OK()
+                                Dim TriggerContentID As Integer = CS2.GetInteger("ContentID")
+                                Using CS3 As CPCSBaseClass = cp.CSNew()
+                                    CS3.Open("content", "ID=" & TriggerContentID)
+                                    If CS3.OK() Then
+                                        Dim Guid As String = CS3.GetText("ccGuid")
+                                        If Guid = "" Then
+                                            Guid = cp.Utils.CreateGuid()
+                                            Call CS3.SetField("ccGuid", Guid)
+                                        End If
+                                        NodeInnerText = NodeInnerText & vbCrLf & vbTab & vbTab & "<ContentChange name=""" & System.Net.WebUtility.HtmlEncode(CS3.GetText("name")) & """ guid=""" & Guid & """/>"
+                                    End If
+                                    Call CS3.Close()
+                                End Using
+                                Call CS2.GoNext()
+                            Loop
+                            Call CS2.Close()
+                        End Using
+                        If NodeInnerText <> "" Then
+                            result &= vbCrLf & vbTab & "<ProcessTriggers>" & NodeInnerText & vbCrLf & vbTab & "</ProcessTriggers>"
+                        End If
+                        '
+                        ' Editors
+                        '
+                        If cp.Content.IsField("Add-on Content Field Type Rules", "id") Then
+                            NodeInnerText = ""
+                            Using CS2 As CPCSBaseClass = cp.CSNew()
+                                CS2.Open("Add-on Content Field Type Rules", "addonid=" & addonid)
+                                Do While CS2.OK()
+                                    Dim fieldTypeID As Integer = CS2.GetInteger("contentFieldTypeID")
+                                    Dim fieldType As String = cp.Content.GetRecordName("Content Field Types", fieldTypeID)
+                                    If fieldType <> "" Then
+                                        NodeInnerText = NodeInnerText & vbCrLf & vbTab & vbTab & "<type>" & fieldType & "</type>"
+                                    End If
+                                    Call CS2.GoNext()
+                                Loop
+                                Call CS2.Close()
+                            End Using
+                            If NodeInnerText <> "" Then
+                                result &= vbCrLf & vbTab & "<Editors>" & NodeInnerText & vbCrLf & vbTab & "</Editors>"
+                            End If
+                        End If
+                        '
+                        Dim addonGuid As String = CS.GetText("ccGuid")
+                        If (String.IsNullOrWhiteSpace(addonGuid)) Then
+                            addonGuid = cp.Utils.CreateGuid()
+                            Call CS.SetField("ccGuid", addonGuid)
+                        End If
+                        Dim NavType As String = CS.GetText("NavTypeID")
+                        If (NavType = "") Then
+                            NavType = "Add-on"
+                        End If
+                        result = "" _
+                        & vbCrLf & vbTab & "<Addon name=""" & System.Net.WebUtility.HtmlEncode(addonName) & """ guid=""" & addonGuid & """ type=""" & NavType & """>" _
+                        & tabIndent(cp, result) _
+                        & vbCrLf & vbTab & "</Addon>"
                     End If
-                    '
-                    '
-                    '
-                    Guid = CS.GetText("ccGuid")
-                    If Guid = "" Then
-                        Guid = cp.Utils.CreateGuid()
-                        Call CS.SetField("ccGuid", Guid)
-                    End If
-                    NavType = CS.GetText("NavTypeID")
-                    If NavType = "" Then
-                        NavType = "Add-on"
-                    End If
-                    result = "" _
-                    & vbCrLf & vbTab & "<Addon name=""" & System.Net.WebUtility.HtmlEncode(addonName) & """ guid=""" & Guid & """ type=""" & NavType & """>" _
-                    & tabIndent(cp, result) _
-                    & vbCrLf & vbTab & "</Addon>"
-                End If
-                Call CS.Close()
+                    Call CS.Close()
+
+                End Using
             Catch ex As Exception
                 errorReport(cp, ex, "GetAddonNode")
             End Try
@@ -949,18 +933,18 @@ Namespace Contensive.Addons.AddonManager51
         ''' <param name="NodeContent"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function GetNodeText(cp As CPBaseClass, NodeName As String, NodeContent As String, Optional deprecated As Boolean = False) As String
-            GetNodeText = ""
+        Private Function getNodeText(cp As CPBaseClass, NodeName As String, NodeContent As String, Optional deprecated As Boolean = False) As String
+            getNodeText = ""
             Try
                 Dim prefix As String = ""
                 If (deprecated) Then
                     prefix = "<!-- deprecated -->"
                 End If
-                GetNodeText = ""
+                getNodeText = ""
                 If NodeContent = "" Then
-                    GetNodeText = GetNodeText & vbCrLf & vbTab & prefix & "<" & NodeName & "></" & NodeName & ">"
+                    getNodeText = getNodeText & vbCrLf & vbTab & prefix & "<" & NodeName & "></" & NodeName & ">"
                 Else
-                    GetNodeText = GetNodeText & vbCrLf & vbTab & prefix & "<" & NodeName & ">" & EncodeCData(cp, NodeContent) & "</" & NodeName & ">"
+                    getNodeText = getNodeText & vbCrLf & vbTab & prefix & "<" & NodeName & ">" & EncodeCData(cp, NodeContent) & "</" & NodeName & ">"
                 End If
             Catch ex As Exception
                 errorReport(cp, ex, "getNodeText")
@@ -975,10 +959,10 @@ Namespace Contensive.Addons.AddonManager51
         ''' <param name="NodeContent"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function GetNodeBoolean(cp As CPBaseClass, NodeName As String, NodeContent As Boolean) As String
-            GetNodeBoolean = ""
+        Private Function getNodeBoolean(cp As CPBaseClass, NodeName As String, NodeContent As Boolean) As String
+            getNodeBoolean = ""
             Try
-                GetNodeBoolean = vbCrLf & vbTab & "<" & NodeName & ">" & kmaGetYesNo(cp, NodeContent) & "</" & NodeName & ">"
+                getNodeBoolean = vbCrLf & vbTab & "<" & NodeName & ">" & getYesNo(cp, NodeContent) & "</" & NodeName & ">"
             Catch ex As Exception
                 errorReport(cp, ex, "GetNodeBoolean")
             End Try
@@ -1099,126 +1083,10 @@ Namespace Contensive.Addons.AddonManager51
                         End With
                     End If
                 End If
-                If Not MatchFound Then
-                    'Call AppendClassLogFile("Server", "GetCollectionConfigArg", "GetLocalCollectionArgs, no local collection match found, Hint=[" & Hint & "]")
-                End If
             Catch ex As Exception
                 errorReport(cp, ex, "GetLocalCollectionArgs")
             End Try
         End Sub
-        ''
-        ''====================================================================================================
-        'Public Function GetConfig(cp As CPBaseClass) As String
-        '    GetConfig = ""
-        '    Try
-        '        Dim AddonPath As String
-        '        '
-        '        AddonPath = cp.Site.PhysicalInstallPath & "\addons"
-        '        AddonPath = AddonPath & "\Collections.xml"
-        '        GetConfig = cp.File.Read(AddonPath)
-        '    Catch ex As Exception
-        '        errorReport(cp, ex, "GetConfig")
-        '    End Try
-        'End Function
-        '
-        '====================================================================================================
-        'Private Function AddCompatibilityResources(cp As CPBaseClass, CollectionPath As String, ArchiveFilename As String, SubPath As String) As String
-        '    AddCompatibilityResources = ""
-        '    Dim s As String = ""
-        '    Try
-        '        Dim AddFilename As String
-        '        Dim FileExt As String
-        '        Dim FileList As String
-        '        Dim Files() As String
-        '        Dim Filename As String
-        '        Dim Ptr As Integer
-        '        Dim FileArgs() As String
-        '        Dim FolderList As String
-        '        Dim Folders() As String
-        '        Dim FolderArgs() As String
-        '        Dim Folder As String
-        '        Dim Pos As Integer
-        '        '
-        '        ' Process all SubPaths
-        '        '
-        '        FolderList = cp.File.folderList(CollectionPath & SubPath)
-        '        If FolderList <> "" Then
-        '            Folders = Split(FolderList, vbCrLf)
-        '            For Ptr = 0 To UBound(Folders)
-        '                Folder = Folders(Ptr)
-        '                If Folder <> "" Then
-        '                    FolderArgs = Split(Folders(Ptr), ",")
-        '                    Folder = FolderArgs(0)
-        '                    If Folder <> "" Then
-        '                        s = s & AddCompatibilityResources(cp, CollectionPath, ArchiveFilename, SubPath & Folder & "\")
-        '                    End If
-        '                End If
-        '            Next
-        '        End If
-        '        '
-        '        ' Process files in this path
-        '        '
-        '        'Set Remote = CreateObject("ccRemote.RemoteClass")
-        '        FileList = cp.File.fileList(CollectionPath)
-        '        If FileList <> "" Then
-        '            Files = Split(FileList, vbCrLf)
-        '            For Ptr = 0 To UBound(Files)
-        '                Filename = Files(Ptr)
-        '                If Filename <> "" Then
-        '                    FileArgs = Split(Filename, ",")
-        '                    If UBound(FileArgs) > 0 Then
-        '                        Filename = FileArgs(0)
-        '                        Pos = InStrRev(Filename, ".")
-        '                        FileExt = ""
-        '                        If Pos > 0 Then
-        '                            FileExt = Mid(Filename, Pos + 1)
-        '                        End If
-        '                        If LCase(Filename) = "collection.hlp" Then
-        '                            '
-        '                            ' legacy help system, ignore this file
-        '                            '
-        '                        ElseIf LCase(FileExt) = "xml" Then
-        '                            '
-        '                            ' compatibility resources can not include an xml file in the wwwroot
-        '                            '
-        '                        ElseIf InStr(1, CollectionPath, "\ContensiveFiles\", vbTextCompare) <> 0 Then
-        '                            '
-        '                            ' Content resources
-        '                            '
-        '                            s = s & vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""content"" path=""" & System.Net.WebUtility.HtmlEncode(SubPath) & """ />"
-        '                            AddFilename = CollectionPath & SubPath & "\" & Filename
-        '                            'Call zipFile(ArchiveFilename, AddFilename)
-        '                            'Call runAtServer("zipfile", "archive=" & kmaEncodeRequestVariable(ArchiveFilename) & "&add=" & kmaEncodeRequestVariable(AddFilename))
-        '                            'Call Remote.executeCmd("zipfile", "archive=" & kmaEncodeRequestVariable(ArchiveFilename) & "&add=" & kmaEncodeRequestVariable(AddFilename))
-        '                        ElseIf LCase(FileExt) = "dll" Then
-        '                            '
-        '                            ' Executable resources
-        '                            '
-        '                            s = s & vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""executable"" path=""" & System.Net.WebUtility.HtmlEncode(SubPath) & """ />"
-        '                            AddFilename = CollectionPath & SubPath & "\" & Filename
-        '                            'Call zipFile(ArchiveFilename, AddFilename)
-        '                            'Call runAtServer("zipfile", "archive=" & kmaEncodeRequestVariable(ArchiveFilename) & "&add=" & kmaEncodeRequestVariable(AddFilename))
-        '                            'Call Remote.executeCmd("zipfile", "archive=" & kmaEncodeRequestVariable(ArchiveFilename) & "&add=" & kmaEncodeRequestVariable(AddFilename))
-        '                        Else
-        '                            '
-        '                            ' www resources
-        '                            '
-        '                            s = s & vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""www"" path=""" & System.Net.WebUtility.HtmlEncode(SubPath) & """ />"
-        '                            AddFilename = CollectionPath & SubPath & "\" & Filename
-        '                            'Call zipFile(ArchiveFilename, AddFilename)
-        '                            'Call runAtServer("zipfile", "archive=" & kmaEncodeRequestVariable(ArchiveFilename) & "&add=" & kmaEncodeRequestVariable(AddFilename))
-        '                            'Call Remote.executeCmd("zipfile", "archive=" & kmaEncodeRequestVariable(ArchiveFilename) & "&add=" & kmaEncodeRequestVariable(AddFilename))
-        '                        End If
-        '                    End If
-        '                End If
-        '            Next
-        '        End If
-        '        '
-        '        AddCompatibilityResources = s
-        '    Catch ex As Exception
-        '        errorReport(cp, ex, "GetNodeInteger")
-        '    End Try
-        'End Function
         '
         '====================================================================================================
         Friend Function EncodeCData(cp As CPBaseClass, Source As String) As String
@@ -1234,12 +1102,8 @@ Namespace Contensive.Addons.AddonManager51
         End Function
         '
         '====================================================================================================
-        Public Function kmaGetYesNo(cp As CPBaseClass, Key As Boolean) As String
-            If Key Then
-                kmaGetYesNo = "Yes"
-            Else
-                kmaGetYesNo = "No"
-            End If
+        Public Function getYesNo(cp As CPBaseClass, Key As Boolean) As String
+            Return If(Key, "Yes", "No")
         End Function
         '
         '=======================================================================================
@@ -1288,32 +1152,26 @@ Namespace Contensive.Addons.AddonManager51
             Catch ex As Exception
                 errorReport(cp, ex, "zipFile")
             End Try
-        End Sub        '
+        End Sub
         '
         '=======================================================================================
+        '
         Private Function getPath(cp As CPBaseClass, ByVal pathFilename As String) As String
-            getPath = ""
-            Try
-                Dim Position As Integer
-                '
-                Position = InStrRev(pathFilename, "\")
-                If Position <> 0 Then
-                    getPath = Mid(pathFilename, 1, Position)
-                End If
-            Catch ex As Exception
-                errorReport(cp, ex, "getPath")
-            End Try
+            Dim Position As Integer = InStrRev(pathFilename, "\")
+            If Position <> 0 Then
+                Return Mid(pathFilename, 1, Position)
+            End If
+            Return String.Empty
         End Function
         '
         '=======================================================================================
-        Public Function GetFilename(cp As CPBaseClass, ByVal PathFilename As String) As String
-            Dim Position As Integer
-            '
-            GetFilename = PathFilename
-            Position = InStrRev(GetFilename, "/")
-            If Position <> 0 Then
-                GetFilename = Mid(GetFilename, Position + 1)
+        '
+        Public Function getFilename(cp As CPBaseClass, ByVal PathFilename As String) As String
+            Dim pos As Integer = InStrRev(PathFilename, "/")
+            If pos <> 0 Then
+                Return Mid(PathFilename, pos + 1)
             End If
+            Return PathFilename
         End Function
         '
         '=======================================================================================
@@ -1321,17 +1179,10 @@ Namespace Contensive.Addons.AddonManager51
         '   Indent every line by 1 tab
         '
         Public Function tabIndent(cp As CPBaseClass, Source As String) As String
-            Dim posStart As Integer
-            Dim posEnd As Integer
-            Dim pre As String
-            Dim post As String
-            Dim target As String
-            '
-            posStart = InStr(1, Source, "<![CDATA[", CompareMethod.Text)
+            Dim posStart As Integer = InStr(1, Source, "<![CDATA[", CompareMethod.Text)
             If posStart = 0 Then
                 '
                 ' no cdata
-                '
                 posStart = InStr(1, Source, "<textarea", CompareMethod.Text)
                 If posStart = 0 Then
                     '
@@ -1342,11 +1193,12 @@ Namespace Contensive.Addons.AddonManager51
                     '
                     ' text area found, isolate it and indent before and after
                     '
-                    posEnd = InStr(posStart, Source, "</textarea>", CompareMethod.Text)
-                    pre = Mid(Source, 1, posStart - 1)
+                    Dim posEnd As Integer = InStr(posStart, Source, "</textarea>", CompareMethod.Text)
+                    Dim pre As String = Mid(Source, 1, posStart - 1)
+                    Dim post As String = ""
+                    Dim target As String
                     If posEnd = 0 Then
                         target = Mid(Source, posStart)
-                        post = ""
                     Else
                         target = Mid(Source, posStart, posEnd - posStart + Len("</textarea>"))
                         post = Mid(Source, posEnd + Len("</textarea>"))
@@ -1357,22 +1209,18 @@ Namespace Contensive.Addons.AddonManager51
                 '
                 ' cdata found, isolate it and indent before and after
                 '
-                posEnd = InStr(posStart, Source, "]]>", CompareMethod.Text)
-                pre = Mid(Source, 1, posStart - 1)
+                Dim posEnd As Integer = InStr(posStart, Source, "]]>", CompareMethod.Text)
+                Dim pre As String = Mid(Source, 1, posStart - 1)
+                Dim post As String = ""
+                Dim target As String
                 If posEnd = 0 Then
                     target = Mid(Source, posStart)
-                    post = ""
                 Else
                     target = Mid(Source, posStart, posEnd - posStart + Len("]]>"))
                     post = Mid(Source, posEnd + 3)
                 End If
                 tabIndent = tabIndent(cp, pre) & target & tabIndent(cp, post)
             End If
-            '    kmaIndent = Source
-            '    If InStr(1, kmaIndent, "<textarea", vbTextCompare) = 0 Then
-            '        kmaIndent = Replace(Source, vbCrLf & vbTab, vbCrLf & vbTab & vbTab)
-            '    End If
         End Function
-
     End Class
 End Namespace

@@ -11,7 +11,7 @@
     </RootNamespace>
     <AssemblyName>addonManager51</AssemblyName>
     <MyType>Windows</MyType>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -70,21 +70,23 @@
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>addonman.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="adminFramework, Version=1.0.15.0, Culture=neutral, PublicKeyToken=df99052d01433f97, processorArchitecture=MSIL">
-      <HintPath>..\packages\Contensive.PortalApi.1.0.22\lib\net35\adminFramework.dll</HintPath>
+    <Reference Include="adminFramework, Version=1.0.7240.21241, Culture=neutral, PublicKeyToken=df99052d01433f97, processorArchitecture=MSIL">
+      <HintPath>..\packages\Contensive.PortalApi.5.1.191028.3\lib\net461\adminFramework.dll</HintPath>
     </Reference>
     <Reference Include="CPBase, Version=4.1.2.0, Culture=neutral, PublicKeyToken=10b3c53389b845fb, processorArchitecture=MSIL">
-      <HintPath>..\packages\Contensive.CPBaseClass.5.1.11\lib\net461\CPBase.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\Contensive.CPBaseClass.5.19.1206.2\lib\net472\CPBase.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpZipLib.1.1.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.2.0.246, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\IIS.Microsoft.Web.Administration.8.5.9600.17042\lib\Microsoft.Web.Administration.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
@@ -140,6 +142,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="addonman.snk" />
     <None Include="app.config" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>

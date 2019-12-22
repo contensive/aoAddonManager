@@ -113,6 +113,19 @@
             <param name="message">A <see cref="T:System.String"/> that describes the error.</param>
             <param name="innerException">The <see cref="T:System.Exception"/> that caused this exception.</param>
         </member>
+        <member name="M:ICSharpCode.SharpZipLib.BZip2.BZip2Exception.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the BZip2Exception class with serialized data.
+            </summary>
+            <param name="info">
+            The System.Runtime.Serialization.SerializationInfo that holds the serialized
+            object data about the exception being thrown.
+            </param>
+            <param name="context">
+            The System.Runtime.Serialization.StreamingContext that contains contextual information
+            about the source or destination.
+            </param>
+        </member>
         <member name="T:ICSharpCode.SharpZipLib.BZip2.BZip2InputStream">
             <summary>
             An input stream that decompresses files in the BZip2 format
@@ -663,6 +676,19 @@
             <param name="message">A message describing the exception.</param>
             <param name="innerException">The inner exception</param>
         </member>
+        <member name="M:ICSharpCode.SharpZipLib.SharpZipBaseException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the SharpZipBaseException class with serialized data.
+            </summary>
+            <param name="info">
+            The System.Runtime.Serialization.SerializationInfo that holds the serialized
+            object data about the exception being thrown.
+            </param>
+            <param name="context">
+            The System.Runtime.Serialization.StreamingContext that contains contextual information
+            about the source or destination.
+            </param>
+        </member>
         <member name="T:ICSharpCode.SharpZipLib.StreamDecodingException">
             <summary>
             Indicates that an error occured during decoding of a input stream due to corrupt
@@ -688,6 +714,19 @@
             <param name="message">A message describing the exception.</param>
             <param name="innerException">The inner exception</param>
         </member>
+        <member name="M:ICSharpCode.SharpZipLib.StreamDecodingException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the StreamDecodingException class with serialized data.
+            </summary>
+            <param name="info">
+            The System.Runtime.Serialization.SerializationInfo that holds the serialized
+            object data about the exception being thrown.
+            </param>
+            <param name="context">
+            The System.Runtime.Serialization.StreamingContext that contains contextual information
+            about the source or destination.
+            </param>
+        </member>
         <member name="T:ICSharpCode.SharpZipLib.StreamUnsupportedException">
             <summary>
             Indicates that the input stream could not decoded due to known library incompability or missing features
@@ -712,6 +751,19 @@
             <param name="message">A message describing the exception.</param>
             <param name="innerException">The inner exception</param>
         </member>
+        <member name="M:ICSharpCode.SharpZipLib.StreamUnsupportedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the StreamUnsupportedException class with serialized data.
+            </summary>
+            <param name="info">
+            The System.Runtime.Serialization.SerializationInfo that holds the serialized
+            object data about the exception being thrown.
+            </param>
+            <param name="context">
+            The System.Runtime.Serialization.StreamingContext that contains contextual information
+            about the source or destination.
+            </param>
+        </member>
         <member name="T:ICSharpCode.SharpZipLib.UnexpectedEndOfStreamException">
             <summary>
             Indicates that the input stream could not decoded due to the stream ending before enough data had been provided
@@ -735,6 +787,19 @@
             </summary>
             <param name="message">A message describing the exception.</param>
             <param name="innerException">The inner exception</param>
+        </member>
+        <member name="M:ICSharpCode.SharpZipLib.UnexpectedEndOfStreamException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the UnexpectedEndOfStreamException class with serialized data.
+            </summary>
+            <param name="info">
+            The System.Runtime.Serialization.SerializationInfo that holds the serialized
+            object data about the exception being thrown.
+            </param>
+            <param name="context">
+            The System.Runtime.Serialization.StreamingContext that contains contextual information
+            about the source or destination.
+            </param>
         </member>
         <member name="T:ICSharpCode.SharpZipLib.ValueOutOfRangeException">
             <summary>
@@ -766,6 +831,19 @@
             <param name="value">The invalid value</param>
             <param name="maxValue">Expected maximum value</param>
             <param name="minValue">Expected minimum value</param>
+        </member>
+        <member name="M:ICSharpCode.SharpZipLib.ValueOutOfRangeException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the ValueOutOfRangeException class with serialized data.
+            </summary>
+            <param name="info">
+            The System.Runtime.Serialization.SerializationInfo that holds the serialized
+            object data about the exception being thrown.
+            </param>
+            <param name="context">
+            The System.Runtime.Serialization.StreamingContext that contains contextual information
+            about the source or destination.
+            </param>
         </member>
         <member name="T:ICSharpCode.SharpZipLib.Core.ScanEventArgs">
             <summary>
@@ -1061,6 +1139,19 @@
             <param name="message">A message describing the exception.</param>
             <param name="innerException">The inner exception</param>
         </member>
+        <member name="M:ICSharpCode.SharpZipLib.Core.InvalidNameException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the InvalidNameException class with serialized data.
+            </summary>
+            <param name="info">
+            The System.Runtime.Serialization.SerializationInfo that holds the serialized
+            object data about the exception being thrown.
+            </param>
+            <param name="context">
+            The System.Runtime.Serialization.StreamingContext that contains contextual information
+            about the source or destination.
+            </param>
+        </member>
         <member name="T:ICSharpCode.SharpZipLib.Core.IScanFilter">
             <summary>
             Scanning filters support filtering of names.
@@ -1290,6 +1381,17 @@
             <exception cref="T:System.ArgumentNullException">Required parameter is null</exception>
             <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="offset"/> and or <paramref name="count"/> are invalid.</exception>
             <exception cref="T:System.IO.EndOfStreamException">End of stream is encountered before all the data has been read.</exception>
+        </member>
+        <member name="M:ICSharpCode.SharpZipLib.Core.StreamUtils.ReadRequestedBytes(System.IO.Stream,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Read as much data as possible from a <see cref="T:System.IO.Stream"/>", up to the requested number of bytes
+            </summary>
+            <param name="stream">The stream to read data from.</param>
+            <param name="buffer">The buffer to store data in.</param>
+            <param name="offset">The offset at which to begin storing data.</param>
+            <param name="count">The number of bytes of data to store.</param>
+            <exception cref="T:System.ArgumentNullException">Required parameter is null</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="offset"/> and or <paramref name="count"/> are invalid.</exception>
         </member>
         <member name="M:ICSharpCode.SharpZipLib.Core.StreamUtils.Copy(System.IO.Stream,System.IO.Stream,System.Byte[])">
             <summary>
@@ -1746,6 +1848,19 @@
             <param name="message">A <see cref="T:System.String"/> that describes the error.</param>
             <param name="innerException">The <see cref="T:System.Exception"/> that caused this exception.</param>
         </member>
+        <member name="M:ICSharpCode.SharpZipLib.GZip.GZipException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the GZipException class with serialized data.
+            </summary>
+            <param name="info">
+            The System.Runtime.Serialization.SerializationInfo that holds the serialized
+            object data about the exception being thrown.
+            </param>
+            <param name="context">
+            The System.Runtime.Serialization.StreamingContext that contains contextual information
+            about the source or destination.
+            </param>
+        </member>
         <member name="T:ICSharpCode.SharpZipLib.GZip.GZipInputStream">
              <summary>
              This filter stream is used to decompress a "GZIP" format stream.
@@ -1984,6 +2099,19 @@
             </summary>
             <param name="message">A <see cref="T:System.String"/> that describes the error.</param>
             <param name="innerException">The <see cref="T:System.Exception"/> that caused this exception.</param>
+        </member>
+        <member name="M:ICSharpCode.SharpZipLib.Lzw.LzwException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the LzwException class with serialized data.
+            </summary>
+            <param name="info">
+            The System.Runtime.Serialization.SerializationInfo that holds the serialized
+            object data about the exception being thrown.
+            </param>
+            <param name="context">
+            The System.Runtime.Serialization.StreamingContext that contains contextual information
+            about the source or destination.
+            </param>
         </member>
         <member name="T:ICSharpCode.SharpZipLib.Lzw.LzwInputStream">
              <summary>
@@ -2963,6 +3091,19 @@
             </summary>
             <param name="message">A <see cref="T:System.String"/> that describes the error.</param>
             <param name="innerException">The <see cref="T:System.Exception"/> that caused this exception.</param>
+        </member>
+        <member name="M:ICSharpCode.SharpZipLib.Tar.TarException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the TarException class with serialized data.
+            </summary>
+            <param name="info">
+            The System.Runtime.Serialization.SerializationInfo that holds the serialized
+            object data about the exception being thrown.
+            </param>
+            <param name="context">
+            The System.Runtime.Serialization.StreamingContext that contains contextual information
+            about the source or destination.
+            </param>
         </member>
         <member name="T:ICSharpCode.SharpZipLib.Tar.TarExtendedHeaderReader">
             <summary>
@@ -5543,6 +5684,11 @@
             stream when <see cref="P:ICSharpCode.SharpZipLib.Zip.Compression.Streams.DeflaterOutputStream.IsStreamOwner"></see> is true.
             </summary>
         </member>
+        <member name="M:ICSharpCode.SharpZipLib.Zip.Compression.Streams.DeflaterOutputStream.GetAuthCodeIfAES">
+            <summary>
+            Get the Auth code for AES encrypted entries
+            </summary>
+        </member>
         <member name="M:ICSharpCode.SharpZipLib.Zip.Compression.Streams.DeflaterOutputStream.WriteByte(System.Byte)">
             <summary>
             Writes a single byte to the compressed output stream.
@@ -6515,6 +6661,16 @@
         <member name="F:ICSharpCode.SharpZipLib.Zip.CompressionMethod.BZip2">
             <summary>
             BZip2 compression. Not supported by #Zip.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.SharpZipLib.Zip.CompressionMethod.LZMA">
+            <summary>
+            LZMA compression. Not supported by #Zip.
+            </summary>
+        </member>
+        <member name="F:ICSharpCode.SharpZipLib.Zip.CompressionMethod.PPMd">
+            <summary>
+            PPMd compression. Not supported by #Zip.
             </summary>
         </member>
         <member name="F:ICSharpCode.SharpZipLib.Zip.CompressionMethod.WinZipAES">
@@ -7640,6 +7796,19 @@
             <param name="message">A <see cref="T:System.String"/> that describes the error.</param>
             <param name="innerException">The <see cref="T:System.Exception"/> that caused this exception.</param>
         </member>
+        <member name="M:ICSharpCode.SharpZipLib.Zip.ZipException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the ZipException class with serialized data.
+            </summary>
+            <param name="info">
+            The System.Runtime.Serialization.SerializationInfo that holds the serialized
+            object data about the exception being thrown.
+            </param>
+            <param name="context">
+            The System.Runtime.Serialization.StreamingContext that contains contextual information
+            about the source or destination.
+            </param>
+        </member>
         <member name="T:ICSharpCode.SharpZipLib.Zip.ITaggedData">
             <summary>
             ExtraData tagged value interface.
@@ -8292,11 +8461,44 @@
             The file doesn't contain a valid zip archive.
             </exception>
         </member>
+        <member name="M:ICSharpCode.SharpZipLib.Zip.ZipFile.#ctor(System.IO.FileStream,System.Boolean)">
+            <summary>
+            Opens a Zip file reading the given <see cref="T:System.IO.FileStream"/>.
+            </summary>
+            <param name="file">The <see cref="T:System.IO.FileStream"/> to read archive data from.</param>
+            <param name="leaveOpen">true to leave the <see cref="T:System.IO.FileStream">file</see> open when the ZipFile is disposed, false to dispose of it</param>
+            <exception cref="T:System.ArgumentNullException">The supplied argument is null.</exception>
+            <exception cref="T:System.IO.IOException">
+            An i/o error occurs.
+            </exception>
+            <exception cref="T:ICSharpCode.SharpZipLib.Zip.ZipException">
+            The file doesn't contain a valid zip archive.
+            </exception>
+        </member>
         <member name="M:ICSharpCode.SharpZipLib.Zip.ZipFile.#ctor(System.IO.Stream)">
             <summary>
             Opens a Zip file reading the given <see cref="T:System.IO.Stream"/>.
             </summary>
             <param name="stream">The <see cref="T:System.IO.Stream"/> to read archive data from.</param>
+            <exception cref="T:System.IO.IOException">
+            An i/o error occurs
+            </exception>
+            <exception cref="T:ICSharpCode.SharpZipLib.Zip.ZipException">
+            The stream doesn't contain a valid zip archive.<br/>
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            The <see cref="T:System.IO.Stream">stream</see> doesnt support seeking.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            The <see cref="T:System.IO.Stream">stream</see> argument is null.
+            </exception>
+        </member>
+        <member name="M:ICSharpCode.SharpZipLib.Zip.ZipFile.#ctor(System.IO.Stream,System.Boolean)">
+            <summary>
+            Opens a Zip file reading the given <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read archive data from.</param>
+            <param name="leaveOpen">true to leave the <see cref="T:System.IO.Stream">stream</see> open when the ZipFile is disposed, false to dispose of it</param>
             <exception cref="T:System.IO.IOException">
             An i/o error occurs
             </exception>
@@ -8634,6 +8836,14 @@
             </summary>
             <param name="entry">The entry to add.</param>
             <remarks>This can be used to add directories, volume labels, or empty file entries.</remarks>
+        </member>
+        <member name="M:ICSharpCode.SharpZipLib.Zip.ZipFile.Add(ICSharpCode.SharpZipLib.Zip.IStaticDataSource,ICSharpCode.SharpZipLib.Zip.ZipEntry)">
+            <summary>
+            Add a <see cref="T:ICSharpCode.SharpZipLib.Zip.ZipEntry"/> with data.
+            </summary>
+            <param name="dataSource">The source of the data for this entry.</param>
+            <param name="entry">The entry to add.</param>
+            <remarks>This can be used to add file entries with a custom data source.</remarks>
         </member>
         <member name="M:ICSharpCode.SharpZipLib.Zip.ZipFile.AddDirectory(System.String)">
             <summary>

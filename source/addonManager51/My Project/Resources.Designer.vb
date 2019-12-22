@@ -68,7 +68,6 @@ Namespace My.Resources
         '''						&lt;td class=&quot;amImage&quot;&gt;&lt;img src=&quot;##imageLink##&quot; data-image=&quot;la3p7077q2lx&quot;&gt;&lt;/td&gt;
         '''						&lt;td class=&quot;amBody&quot;&gt;
         '''							&lt;div class=&quot;amHeadline&quot;&gt;##name##&lt;/div&gt;
-        '''							&lt;div class=&quot;amButton&quot;&gt;##button##&lt;/div&gt;
         '''							&lt;div class=&quot;amCheckbox&quot;&gt;##checkbox##&lt;/div&gt;
         '''							&lt;div class=&quot;amDate&quot;&gt;Last updated: ##date##&lt;/div&gt;
         '''							&lt;div class=&quot;amDescription&quot;&gt;##description##&lt;/div&gt;
