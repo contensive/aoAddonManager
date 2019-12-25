@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="windows-1252"?> 
-<Collection name="Add-on Manager v5.1" guid="{A3E58089-74FC-4FB3-B847-0AD22B51AA72}" system="No" updatable="Yes" blockNavigatorNode="No">
+<Collection name="Add-on Manager" guid="{A3E58089-74FC-4FB3-B847-0AD22B51AA72}" system="No" updatable="Yes" blockNavigatorNode="No">
 	<HelpLink></HelpLink>
 	<Help></Help>
-	<Addon name="Add-on Manager v5.1" guid="{4DD876E7-BCC4-4AF0-B32E-59FFAB816478}" type="Tool">
+	<Addon name="Add-on Manager" guid="{4DD876E7-BCC4-4AF0-B32E-59FFAB816478}" type="Tool">
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
