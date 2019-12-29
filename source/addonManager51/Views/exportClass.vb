@@ -115,572 +115,549 @@ Namespace Contensive.Addons.AddonManager51
         Private Function createCollectionZip_returnCdnPathFilename(cp As CPBaseClass, CollectionID As Integer) As String
             Dim cdnExportZip_Filename As String = ""
             Try
-                Dim CS As CPCSBaseClass = cp.CSNew()
-                CS.OpenRecord("Add-on Collections", CollectionID)
-                If Not CS.OK() Then
-                    Call cp.UserError.Add("The collection you selected could not be found")
-                Else
-                    Dim collectionXml As String = "<?xml version=""1.0"" encoding=""windows-1252""?>"
-                    '
-                    Dim CollectionName As String = CS.GetText("name")
-                    Dim CollectionGuid As String = CS.GetText("ccGuid")
-                    If CollectionGuid = "" Then
-                        CollectionGuid = cp.Utils.CreateGuid()
-                        Call CS.SetField("ccGuid", CollectionGuid)
-                    End If
-                    Dim onInstallAddonGuid As String = ""
-                    If (CS.FieldOK("onInstallAddonId")) Then
-                        Dim onInstallAddonId As Integer = CS.GetInteger("onInstallAddonId")
-                        If (onInstallAddonId > 0) Then
-                            Dim addon As AddonModel = AddonModel.create(cp, onInstallAddonId)
-                            onInstallAddonGuid = addon.ccguid
+                Using CS As CPCSBaseClass = cp.CSNew()
+                    CS.OpenRecord("Add-on Collections", CollectionID)
+                    If Not CS.OK() Then
+                        Call cp.UserError.Add("The collection you selected could not be found")
+                    Else
+                        Dim collectionXml As String = "<?xml version=""1.0"" encoding=""windows-1252""?>"
+                        Dim CollectionGuid As String = CS.GetText("ccGuid")
+                        If CollectionGuid = "" Then
+                            CollectionGuid = cp.Utils.CreateGuid()
+                            Call CS.SetField("ccGuid", CollectionGuid)
                         End If
-                    End If
-                    collectionXml &= vbCrLf & "<Collection"
-                    collectionXml &= " name=""" & CollectionName & """"
-                    collectionXml &= " guid=""" & CollectionGuid & """"
-                    collectionXml &= " system=""" & getYesNo(cp, CS.GetBoolean("system")) & """"
-                    collectionXml &= " updatable=""" & getYesNo(cp, CS.GetBoolean("updatable")) & """"
-                    collectionXml &= " blockNavigatorNode=""" & getYesNo(cp, CS.GetBoolean("blockNavigatorNode")) & """"
-                    collectionXml &= " onInstallAddonGuid=""" & onInstallAddonGuid & """"
-                    collectionXml &= ">"
-                    '
-                    ' Archive Filenames
-                    '   copy all files to be included into the cdnExportFilesPath folder
-                    '   build the tmp zip file
-                    '   copy it to the cdnZip file
-                    '
-                    Dim tempExportPath As String = "CollectionExport" & Guid.NewGuid().ToString() & "\"
-                    Dim tempExportXml_Filename As String = encodeFilename(cp, CollectionName & ".xml")
-                    Dim tempExportZip_Filename As String = encodeFilename(cp, CollectionName & ".zip")
-                    cdnExportZip_Filename = encodeFilename(cp, CollectionName & ".zip")
-                    '
-                    ' Delete old archive file
-                    'cp.TempFiles.DeleteFile(tempExportXml_Filename)
-                    'cp.TempFiles.DeleteFile(tempExportZipPathFilename)
-                    'cp.CdnFiles.DeleteFile(cdnExportZipPathFilename)
-                    '
-                    '
-                    ' Build executable file list Resource Node so executables can be added to addons for Version40compatibility
-                    '   but save it for the end, executableFileList
-                    '
-                    'Call Main.testpoint("getCollection, 400")
-                    Dim AddonPath As String = "addons\"
-                    Dim FileList As String = CS.GetText("execFileList")
-                    Dim Path As String
-                    Dim Filename As String
-                    Dim PathFilename As String
-                    Dim Ptr As Integer
-                    Dim Files() As String
-                    Dim ResourceCnt As Integer
-                    'Dim ContentName As String
-                    Dim Pos As Integer
-                    Dim tempPathFileList As New List(Of String)
-                    'Dim PhysicalWWWPath As String
-                    Dim CollectionPath As String = ""
-                    Dim ExecFileListNode As String = ""
-                    If FileList <> "" Then
-                        Dim LastChangeDate As Date
-                        '
-                        ' There are executable files to include in the collection
-                        '   If installed, source path is collectionpath, if not installed, collectionpath will be empty
-                        '   and file will be sourced right from addon path
-                        '
-                        Call GetLocalCollectionArgs(cp, CollectionGuid, CollectionPath, LastChangeDate)
-                        If CollectionPath <> "" Then
-                            CollectionPath = CollectionPath & "\"
-                        End If
-                        Files = Split(FileList, vbCrLf)
-                        For Ptr = 0 To UBound(Files)
-                            PathFilename = Files(Ptr)
-                            If PathFilename <> "" Then
-                                PathFilename = Replace(PathFilename, "\", "/")
-                                Path = ""
-                                Filename = PathFilename
-                                Pos = InStrRev(PathFilename, "/")
-                                If Pos > 0 Then
-                                    Filename = Mid(PathFilename, Pos + 1)
-                                    Path = Mid(PathFilename, 1, Pos - 1)
+                        Dim onInstallAddonGuid As String = ""
+                        If (CS.FieldOK("onInstallAddonId")) Then
+                            Dim onInstallAddonId As Integer = CS.GetInteger("onInstallAddonId")
+                            If (onInstallAddonId > 0) Then
+                                Dim addon As AddonModel = AddonModel.create(cp, onInstallAddonId)
+                                If (addon IsNot Nothing) Then
+                                    onInstallAddonGuid = addon.ccguid
                                 End If
-                                Dim ManualFilename As String = ""
-                                If LCase(Filename) <> LCase(ManualFilename) Then
-                                    'AddFilename = AddonPath & CollectionPath & Filename
-                                    cp.PrivateFiles.Copy(AddonPath & CollectionPath & Filename, tempExportPath & Filename, cp.TempFiles)
-                                    If Not tempPathFileList.Contains(tempExportPath & Filename) Then
-                                        tempPathFileList.Add(tempExportPath & Filename)
-                                        ExecFileListNode = ExecFileListNode & vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""executable"" path=""" & System.Net.WebUtility.HtmlEncode(Path) & """ />"
+                            End If
+                        End If
+                        Dim CollectionName As String = CS.GetText("name")
+                        collectionXml &= vbCrLf & "<Collection"
+                        collectionXml &= " name=""" & CollectionName & """"
+                        collectionXml &= " guid=""" & CollectionGuid & """"
+                        collectionXml &= " system=""" & getYesNo(cp, CS.GetBoolean("system")) & """"
+                        collectionXml &= " updatable=""" & getYesNo(cp, CS.GetBoolean("updatable")) & """"
+                        collectionXml &= " blockNavigatorNode=""" & getYesNo(cp, CS.GetBoolean("blockNavigatorNode")) & """"
+                        collectionXml &= " onInstallAddonGuid=""" & onInstallAddonGuid & """"
+                        collectionXml &= ">"
+                        cdnExportZip_Filename = encodeFilename(cp, CollectionName & ".zip")
+
+
+
+
+                        Dim tempPathFileList As New List(Of String)
+                        Dim CollectionPath As String = ""
+                        Dim ExecFileListNode As String = ""                        '
+                        Dim tempExportPath As String = "CollectionExport" & Guid.NewGuid().ToString() & "\"
+                        Dim FileList As String = CS.GetText("execFileList")
+                        If FileList <> "" Then
+                            Dim LastChangeDate As Date
+                            '
+                            ' There are executable files to include in the collection
+                            '   If installed, source path is collectionpath, if not installed, collectionpath will be empty
+                            '   and file will be sourced right from addon path
+                            '
+                            Call GetLocalCollectionArgs(cp, CollectionGuid, CollectionPath, LastChangeDate)
+                            If CollectionPath <> "" Then
+                                CollectionPath = CollectionPath & "\"
+                            End If
+                            Dim Files() As String = Split(FileList, vbCrLf)
+                            For Ptr As Integer = 0 To UBound(Files)
+                                Dim PathFilename As String = Files(Ptr)
+                                If PathFilename <> "" Then
+                                    PathFilename = Replace(PathFilename, "\", "/")
+                                    Dim Path As String = ""
+                                    Dim Filename As String = PathFilename
+                                    Dim Pos As Integer = InStrRev(PathFilename, "/")
+                                    If Pos > 0 Then
+                                        Filename = Mid(PathFilename, Pos + 1)
+                                        Path = Mid(PathFilename, 1, Pos - 1)
+                                    End If
+                                    Dim ManualFilename As String = ""
+                                    If LCase(Filename) <> LCase(ManualFilename) Then
+                                        Dim AddonPath As String = "addons\"
+                                        'AddFilename = AddonPath & CollectionPath & Filename
+                                        cp.PrivateFiles.Copy(AddonPath & CollectionPath & Filename, tempExportPath & Filename, cp.TempFiles)
+                                        If Not tempPathFileList.Contains(tempExportPath & Filename) Then
+                                            tempPathFileList.Add(tempExportPath & Filename)
+                                            ExecFileListNode = ExecFileListNode & vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""executable"" path=""" & System.Net.WebUtility.HtmlEncode(Path) & """ />"
+                                        End If
                                     End If
                                 End If
-                                ResourceCnt = ResourceCnt + 1
-                            End If
-                        Next
-                    End If
-                    'Call Main.testpoint("getCollection, 500")
-                    'If (ResourceCnt = 0) And (CollectionPath <> "") Then
-                    '    '
-                    '    ' If no resources were in the collection record, this might be an old installation
-                    '    ' Add all .dll files in the CollectionPath
-                    '    '
-                    '    ExecFileListNode = ExecFileListNode & AddCompatibilityResources(cp, AddonPath & CollectionPath, cdnTempZipPathFilename, "")
-                    'End If
-                    '
-                    ' helpLink
-                    '
-                    If CS.FieldOK("HelpLink") Then
-                        collectionXml = collectionXml & vbCrLf & vbTab & "<HelpLink>" & System.Net.WebUtility.HtmlEncode(CS.GetText("HelpLink")) & "</HelpLink>"
-                    End If
-                    '
-                    ' Help
-                    '
-                    collectionXml = collectionXml & vbCrLf & vbTab & "<Help>" & System.Net.WebUtility.HtmlEncode(CS.GetText("Help")) & "</Help>"
-                    Dim CS2 As CPCSBaseClass = cp.CSNew()
-                    '
-                    ' Addons
-                    '
-                    CS2.Open("Add-ons", "collectionid=" & CollectionID, "name", True, "id")
-                    Dim IncludeModuleGuidList As String = ""
-                    Dim IncludeSharedStyleGuidList As String = ""
-                    Do While CS2.OK()
-                        collectionXml = collectionXml & getAddonNode(cp, CS2.GetInteger("id"), IncludeModuleGuidList, IncludeSharedStyleGuidList)
-                        Call CS2.GoNext()
-                    Loop
-                    '
-                    ' Data Records
-                    '
-                    Dim DataRecordList As String = CS.GetText("DataRecordList")
-                    If DataRecordList <> "" Then
-                        Dim DataRecords() As String = Split(DataRecordList, vbCrLf)
-                        Dim RecordNodes As String = ""
-                        For Ptr = 0 To UBound(DataRecords)
-                            Dim FieldNodes As String = ""
-                            Dim DataRecordName As String = ""
-                            Dim DataRecordGuid As String = ""
-                            Dim DataRecord As String = DataRecords(Ptr)
-                            If DataRecord <> "" Then
-                                Dim DataSplit() As String = Split(DataRecord, ",")
-                                If UBound(DataSplit) >= 0 Then
-                                    Dim DataContentName As String = Trim(DataSplit(0))
-                                    Dim DataContentId As Integer = cp.Content.GetID(DataContentName)
-                                    If DataContentId <= 0 Then
-                                        RecordNodes = "" _
+                            Next
+                        End If
+                        '
+                        ' helpLink
+                        '
+                        If CS.FieldOK("HelpLink") Then
+                            collectionXml &= vbCrLf & vbTab & "<HelpLink>" & System.Net.WebUtility.HtmlEncode(CS.GetText("HelpLink")) & "</HelpLink>"
+                        End If
+                        '
+                        ' Help
+                        '
+                        collectionXml &= vbCrLf & vbTab & "<Help>" & System.Net.WebUtility.HtmlEncode(CS.GetText("Help")) & "</Help>"
+                        '
+                        ' Addons
+                        '
+                        Dim IncludeSharedStyleGuidList As String = ""
+                        Dim IncludeModuleGuidList As String = ""
+                        Using CS2 As CPCSBaseClass = cp.CSNew()
+                            CS2.Open("Add-ons", "collectionid=" & CollectionID, "name", True, "id")
+                            Do While CS2.OK()
+                                collectionXml &= getAddonNode(cp, CS2.GetInteger("id"), IncludeModuleGuidList, IncludeSharedStyleGuidList)
+                                Call CS2.GoNext()
+                            Loop
+                        End Using
+                        '
+                        ' Data Records
+                        '
+                        Dim DataRecordList As String = CS.GetText("DataRecordList")
+                        If DataRecordList <> "" Then
+                            collectionXml &= vbCrLf & vbTab & "<DataRecordList>" & EncodeCData(cp, DataRecordList) & "</DataRecordList>"
+                            Dim DataRecords() As String = Split(DataRecordList, vbCrLf)
+                            Dim RecordNodes As String = ""
+                            For Ptr = 0 To UBound(DataRecords)
+                                Dim FieldNodes As String = ""
+                                Dim DataRecordName As String = ""
+                                Dim DataRecordGuid As String = ""
+                                Dim DataRecord As String = DataRecords(Ptr)
+                                If DataRecord <> "" Then
+                                    Dim DataSplit() As String = Split(DataRecord, ",")
+                                    If UBound(DataSplit) >= 0 Then
+                                        Dim DataContentName As String = Trim(DataSplit(0))
+                                        Dim DataContentId As Integer = cp.Content.GetID(DataContentName)
+                                        If DataContentId <= 0 Then
+                                            RecordNodes = "" _
                                             & RecordNodes _
                                             & vbCrLf & vbTab & "<!-- data missing, content not found during export, content=""" & DataContentName & """ guid=""" & DataRecordGuid & """ name=""" & DataRecordName & """ -->"
-                                    Else
-                                        Dim supportsGuid As Boolean = cp.Content.IsField(DataContentName, "ccguid")
-                                        Dim Criteria As String
-                                        If UBound(DataSplit) = 0 Then
-                                            Criteria = ""
                                         Else
-                                            Dim TestString As String = Trim(DataSplit(1))
-                                            If TestString = "" Then
-                                                '
-                                                ' blank is a select all
-                                                '
+                                            Dim supportsGuid As Boolean = cp.Content.IsField(DataContentName, "ccguid")
+                                            Dim Criteria As String
+                                            If UBound(DataSplit) = 0 Then
                                                 Criteria = ""
-                                                DataRecordName = ""
-                                                DataRecordGuid = ""
-                                            ElseIf Not supportsGuid Then
-                                                '
-                                                ' if no guid, this is name
-                                                '
-                                                DataRecordName = TestString
-                                                DataRecordGuid = ""
-                                                Criteria = "name=" & cp.Db.EncodeSQLText(DataRecordName)
-                                            ElseIf (Len(TestString) = 38) And (Left(TestString, 1) = "{") And (Right(TestString, 1) = "}") Then
-                                                '
-                                                ' guid {726ED098-5A9E-49A9-8840-767A74F41D01} format
-                                                '
-                                                DataRecordGuid = TestString
-                                                DataRecordName = ""
-                                                Criteria = "ccguid=" & cp.Db.EncodeSQLText(DataRecordGuid)
-                                            ElseIf (Len(TestString) = 36) And (Mid(TestString, 9, 1) = "-") Then
-                                                '
-                                                ' guid 726ED098-5A9E-49A9-8840-767A74F41D01 format
-                                                '
-                                                DataRecordGuid = TestString
-                                                DataRecordName = ""
-                                                Criteria = "ccguid=" & cp.Db.EncodeSQLText(DataRecordGuid)
-                                            ElseIf (Len(TestString) = 32) And (InStr(1, TestString, " ") = 0) Then
-                                                '
-                                                ' guid 726ED0985A9E49A98840767A74F41D01 format
-                                                '
-                                                DataRecordGuid = TestString
-                                                DataRecordName = ""
-                                                Criteria = "ccguid=" & cp.Db.EncodeSQLText(DataRecordGuid)
                                             Else
-                                                '
-                                                ' use name
-                                                '
-                                                DataRecordName = TestString
-                                                DataRecordGuid = ""
-                                                Criteria = "name=" & cp.Db.EncodeSQLText(DataRecordName)
-                                            End If
-                                        End If
-                                        Dim CSData As CPCSBaseClass = cp.CSNew()
-                                        If Not CSData.Open(DataContentName, Criteria, "id") Then
-                                            RecordNodes = "" _
-                                                & RecordNodes _
-                                                & vbCrLf & vbTab & "<!-- data missing, record not found during export, content=""" & DataContentName & """ guid=""" & DataRecordGuid & """ name=""" & DataRecordName & """ -->"
-                                        Else
-                                            '
-                                            ' determine all valid fields
-                                            '
-                                            Dim fieldCnt As Integer = 0
-                                            Dim Sql As String = "select * from ccFields where contentid=" & DataContentId
-                                            Dim csFields As CPCSBaseClass = cp.CSNew()
-                                            Dim fieldLookupListValue As String = ""
-                                            Dim fieldNames() As String = {}
-                                            Dim fieldTypes() As Integer = {}
-                                            Dim fieldLookupContent() As String = {}
-                                            Dim fieldLookupList() As String = {}
-                                            Dim FieldLookupContentName As String
-                                            Dim FieldTypeNumber As Integer
-                                            Dim FieldName As String
-                                            If csFields.Open("content fields", "contentid=" & DataContentId) Then
-                                                Do
-                                                    FieldName = csFields.GetText("name")
-                                                    If FieldName <> "" Then
-                                                        Dim FieldLookupContentID As Integer = 0
-                                                        FieldLookupContentName = ""
-                                                        FieldTypeNumber = csFields.GetInteger("type")
-                                                        Select Case LCase(FieldName)
-                                                            Case "ccguid", "name", "id", "dateadded", "createdby", "modifiedby", "modifieddate", "createkey", "contentcontrolid", "editsourceid", "editarchive", "editblank", "contentcategoryid"
-                                                            Case Else
-                                                                If FieldTypeNumber = 7 Then
-                                                                    FieldLookupContentID = csFields.GetInteger("Lookupcontentid")
-                                                                    fieldLookupListValue = csFields.GetText("LookupList")
-                                                                    If FieldLookupContentID <> 0 Then
-                                                                        FieldLookupContentName = cp.Content.GetRecordName("content", FieldLookupContentID)
-                                                                    End If
-                                                                End If
-                                                                Select Case FieldTypeNumber
-                                                                    Case FieldTypeLookup, FieldTypeBoolean, FieldTypeCSSFile, FieldTypeJavascriptFile, FieldTypeTextFile, FieldTypeXMLFile, FieldTypeCurrency, FieldTypeFloat, FieldTypeInteger, FieldTypeDate, FieldTypeLink, FieldTypeLongText, FieldTypeResourceLink, FieldTypeText, FieldTypeHTML, FieldTypeHTMLFile
-                                                                        '
-                                                                        ' this is a keeper
-                                                                        '
-                                                                        ReDim Preserve fieldNames(fieldCnt)
-                                                                        ReDim Preserve fieldTypes(fieldCnt)
-                                                                        ReDim Preserve fieldLookupContent(fieldCnt)
-                                                                        ReDim Preserve fieldLookupList(fieldCnt)
-                                                                        'fieldLookupContent
-                                                                        fieldNames(fieldCnt) = FieldName
-                                                                        fieldTypes(fieldCnt) = FieldTypeNumber
-                                                                        fieldLookupContent(fieldCnt) = FieldLookupContentName
-                                                                        fieldLookupList(fieldCnt) = fieldLookupListValue
-                                                                        fieldCnt = fieldCnt + 1
-                                                                        'end case
-                                                                End Select
-                                                                'end case
-                                                        End Select
-                                                    End If
-                                                    Call csFields.GoNext()
-                                                Loop While csFields.OK()
-                                            End If
-                                            Call csFields.Close()
-                                            '
-                                            ' output records
-                                            '
-                                            DataRecordGuid = ""
-                                            Do While CSData.OK()
-                                                FieldNodes = ""
-                                                DataRecordName = CSData.GetText("name")
-                                                If supportsGuid Then
-                                                    DataRecordGuid = CSData.GetText("ccguid")
-                                                    If DataRecordGuid = "" Then
-                                                        DataRecordGuid = cp.Utils.CreateGuid()
-                                                        Call CSData.SetField("ccGuid", DataRecordGuid)
-                                                    End If
+                                                Dim TestString As String = Trim(DataSplit(1))
+                                                If TestString = "" Then
+                                                    '
+                                                    ' blank is a select all
+                                                    '
+                                                    Criteria = ""
+                                                    DataRecordName = ""
+                                                    DataRecordGuid = ""
+                                                ElseIf Not supportsGuid Then
+                                                    '
+                                                    ' if no guid, this is name
+                                                    '
+                                                    DataRecordName = TestString
+                                                    DataRecordGuid = ""
+                                                    Criteria = "name=" & cp.Db.EncodeSQLText(DataRecordName)
+                                                ElseIf (Len(TestString) = 38) And (Left(TestString, 1) = "{") And (Right(TestString, 1) = "}") Then
+                                                    '
+                                                    ' guid {726ED098-5A9E-49A9-8840-767A74F41D01} format
+                                                    '
+                                                    DataRecordGuid = TestString
+                                                    DataRecordName = ""
+                                                    Criteria = "ccguid=" & cp.Db.EncodeSQLText(DataRecordGuid)
+                                                ElseIf (Len(TestString) = 36) And (Mid(TestString, 9, 1) = "-") Then
+                                                    '
+                                                    ' guid 726ED098-5A9E-49A9-8840-767A74F41D01 format
+                                                    '
+                                                    DataRecordGuid = TestString
+                                                    DataRecordName = ""
+                                                    Criteria = "ccguid=" & cp.Db.EncodeSQLText(DataRecordGuid)
+                                                ElseIf (Len(TestString) = 32) And (InStr(1, TestString, " ") = 0) Then
+                                                    '
+                                                    ' guid 726ED0985A9E49A98840767A74F41D01 format
+                                                    '
+                                                    DataRecordGuid = TestString
+                                                    DataRecordName = ""
+                                                    Criteria = "ccguid=" & cp.Db.EncodeSQLText(DataRecordGuid)
+                                                Else
+                                                    '
+                                                    ' use name
+                                                    '
+                                                    DataRecordName = TestString
+                                                    DataRecordGuid = ""
+                                                    Criteria = "name=" & cp.Db.EncodeSQLText(DataRecordName)
                                                 End If
-                                                Dim fieldPtr As Integer
-                                                For fieldPtr = 0 To fieldCnt - 1
-                                                    FieldName = fieldNames(fieldPtr)
-                                                    FieldTypeNumber = cp.Utils.EncodeInteger(fieldTypes(fieldPtr))
-                                                    'Dim ContentID As Integer
-                                                    Dim FieldValue As String
-                                                    Select Case FieldTypeNumber
-                                                        Case FieldTypeBoolean
-                                                            '
-                                                            ' true/false
-                                                            '
-                                                            FieldValue = CSData.GetBoolean(FieldName).ToString()
-                                                        Case FieldTypeCSSFile, FieldTypeJavascriptFile, FieldTypeTextFile, FieldTypeXMLFile
-                                                            '
-                                                            ' text files
-                                                            '
-                                                            FieldValue = CSData.GetText(FieldName)
-                                                            FieldValue = EncodeCData(cp, FieldValue)
-                                                        Case FieldTypeInteger
-                                                            '
-                                                            ' integer
-                                                            '
-                                                            FieldValue = CSData.GetInteger(FieldName).ToString()
-                                                        Case FieldTypeCurrency, FieldTypeFloat
-                                                            '
-                                                            ' numbers
-                                                            '
-                                                            FieldValue = CSData.GetNumber(FieldName).ToString()
-                                                        Case FieldTypeDate
-                                                            '
-                                                            ' date
-                                                            '
-                                                            FieldValue = CSData.GetDate(FieldName).ToString()
-                                                        Case FieldTypeLookup
-                                                            '
-                                                            ' lookup
-                                                            '
-                                                            FieldValue = ""
-                                                            Dim FieldValueInteger As Integer = CSData.GetInteger(FieldName)
-                                                            If (FieldValueInteger <> 0) Then
-                                                                FieldLookupContentName = fieldLookupContent(fieldPtr)
-                                                                fieldLookupListValue = fieldLookupList(fieldPtr)
-                                                                If (FieldLookupContentName <> "") Then
-                                                                    '
-                                                                    ' content lookup
-                                                                    '
-                                                                    If cp.Content.IsField(FieldLookupContentName, "ccguid") Then
-                                                                        Dim CSlookup As CPCSBaseClass = cp.CSNew()
-                                                                        Call CSlookup.OpenRecord(FieldLookupContentName, FieldValueInteger)
-                                                                        If CSlookup.OK() Then
-                                                                            FieldValue = CSlookup.GetText("ccguid")
-                                                                            If FieldValue = "" Then
-                                                                                FieldValue = cp.Utils.CreateGuid()
-                                                                                Call CSlookup.SetField("ccGuid", FieldValue)
-                                                                            End If
-                                                                        End If
-                                                                        Call CSlookup.Close()
-                                                                    End If
-                                                                ElseIf fieldLookupListValue <> "" Then
-                                                                    '
-                                                                    ' list lookup, ok to save integer
-                                                                    '
-                                                                    FieldValue = FieldValueInteger.ToString()
-                                                                End If
-                                                            End If
-                                                        Case Else
-                                                            '
-                                                            ' text types
-                                                            '
-                                                            FieldValue = CSData.GetText(FieldName)
-                                                            FieldValue = EncodeCData(cp, FieldValue)
-                                                    End Select
-                                                    FieldNodes = FieldNodes & vbCrLf & vbTab & "<field name=""" & System.Net.WebUtility.HtmlEncode(FieldName) & """>" & FieldValue & "</field>"
-                                                Next
-                                                RecordNodes = "" _
+                                            End If
+                                            Using CSData As CPCSBaseClass = cp.CSNew()
+                                                If Not CSData.Open(DataContentName, Criteria, "id") Then
+                                                    RecordNodes = "" _
                                                     & RecordNodes _
-                                                    & vbCrLf & vbTab & "<record content=""" & System.Net.WebUtility.HtmlEncode(DataContentName) & """ guid=""" & DataRecordGuid & """ name=""" & System.Net.WebUtility.HtmlEncode(DataRecordName) & """>" _
-                                                    & tabIndent(cp, FieldNodes) _
-                                                    & vbCrLf & vbTab & "</record>"
-                                                Call CSData.GoNext()
-                                            Loop
+                                                    & vbCrLf & vbTab & "<!-- data missing, record not found during export, content=""" & DataContentName & """ guid=""" & DataRecordGuid & """ name=""" & DataRecordName & """ -->"
+                                                Else
+                                                    '
+                                                    ' determine all valid fields
+                                                    '
+                                                    Dim fieldCnt As Integer = 0
+                                                    Dim Sql As String = "select * from ccFields where contentid=" & DataContentId
+
+                                                    Dim fieldLookupListValue As String = ""
+                                                    Dim fieldNames() As String = {}
+                                                    Dim fieldTypes() As Integer = {}
+                                                    Dim fieldLookupContent() As String = {}
+                                                    Dim fieldLookupList() As String = {}
+                                                    Dim FieldLookupContentName As String
+                                                    Dim FieldTypeNumber As Integer
+                                                    Dim FieldName As String
+                                                    Using csFields As CPCSBaseClass = cp.CSNew()
+                                                        If csFields.Open("content fields", "contentid=" & DataContentId) Then
+                                                            Do
+                                                                FieldName = csFields.GetText("name")
+                                                                If FieldName <> "" Then
+                                                                    Dim FieldLookupContentID As Integer = 0
+                                                                    FieldLookupContentName = ""
+                                                                    FieldTypeNumber = csFields.GetInteger("type")
+                                                                    Select Case LCase(FieldName)
+                                                                        Case "ccguid", "name", "id", "dateadded", "createdby", "modifiedby", "modifieddate", "createkey", "contentcontrolid", "editsourceid", "editarchive", "editblank", "contentcategoryid"
+                                                                        Case Else
+                                                                            If FieldTypeNumber = 7 Then
+                                                                                FieldLookupContentID = csFields.GetInteger("Lookupcontentid")
+                                                                                fieldLookupListValue = csFields.GetText("LookupList")
+                                                                                If FieldLookupContentID <> 0 Then
+                                                                                    FieldLookupContentName = cp.Content.GetRecordName("content", FieldLookupContentID)
+                                                                                End If
+                                                                            End If
+                                                                            Select Case FieldTypeNumber
+                                                                                Case FieldTypeLookup, FieldTypeBoolean, FieldTypeCSSFile, FieldTypeJavascriptFile, FieldTypeTextFile, FieldTypeXMLFile, FieldTypeCurrency, FieldTypeFloat, FieldTypeInteger, FieldTypeDate, FieldTypeLink, FieldTypeLongText, FieldTypeResourceLink, FieldTypeText, FieldTypeHTML, FieldTypeHTMLFile
+                                                                                    '
+                                                                                    ' this is a keeper
+                                                                                    '
+                                                                                    ReDim Preserve fieldNames(fieldCnt)
+                                                                                    ReDim Preserve fieldTypes(fieldCnt)
+                                                                                    ReDim Preserve fieldLookupContent(fieldCnt)
+                                                                                    ReDim Preserve fieldLookupList(fieldCnt)
+                                                                                    'fieldLookupContent
+                                                                                    fieldNames(fieldCnt) = FieldName
+                                                                                    fieldTypes(fieldCnt) = FieldTypeNumber
+                                                                                    fieldLookupContent(fieldCnt) = FieldLookupContentName
+                                                                                    fieldLookupList(fieldCnt) = fieldLookupListValue
+                                                                                    fieldCnt = fieldCnt + 1
+                                                                                    'end case
+                                                                            End Select
+                                                                            'end case
+                                                                    End Select
+                                                                End If
+                                                                Call csFields.GoNext()
+                                                            Loop While csFields.OK()
+                                                        End If
+                                                        Call csFields.Close()
+                                                    End Using
+                                                    '
+                                                    ' output records
+                                                    '
+                                                    DataRecordGuid = ""
+                                                    Do While CSData.OK()
+                                                        FieldNodes = ""
+                                                        DataRecordName = CSData.GetText("name")
+                                                        If supportsGuid Then
+                                                            DataRecordGuid = CSData.GetText("ccguid")
+                                                            If DataRecordGuid = "" Then
+                                                                DataRecordGuid = cp.Utils.CreateGuid()
+                                                                Call CSData.SetField("ccGuid", DataRecordGuid)
+                                                            End If
+                                                        End If
+                                                        Dim fieldPtr As Integer
+                                                        For fieldPtr = 0 To fieldCnt - 1
+                                                            FieldName = fieldNames(fieldPtr)
+                                                            FieldTypeNumber = cp.Utils.EncodeInteger(fieldTypes(fieldPtr))
+                                                            'Dim ContentID As Integer
+                                                            Dim FieldValue As String
+                                                            Select Case FieldTypeNumber
+                                                                Case FieldTypeBoolean
+                                                                    '
+                                                                    ' true/false
+                                                                    '
+                                                                    FieldValue = CSData.GetBoolean(FieldName).ToString()
+                                                                Case FieldTypeCSSFile, FieldTypeJavascriptFile, FieldTypeTextFile, FieldTypeXMLFile
+                                                                    '
+                                                                    ' text files
+                                                                    '
+                                                                    FieldValue = CSData.GetText(FieldName)
+                                                                    FieldValue = EncodeCData(cp, FieldValue)
+                                                                Case FieldTypeInteger
+                                                                    '
+                                                                    ' integer
+                                                                    '
+                                                                    FieldValue = CSData.GetInteger(FieldName).ToString()
+                                                                Case FieldTypeCurrency, FieldTypeFloat
+                                                                    '
+                                                                    ' numbers
+                                                                    '
+                                                                    FieldValue = CSData.GetNumber(FieldName).ToString()
+                                                                Case FieldTypeDate
+                                                                    '
+                                                                    ' date
+                                                                    '
+                                                                    FieldValue = CSData.GetDate(FieldName).ToString()
+                                                                Case FieldTypeLookup
+                                                                    '
+                                                                    ' lookup
+                                                                    '
+                                                                    FieldValue = ""
+                                                                    Dim FieldValueInteger As Integer = CSData.GetInteger(FieldName)
+                                                                    If (FieldValueInteger <> 0) Then
+                                                                        FieldLookupContentName = fieldLookupContent(fieldPtr)
+                                                                        fieldLookupListValue = fieldLookupList(fieldPtr)
+                                                                        If (FieldLookupContentName <> "") Then
+                                                                            '
+                                                                            ' content lookup
+                                                                            '
+                                                                            If cp.Content.IsField(FieldLookupContentName, "ccguid") Then
+                                                                                Using CSlookup As CPCSBaseClass = cp.CSNew()
+                                                                                    Call CSlookup.OpenRecord(FieldLookupContentName, FieldValueInteger)
+                                                                                    If CSlookup.OK() Then
+                                                                                        FieldValue = CSlookup.GetText("ccguid")
+                                                                                        If FieldValue = "" Then
+                                                                                            FieldValue = cp.Utils.CreateGuid()
+                                                                                            Call CSlookup.SetField("ccGuid", FieldValue)
+                                                                                        End If
+                                                                                    End If
+                                                                                    Call CSlookup.Close()
+                                                                                End Using
+                                                                            End If
+                                                                        ElseIf fieldLookupListValue <> "" Then
+                                                                            '
+                                                                            ' list lookup, ok to save integer
+                                                                            '
+                                                                            FieldValue = FieldValueInteger.ToString()
+                                                                        End If
+                                                                    End If
+                                                                Case Else
+                                                                    '
+                                                                    ' text types
+                                                                    '
+                                                                    FieldValue = CSData.GetText(FieldName)
+                                                                    FieldValue = EncodeCData(cp, FieldValue)
+                                                            End Select
+                                                            FieldNodes = FieldNodes & vbCrLf & vbTab & "<field name=""" & System.Net.WebUtility.HtmlEncode(FieldName) & """>" & FieldValue & "</field>"
+                                                        Next
+                                                        RecordNodes = "" _
+                                                        & RecordNodes _
+                                                        & vbCrLf & vbTab & "<record content=""" & System.Net.WebUtility.HtmlEncode(DataContentName) & """ guid=""" & DataRecordGuid & """ name=""" & System.Net.WebUtility.HtmlEncode(DataRecordName) & """>" _
+                                                        & tabIndent(cp, FieldNodes) _
+                                                        & vbCrLf & vbTab & "</record>"
+                                                        Call CSData.GoNext()
+                                                    Loop
+                                                End If
+                                                Call CSData.Close()
+                                            End Using
                                         End If
-                                        Call CSData.Close()
                                     End If
                                 End If
-                            End If
-                        Next
-                        If RecordNodes <> "" Then
-                            collectionXml = "" _
+                            Next
+                            If RecordNodes <> "" Then
+                                collectionXml = "" _
                                 & collectionXml _
                                 & vbCrLf & vbTab & "<data>" _
                                 & tabIndent(cp, RecordNodes) _
                                 & vbCrLf & vbTab & "</data>"
+                            End If
                         End If
-                    End If
-                    Dim Node As String
-                    '
-                    ' CDef
-                    '
-                    'Call Main.testpoint("getCollection, 700")
-                    For Each content As Models.ContentModel In Models.ContentModel.createListFromCollection(cp, CollectionID)
-                        Dim reload As Boolean = False
-                        If (String.IsNullOrEmpty(content.ccguid)) Then
-                            content.ccguid = cp.Utils.CreateGuid()
-                            content.save(cp)
-                            reload = True
-                        End If
-                        Dim xmlTool As New xmlController(cp)
-                        Node = xmlTool.GetXMLContentDefinition3(content.name)
+                        Dim Node As String
                         '
-                        ' remove the <collection> top node
+                        ' CDef
                         '
-                        Pos = InStr(1, Node, "<cdef", vbTextCompare)
-                        If Pos > 0 Then
-                            Node = Mid(Node, Pos)
-                            Pos = InStr(1, Node, "</cdef>", vbTextCompare)
+                        'Call Main.testpoint("getCollection, 700")
+                        For Each content As Models.ContentModel In Models.ContentModel.createListFromCollection(cp, CollectionID)
+                            Dim reload As Boolean = False
+                            If (String.IsNullOrEmpty(content.ccguid)) Then
+                                content.ccguid = cp.Utils.CreateGuid()
+                                content.save(cp)
+                                reload = True
+                            End If
+                            Dim xmlTool As New xmlController(cp)
+                            Node = xmlTool.GetXMLContentDefinition3(content.name)
+                            '
+                            ' remove the <collection> top node
+                            '
+                            Dim Pos As Integer = InStr(1, Node, "<cdef", vbTextCompare)
                             If Pos > 0 Then
-                                Node = Mid(Node, 1, Pos + 6)
-                                collectionXml = collectionXml & vbCrLf & vbTab & Node
-                            End If
-                        End If
-                    Next
-                    '
-                    ' Scripting Modules
-                    '
-                    'Call Main.testpoint("getCollection, 800")
-
-                    If IncludeModuleGuidList <> "" Then
-                        Dim Modules() As String = Split(IncludeModuleGuidList, vbCrLf)
-                        For Ptr = 0 To UBound(Modules)
-                            Dim ModuleGuid As String = Modules(Ptr)
-                            If ModuleGuid <> "" Then
-                                CS2.Open("Scripting Modules", "ccguid=" & cp.Db.EncodeSQLText(ModuleGuid))
-                                If CS2.OK() Then
-                                    Dim Code As String = Trim(CS2.GetText("code"))
-                                    Code = EncodeCData(cp, Code)
-                                    collectionXml = collectionXml & vbCrLf & vbTab & "<ScriptingModule Name=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("name")) & """ guid=""" & ModuleGuid & """>" & Code & "</ScriptingModule>"
-                                End If
-                                Call CS2.Close()
-                            End If
-                        Next
-                    End If
-                    '
-                    ' shared styles
-                    '
-                    Dim recordGuids() As String
-                    Dim recordGuid As String
-                    If (IncludeSharedStyleGuidList <> "") Then
-                        recordGuids = Split(IncludeSharedStyleGuidList, vbCrLf)
-                        For Ptr = 0 To UBound(recordGuids)
-                            recordGuid = recordGuids(Ptr)
-                            If recordGuid <> "" Then
-                                CS2.Open("Shared Styles", "ccguid=" & cp.Db.EncodeSQLText(recordGuid))
-                                If CS2.OK() Then
-                                    collectionXml = collectionXml & vbCrLf & vbTab & "<SharedStyle" _
-                                        & " Name=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("name")) & """" _
-                                        & " guid=""" & recordGuid & """" _
-                                        & " alwaysInclude=""" & CS2.GetBoolean("alwaysInclude") & """" _
-                                        & " prefix=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("prefix")) & """" _
-                                        & " suffix=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("suffix")) & """" _
-                                        & " sortOrder=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("sortOrder")) & """" _
-                                        & ">" _
-                                        & EncodeCData(cp, Trim(CS2.GetText("styleFilename"))) _
-                                        & "</SharedStyle>"
-                                End If
-                                Call CS2.Close()
-                            End If
-                        Next
-                    End If
-                    '
-                    ' Import Collections
-                    '
-                    Node = ""
-                    Dim CS3 As CPCSBaseClass = cp.CSNew()
-                    If CS3.Open("Add-on Collection Parent Rules", "parentid=" & CollectionID) Then
-                        Do
-                            CS2.OpenRecord("Add-on Collections", CS3.GetInteger("childid"))
-                            If CS2.OK() Then
-                                Dim Guid As String = CS2.GetText("ccGuid")
-                                If Guid = "" Then
-                                    Guid = cp.Utils.CreateGuid()
-                                    Call CS2.SetField("ccGuid", Guid)
-                                End If
-                                Node = Node & vbCrLf & vbTab & "<ImportCollection name=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("name")) & """>" & Guid & "</ImportCollection>"
-                            End If
-                            Call CS2.Close()
-                            Call CS3.GoNext()
-                        Loop While CS3.OK()
-                    End If
-                    Call CS3.Close()
-                    collectionXml = collectionXml & Node
-                    '
-                    ' wwwFileList
-                    '
-                    ResourceCnt = 0
-                    FileList = CS.GetText("wwwFileList")
-                    If FileList <> "" Then
-                        Files = Split(FileList, vbCrLf)
-                        For Ptr = 0 To UBound(Files)
-                            PathFilename = Files(Ptr)
-                            If PathFilename <> "" Then
-                                PathFilename = Replace(PathFilename, "\", "/")
-                                Path = ""
-                                Filename = PathFilename
-                                Pos = InStrRev(PathFilename, "/")
+                                Node = Mid(Node, Pos)
+                                Pos = InStr(1, Node, "</cdef>", vbTextCompare)
                                 If Pos > 0 Then
-                                    Filename = Mid(PathFilename, Pos + 1)
-                                    Path = Mid(PathFilename, 1, Pos - 1)
+                                    Node = Mid(Node, 1, Pos + 6)
+                                    collectionXml &= vbCrLf & vbTab & Node
                                 End If
-                                If LCase(Filename) = "collection.hlp" Then
-                                    '
-                                    ' legacy file, remove it
-                                    '
-                                Else
-                                    PathFilename = Replace(PathFilename, "/", "\")
+                            End If
+                        Next
+                        '
+                        ' Scripting Modules
+                        '
+                        'Call Main.testpoint("getCollection, 800")
+
+                        If IncludeModuleGuidList <> "" Then
+                            Dim Modules() As String = Split(IncludeModuleGuidList, vbCrLf)
+                            For Ptr = 0 To UBound(Modules)
+                                Dim ModuleGuid As String = Modules(Ptr)
+                                If ModuleGuid <> "" Then
+                                    Using CS2 As CPCSBaseClass = cp.CSNew()
+                                        CS2.Open("Scripting Modules", "ccguid=" & cp.Db.EncodeSQLText(ModuleGuid))
+                                        If CS2.OK() Then
+                                            Dim Code As String = Trim(CS2.GetText("code"))
+                                            Code = EncodeCData(cp, Code)
+                                            collectionXml &= vbCrLf & vbTab & "<ScriptingModule Name=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("name")) & """ guid=""" & ModuleGuid & """>" & Code & "</ScriptingModule>"
+                                        End If
+                                        Call CS2.Close()
+                                    End Using
+                                End If
+                            Next
+                        End If
+                        '
+                        ' shared styles
+                        '
+                        Dim recordGuids() As String
+                        Dim recordGuid As String
+                        If (IncludeSharedStyleGuidList <> "") Then
+                            recordGuids = Split(IncludeSharedStyleGuidList, vbCrLf)
+                            For Ptr = 0 To UBound(recordGuids)
+                                recordGuid = recordGuids(Ptr)
+                                If recordGuid <> "" Then
+                                    Using CS2 As CPCSBaseClass = cp.CSNew()
+                                        CS2.Open("Shared Styles", "ccguid=" & cp.Db.EncodeSQLText(recordGuid))
+                                        If CS2.OK() Then
+                                            collectionXml &= vbCrLf & vbTab & "<SharedStyle" _
+                                            & " Name=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("name")) & """" _
+                                            & " guid=""" & recordGuid & """" _
+                                            & " alwaysInclude=""" & CS2.GetBoolean("alwaysInclude") & """" _
+                                            & " prefix=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("prefix")) & """" _
+                                            & " suffix=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("suffix")) & """" _
+                                            & " sortOrder=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("sortOrder")) & """" _
+                                            & ">" _
+                                            & EncodeCData(cp, Trim(CS2.GetText("styleFilename"))) _
+                                            & "</SharedStyle>"
+                                        End If
+                                        Call CS2.Close()
+                                    End Using
+                                End If
+                            Next
+                        End If
+                        '
+                        ' Import Collections
+                        '
+                        Node = ""
+                        Using CS3 As CPCSBaseClass = cp.CSNew()
+                            If CS3.Open("Add-on Collection Parent Rules", "parentid=" & CollectionID) Then
+                                Do
+                                    Using CS2 As CPCSBaseClass = cp.CSNew()
+                                        CS2.OpenRecord("Add-on Collections", CS3.GetInteger("childid"))
+                                        If CS2.OK() Then
+                                            Dim Guid As String = CS2.GetText("ccGuid")
+                                            If Guid = "" Then
+                                                Guid = cp.Utils.CreateGuid()
+                                                Call CS2.SetField("ccGuid", Guid)
+                                            End If
+                                            Node = Node & vbCrLf & vbTab & "<ImportCollection name=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("name")) & """>" & Guid & "</ImportCollection>"
+                                        End If
+                                        Call CS2.Close()
+                                    End Using
+                                    Call CS3.GoNext()
+                                Loop While CS3.OK()
+                            End If
+                            Call CS3.Close()
+                        End Using
+                        collectionXml &= Node
+                        '
+                        ' wwwFileList
+                        '
+                        FileList = CS.GetText("wwwFileList")
+                        If FileList <> "" Then
+                            Dim Files() As String = Split(FileList, vbCrLf)
+                            For Ptr = 0 To UBound(Files)
+                                Dim PathFilename As String = Files(Ptr)
+                                If PathFilename <> "" Then
+                                    PathFilename = Replace(PathFilename, "\", "/")
+                                    Dim Path As String = ""
+                                    Dim Filename As String = PathFilename
+                                    Dim Pos As Integer = InStrRev(PathFilename, "/")
+                                    If Pos > 0 Then
+                                        Filename = Mid(PathFilename, Pos + 1)
+                                        Path = Mid(PathFilename, 1, Pos - 1)
+                                    End If
+                                    If LCase(Filename) = "collection.hlp" Then
+                                        '
+                                        ' legacy file, remove it
+                                        '
+                                    Else
+                                        PathFilename = Replace(PathFilename, "/", "\")
+                                        If tempPathFileList.Contains(tempExportPath & Filename) Then
+                                            Call cp.UserError.Add("There was an error exporting this collection because there were multiple files with the same filename [" & Filename & "]")
+                                        Else
+                                            cp.WwwFiles.Copy(PathFilename, tempExportPath & Filename, cp.TempFiles)
+                                            tempPathFileList.Add(tempExportPath & Filename)
+                                            collectionXml &= vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""www"" path=""" & System.Net.WebUtility.HtmlEncode(Path) & """ />"
+                                        End If
+                                    End If
+                                End If
+                            Next
+                        End If
+                        '
+                        ' ContentFileList
+                        '
+                        FileList = CS.GetText("ContentFileList")
+                        If FileList <> "" Then
+                            Dim Files() As String = Split(FileList, vbCrLf)
+                            For Ptr = 0 To UBound(Files)
+                                Dim PathFilename As String = Files(Ptr)
+                                If PathFilename <> "" Then
+                                    PathFilename = Replace(PathFilename, "\", "/")
+                                    Dim Path As String = ""
+                                    Dim Filename As String = PathFilename
+                                    Dim Pos As Integer = InStrRev(PathFilename, "/")
+                                    If Pos > 0 Then
+                                        Filename = Mid(PathFilename, Pos + 1)
+                                        Path = Mid(PathFilename, 1, Pos - 1)
+                                    End If
                                     If tempPathFileList.Contains(tempExportPath & Filename) Then
                                         Call cp.UserError.Add("There was an error exporting this collection because there were multiple files with the same filename [" & Filename & "]")
                                     Else
-                                        cp.WwwFiles.Copy(PathFilename, tempExportPath & Filename, cp.TempFiles)
+                                        cp.CdnFiles.Copy(PathFilename, tempExportPath + Filename, cp.TempFiles)
                                         tempPathFileList.Add(tempExportPath & Filename)
-                                        collectionXml = collectionXml & vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""www"" path=""" & System.Net.WebUtility.HtmlEncode(Path) & """ />"
+                                        collectionXml &= vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""content"" path=""" & System.Net.WebUtility.HtmlEncode(Path) & """ />"
                                     End If
-                                    ResourceCnt = ResourceCnt + 1
                                 End If
-                            End If
-                        Next
+                            Next
+                        End If
+                        '
+                        ' ExecFileListNode
+                        '
+                        collectionXml &= ExecFileListNode
+                        '
+                        ' Other XML
+                        '
+                        Dim OtherXML As String
+                        OtherXML = CS.GetText("otherxml")
+                        If Trim(OtherXML) <> "" Then
+                            collectionXml &= vbCrLf & OtherXML
+                        End If
+                        collectionXml &= vbCrLf & "</Collection>"
+                        Call CS.Close()
+                        Dim tempExportXml_Filename As String = encodeFilename(cp, CollectionName & ".xml")
+                        '
+                        ' Save the installation file and add it to the archive
+                        '
+                        Call cp.TempFiles.Save(tempExportPath & tempExportXml_Filename, collectionXml)
+                        If Not tempPathFileList.Contains(tempExportPath & tempExportXml_Filename) Then
+                            tempPathFileList.Add(tempExportPath & tempExportXml_Filename)
+                        End If
+                        Dim tempExportZip_Filename As String = encodeFilename(cp, CollectionName & ".zip")
+                        '
+                        ' -- zip up the folder to make the collection zip file in temp filesystem
+                        Call zipTempCdnFile(cp, tempExportPath & tempExportZip_Filename, tempPathFileList)
+                        '
+                        ' -- copy the collection zip file to the cdn filesystem as the download link
+                        cp.TempFiles.Copy(tempExportPath & tempExportZip_Filename, cdnExportZip_Filename, cp.CdnFiles)
+                        '
+                        ' -- delete the temp folder
+                        cp.TempFiles.DeleteFolder(tempExportPath)
                     End If
-                    '
-                    ' ContentFileList
-                    '
-                    FileList = CS.GetText("ContentFileList")
-                    If FileList <> "" Then
-                        Files = Split(FileList, vbCrLf)
-                        For Ptr = 0 To UBound(Files)
-                            PathFilename = Files(Ptr)
-                            If PathFilename <> "" Then
-                                PathFilename = Replace(PathFilename, "\", "/")
-                                Path = ""
-                                Filename = PathFilename
-                                Pos = InStrRev(PathFilename, "/")
-                                If Pos > 0 Then
-                                    Filename = Mid(PathFilename, Pos + 1)
-                                    Path = Mid(PathFilename, 1, Pos - 1)
-                                End If
-                                'PathFilename = Replace(PathFilename, "/", "\")
-                                'If Left(PathFilename, 1) = "\" Then
-                                '    PathFilename = Mid(PathFilename, 2)
-                                'End If
-                                If tempPathFileList.Contains(tempExportPath & Filename) Then
-                                    Call cp.UserError.Add("There was an error exporting this collection because there were multiple files with the same filename [" & Filename & "]")
-                                Else
-                                    cp.CdnFiles.Copy(PathFilename, tempExportPath + Filename, cp.TempFiles)
-                                    tempPathFileList.Add(tempExportPath & Filename)
-                                    collectionXml = collectionXml & vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""content"" path=""" & System.Net.WebUtility.HtmlEncode(Path) & """ />"
-                                End If
-                                ResourceCnt = ResourceCnt + 1
-                            End If
-                        Next
-                    End If
-                    '
-                    ' ExecFileListNode
-                    '
-                    collectionXml = collectionXml & ExecFileListNode
-                    '
-                    ' Other XML
-                    '
-                    Dim OtherXML As String
-                    OtherXML = CS.GetText("otherxml")
-                    If Trim(OtherXML) <> "" Then
-                        collectionXml = collectionXml & vbCrLf & OtherXML
-                    End If
-                    collectionXml = collectionXml & vbCrLf & "</Collection>"
-                    Call CS.Close()
-                    '
-                    ' Save the installation file and add it to the archive
-                    '
-                    Call cp.TempFiles.Save(tempExportPath & tempExportXml_Filename, collectionXml)
-                    If Not tempPathFileList.Contains(tempExportPath & tempExportXml_Filename) Then
-                        tempPathFileList.Add(tempExportPath & tempExportXml_Filename)
-                    End If
-                    '
-                    ' -- zip up the folder to make the collection zip file in temp filesystem
-                    Call zipTempCdnFile(cp, tempExportPath & tempExportZip_Filename, tempPathFileList)
-                    '
-                    ' -- copy the collection zip file to the cdn filesystem as the download link
-                    cp.TempFiles.Copy(tempExportPath & tempExportZip_Filename, cdnExportZip_Filename, cp.CdnFiles)
-                    '
-                    ' -- delete the temp folder
-                    cp.TempFiles.DeleteFolder(tempExportPath)
-                End If
+                End Using
             Catch ex As Exception
                 errorReport(cp, ex, "GetCollection")
             End Try
