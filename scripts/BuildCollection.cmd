@@ -12,3 +12,5 @@ cd %collectionPath%
 del "%collectionName%.zip" /Q
 "c:\program files\7-zip\7z.exe" a "%collectionName%.zip"
 cd ..\..\scripts
+
+pause

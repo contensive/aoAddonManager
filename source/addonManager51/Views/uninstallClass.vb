@@ -6,6 +6,7 @@ Imports System
 Imports System.Collections.Generic
 Imports System.Text
 Imports Contensive.BaseClasses
+Imports Contensive.Models.Db
 
 Namespace Contensive.Addons.AddonManager51
     '
@@ -92,7 +93,7 @@ Namespace Contensive.Addons.AddonManager51
                 Dim TargetCollectionID As Integer
                 Dim InstallPath As String
                 Dim SiteKey As String
-                Dim form As New adminFramework.reportListClass(cp)
+                Dim form As New adminFramework.ReportListClass(cp)
                 '
                 SiteKey = cp.Site.GetText("sitekey", "")
                 If SiteKey = "" Then
@@ -189,8 +190,8 @@ Namespace Contensive.Addons.AddonManager51
                         '
                         form.addColumn()
                         form.columnCaption = "Del"
-                        form.columnCaptionClass = adminFramework.afwStyles.afwTextAlignCenter + " " + adminFramework.afwStyles.afwWidth50px
-                        form.columnCellClass = adminFramework.afwStyles.afwTextAlignCenter
+                        form.columnCaptionClass = adminFramework.AfwStyles.afwTextAlignCenter + " " + adminFramework.AfwStyles.afwWidth50px
+                        form.columnCellClass = adminFramework.AfwStyles.afwTextAlignCenter
                         form.columnDownloadable = False
                         form.columnName = ""
                         form.columnSortable = False
@@ -198,19 +199,19 @@ Namespace Contensive.Addons.AddonManager51
                         '
                         form.addColumn()
                         form.columnCaption = "Name"
-                        form.columnCaptionClass = adminFramework.afwStyles.afwTextAlignLeft
-                        form.columnCellClass = adminFramework.afwStyles.afwTextAlignLeft
+                        form.columnCaptionClass = adminFramework.AfwStyles.afwTextAlignLeft
+                        form.columnCellClass = adminFramework.AfwStyles.afwTextAlignLeft
                         form.columnDownloadable = False
                         form.columnName = ""
                         form.columnSortable = False
                         form.columnVisible = True
                         '
                         DisplaySystem = False
-                        Dim addonCollectionList As List(Of Models.addonCollectionModel) = Models.addonCollectionModel.createList(cp, "", "name")
+                        Dim addonCollectionList As List(Of AddonCollectionModel) = AddonCollectionModel.createList(Of AddonCollectionModel)(cp, "", "name")
                         Dim rowPtr As Integer = 0
                         For Each item In addonCollectionList
                             form.addRow()
-                            form.setCell(cp.Html.CheckBox("AC" & RowPtr) & cp.Html.Hidden("ACID" & RowPtr, item.id.ToString()))
+                            form.setCell(cp.Html.CheckBox("AC" & rowPtr) & cp.Html.Hidden("ACID" & rowPtr, item.id.ToString()))
                             form.setCell(item.name)
                             rowPtr += 1
                         Next

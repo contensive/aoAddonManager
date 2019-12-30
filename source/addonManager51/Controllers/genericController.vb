@@ -4,6 +4,7 @@ Option Strict On
 
 Imports System
 Imports System.Collections.Generic
+Imports System.IO
 Imports System.Text
 Imports Contensive.BaseClasses
 
@@ -148,6 +149,25 @@ Namespace Contensive.Addons.AddonManager51
                 cp.Site.ErrorReport(ex)
             End Try
             Return result
+        End Function
+        '
+        '
+        '
+        Public Function getPath(pathFilename As String) As String
+            Dim path As String = IO.Path.GetDirectoryName(pathFilename)
+            If (String.IsNullOrEmpty(path)) Then
+                Return String.Empty
+            End If
+            If (path.Substring(path.Length - 2, 1).Equals("\")) Then
+                Return path
+            End If
+            Return path + "\"
+        End Function
+        '
+        '
+        '
+        Public Function getFilename(pathFilename As String) As String
+            Return Path.GetFileName(pathFilename)
         End Function
     End Module
 End Namespace
