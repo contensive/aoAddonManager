@@ -63,8 +63,8 @@ Namespace Contensive.Addons.AddonManager51
                             '
                             ' -- success
                             form.body &= CP.Html.p("Export Successful")
-                            form.body &= CP.Html.p("Click <a href=""" & CP.Site.FilePath & Replace(CollectionFilename, "\", "/") & """>here</a> to download the collection file</p>")
                         End If
+                        form.body &= CP.Html.p("Click <a href=""" & CP.Site.FilePath & Replace(CollectionFilename, "\", "/") & """>here</a> to download the collection file.</p>")
                     End If
                 End If
                 '

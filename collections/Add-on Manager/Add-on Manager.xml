@@ -46,7 +46,7 @@ cp.response.redirect( "?addonguid=%7BA1BCA00C-2657-42A1-8F98-BED1E5A42025%7D&set
 end function]]></Code>
 		</Scripting>
 	</Addon>
-	<Addon name="addonManager51-CollectionLibrary" guid="{7360E5BB-0404-461C-94E4-A56066CA0B02}" type="Add-on">
+	<Addon name="addonManager-CollectionLibrary" guid="{7360E5BB-0404-461C-94E4-A56066CA0B02}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
@@ -87,7 +87,7 @@ end function]]></Code>
 		<styleslinkhref></styleslinkhref>
 		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
 	</Addon>
-	<Addon name="addonManager51-Export" guid="{B7013B2B-DCF8-48C7-A665-6F258CACAF4D}" type="Add-on">
+	<Addon name="addonManager-Export" guid="{B7013B2B-DCF8-48C7-A665-6F258CACAF4D}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
@@ -193,7 +193,7 @@ end function]]></Code>
 		<styleslinkhref></styleslinkhref>
 		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
 	</Addon>
-	<Addon name="addonManager51-iisRecycle" guid="{164C4B6F-2A89-4A0D-AAA0-7B34BB2DD77D}" type="Add-on">
+	<Addon name="addonManager-iisRecycle" guid="{164C4B6F-2A89-4A0D-AAA0-7B34BB2DD77D}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
@@ -233,7 +233,7 @@ end function]]></Code>
 		<styleslinkhref></styleslinkhref>
 		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
 	</Addon>
-	<Addon name="addonManager51-Includes" guid="{71A95926-D611-40AF-ACA4-100C18449F0D}" type="Add-on">
+	<Addon name="addonManager-Includes" guid="{71A95926-D611-40AF-ACA4-100C18449F0D}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
@@ -328,7 +328,7 @@ end function]]></Code>
 		<styleslinkhref></styleslinkhref>
 		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
 	</Addon>
-	<Addon name="addonManager51-Uninstall" guid="{3092AD1E-9660-4104-81D3-C29210C3183C}" type="Add-on">
+	<Addon name="addonManager-Uninstall" guid="{3092AD1E-9660-4104-81D3-C29210C3183C}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
@@ -369,7 +369,7 @@ end function]]></Code>
 		<styleslinkhref></styleslinkhref>
 		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
 	</Addon>
-	<Addon name="addonManager51-Upload" guid="{2D928D71-D97F-4F0A-9D6E-DB850B06D7C8}" type="Add-on">
+	<Addon name="addonManager-Upload" guid="{2D928D71-D97F-4F0A-9D6E-DB850B06D7C8}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<ActiveXProgramID></ActiveXProgramID>
@@ -411,13 +411,13 @@ end function]]></Code>
 		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
 	</Addon>
 	<data>
-		<record content="portals" guid="{9DF996D7-2280-431E-8D34-2ED059CB988C}" name="Add-on Manager51">
+		<record content="portals" guid="{9DF996D7-2280-431E-8D34-2ED059CB988C}" name="Add-on Manager">
 			<field name="active">True</field>
 			<field name="defaultconfigjson"></field>
 			<field name="defaultfeatureid">{7360E5BB-0404-461C-94E4-A56066CA0B02}</field>
 			<field name="sortorder"></field>
 		</record>
-		<record content="portal features" guid="{23E6E281-B5A6-4368-A0E6-9681D9F142BC}" name="addonManager51-Export">
+		<record content="portal features" guid="{23E6E281-B5A6-4368-A0E6-9681D9F142BC}" name="addonManager-Export">
 			<field name="active">True</field>
 			<field name="addonid">{B7013B2B-DCF8-48C7-A665-6F258CACAF4D}</field>
 			<field name="addpadding">False</field>
@@ -427,7 +427,7 @@ end function]]></Code>
 			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
 			<field name="sortorder"></field>
 		</record>
-		<record content="portal features" guid="{9D7DDD4E-55F3-4825-848B-1E4D03A7C232}" name="addonManager51-Data">
+		<record content="portal features" guid="{9D7DDD4E-55F3-4825-848B-1E4D03A7C232}" name="addonManager-Data">
 			<field name="active">True</field>
 			<field name="addonid"></field>
 			<field name="addpadding">False</field>
@@ -437,7 +437,7 @@ end function]]></Code>
 			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
 			<field name="sortorder"></field>
 		</record>
-		<record content="portal features" guid="{7360E5BB-0404-461C-94E4-A56066CA0B02}" name="addonManager51-CollectionLibrary">
+		<record content="portal features" guid="{7360E5BB-0404-461C-94E4-A56066CA0B02}" name="addonManager-CollectionLibrary">
 			<field name="active">True</field>
 			<field name="addonid">{7360E5BB-0404-461C-94E4-A56066CA0B02}</field>
 			<field name="addpadding">False</field>
@@ -447,7 +447,7 @@ end function]]></Code>
 			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
 			<field name="sortorder"></field>
 		</record>
-		<record content="portal features" guid="{189AEFD0-6E66-4748-A84E-4207DF2EFA5F}" name="addonManager51-Upload">
+		<record content="portal features" guid="{189AEFD0-6E66-4748-A84E-4207DF2EFA5F}" name="addonManager-Upload">
 			<field name="active">True</field>
 			<field name="addonid">{2D928D71-D97F-4F0A-9D6E-DB850B06D7C8}</field>
 			<field name="addpadding">False</field>
@@ -457,7 +457,7 @@ end function]]></Code>
 			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
 			<field name="sortorder"></field>
 		</record>
-		<record content="portal features" guid="{01BA1E9D-F36D-4C85-A18C-A1DDC88A1287}" name="addonManager51-Uninstall">
+		<record content="portal features" guid="{01BA1E9D-F36D-4C85-A18C-A1DDC88A1287}" name="addonManager-Uninstall">
 			<field name="active">True</field>
 			<field name="addonid">{3092AD1E-9660-4104-81D3-C29210C3183C}</field>
 			<field name="addpadding">False</field>
@@ -467,7 +467,7 @@ end function]]></Code>
 			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
 			<field name="sortorder"></field>
 		</record>
-		<record content="portal features" guid="{7F39D684-CFEC-4193-8576-B9416CFD0935}" name="Add-on Manager51, Data,Add-ons">
+		<record content="portal features" guid="{7F39D684-CFEC-4193-8576-B9416CFD0935}" name="Add-on Manager, Data,Add-ons">
 			<field name="active">True</field>
 			<field name="addonid"></field>
 			<field name="addpadding">False</field>
@@ -477,7 +477,7 @@ end function]]></Code>
 			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
 			<field name="sortorder"><![CDATA[Add-ons]]></field>
 		</record>
-		<record content="portal features" guid="{2F8C564B-275E-4CE2-B5D6-914787E9285A}" name="Add-on Manager51, Data,Add-on Collections">
+		<record content="portal features" guid="{2F8C564B-275E-4CE2-B5D6-914787E9285A}" name="Add-on Manager, Data,Add-on Collections">
 			<field name="active">True</field>
 			<field name="addonid"></field>
 			<field name="addpadding">False</field>
