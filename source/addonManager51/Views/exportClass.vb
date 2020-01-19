@@ -54,7 +54,17 @@ Namespace Contensive.Addons.AddonManager51
                     Else
                         '
                         ' -- build collection zip file and return file
-                        Dim CollectionFilename As String = ExportController.createCollectionZip_returnCdnPathFilename(CP, CollectionID)
+                        Dim CollectionFilename As String = ""
+                        Dim userError As String = ""
+                        Try
+                            ''
+                            ' -- attempt new method
+                            CP.Addon.ExportCollection(CollectionID, CollectionFilename, userError)
+                        Catch ex As Exception
+                            '
+                            ' -- missing method, use the internal method
+                            CollectionFilename = LegacyExportController.createCollectionZip_returnCdnPathFilename(CP, CollectionID)
+                        End Try
                         If Not CP.UserError.OK Then
                             '
                             ' -- errors during export

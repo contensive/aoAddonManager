@@ -11,7 +11,7 @@ Imports Contensive.Models.Db
 Imports ICSharpCode.SharpZipLib
 
 Namespace Contensive.Addons.AddonManager51
-    Public Class ExportController
+    Public Class LegacyExportController
         '
         '====================================================================================================
         ''' <summary>
@@ -25,133 +25,138 @@ Namespace Contensive.Addons.AddonManager51
             Try
                 Dim collection As AddonCollectionModel = DbBaseModel.create(Of AddonCollectionModel)(cp, collectionId)
                 If (collection Is Nothing) Then
+                    '
+                    ' -- exit with error
                     Call cp.UserError.Add("The collection you selected could not be found")
-                Else
+                    Return String.Empty
                 End If
                 Using CS As CPCSBaseClass = cp.CSNew()
                     CS.OpenRecord("Add-on Collections", collectionId)
                     If Not CS.OK() Then
+                        '
+                        ' -- exit with error
                         Call cp.UserError.Add("The collection you selected could not be found")
-                    Else
-                        Dim collectionXml As String = "<?xml version=""1.0"" encoding=""windows-1252""?>"
-                        Dim CollectionGuid As String = CS.GetText("ccGuid")
-                        If CollectionGuid = "" Then
-                            CollectionGuid = cp.Utils.CreateGuid()
-                            Call CS.SetField("ccGuid", CollectionGuid)
-                        End If
-                        Dim onInstallAddonGuid As String = ""
-                        If (CS.FieldOK("onInstallAddonId")) Then
-                            Dim onInstallAddonId As Integer = CS.GetInteger("onInstallAddonId")
-                            If (onInstallAddonId > 0) Then
-                                Dim addon As AddonModel = AddonModel.create(Of AddonModel)(cp, onInstallAddonId)
-                                If (addon IsNot Nothing) Then
-                                    onInstallAddonGuid = addon.ccguid
-                                End If
+                        Return String.Empty
+                    End If
+                    Dim collectionXml As String = "<?xml version=""1.0"" encoding=""windows-1252""?>"
+                    Dim CollectionGuid As String = CS.GetText("ccGuid")
+                    If CollectionGuid = "" Then
+                        CollectionGuid = cp.Utils.CreateGuid()
+                        Call CS.SetField("ccGuid", CollectionGuid)
+                    End If
+                    Dim onInstallAddonGuid As String = ""
+                    If (CS.FieldOK("onInstallAddonId")) Then
+                        Dim onInstallAddonId As Integer = CS.GetInteger("onInstallAddonId")
+                        If (onInstallAddonId > 0) Then
+                            Dim addon As AddonModel = AddonModel.create(Of AddonModel)(cp, onInstallAddonId)
+                            If (addon IsNot Nothing) Then
+                                onInstallAddonGuid = addon.ccguid
                             End If
                         End If
-                        Dim CollectionName As String = CS.GetText("name")
-                        collectionXml &= vbCrLf & "<Collection"
-                        collectionXml &= " name=""" & CollectionName & """"
-                        collectionXml &= " guid=""" & CollectionGuid & """"
-                        collectionXml &= " system=""" & getYesNo(cp, CS.GetBoolean("system")) & """"
-                        collectionXml &= " updatable=""" & getYesNo(cp, CS.GetBoolean("updatable")) & """"
-                        collectionXml &= " blockNavigatorNode=""" & getYesNo(cp, CS.GetBoolean("blockNavigatorNode")) & """"
-                        collectionXml &= " onInstallAddonGuid=""" & onInstallAddonGuid & """"
-                        collectionXml &= ">"
-                        cdnExportZip_Filename = encodeFilename(cp, CollectionName & ".zip")
-                        Dim tempPathFileList As New List(Of String)
-                        Dim tempExportPath As String = "CollectionExport" & Guid.NewGuid().ToString() & "\"
-                        '
-                        Dim resourceNodeList As String = ExportResourceListController.getResourceList(cp, CS.GetText("execFileList"), CollectionGuid, tempPathFileList, tempExportPath)
-                        '
-                        ' helpLink
-                        '
-                        If CS.FieldOK("HelpLink") Then
-                            collectionXml &= vbCrLf & vbTab & "<HelpLink>" & System.Net.WebUtility.HtmlEncode(CS.GetText("HelpLink")) & "</HelpLink>"
-                        End If
-                        '
-                        ' Help
-                        '
-                        collectionXml &= vbCrLf & vbTab & "<Help>" & System.Net.WebUtility.HtmlEncode(CS.GetText("Help")) & "</Help>"
-                        '
-                        ' Addons
-                        '
-                        Dim IncludeSharedStyleGuidList As String = ""
-                        Dim IncludeModuleGuidList As String = ""
-                        Using CS2 As CPCSBaseClass = cp.CSNew()
-                            CS2.Open("Add-ons", "collectionid=" & collectionId, "name", True, "id")
-                            Do While CS2.OK()
-                                collectionXml &= getAddonNode(cp, CS2.GetInteger("id"), IncludeModuleGuidList, IncludeSharedStyleGuidList)
-                                Call CS2.GoNext()
-                            Loop
-                        End Using
-                        '
-                        ' Data Records
-                        '
-                        Dim DataRecordList As String = CS.GetText("DataRecordList")
-                        collectionXml &= DataRecordNodeListController.getNodeList(cp, DataRecordList, tempPathFileList, tempExportPath)
-                        '
-                        ' CDef
-                        '
+                    End If
+                    Dim CollectionName As String = CS.GetText("name")
+                    collectionXml &= vbCrLf & "<Collection"
+                    collectionXml &= " name=""" & CollectionName & """"
+                    collectionXml &= " guid=""" & CollectionGuid & """"
+                    collectionXml &= " system=""" & getYesNo(cp, CS.GetBoolean("system")) & """"
+                    collectionXml &= " updatable=""" & getYesNo(cp, CS.GetBoolean("updatable")) & """"
+                    collectionXml &= " blockNavigatorNode=""" & getYesNo(cp, CS.GetBoolean("blockNavigatorNode")) & """"
+                    collectionXml &= " onInstallAddonGuid=""" & onInstallAddonGuid & """"
+                    collectionXml &= ">"
+                    cdnExportZip_Filename = encodeFilename(cp, CollectionName & ".zip")
+                    Dim tempPathFileList As New List(Of String)
+                    Dim tempExportPath As String = "CollectionExport" & Guid.NewGuid().ToString() & "\"
+                    '
+                    Dim resourceNodeList As String = ExportResourceListController.getResourceList(cp, CS.GetText("execFileList"), CollectionGuid, tempPathFileList, tempExportPath)
+                    '
+                    ' helpLink
+                    '
+                    If CS.FieldOK("HelpLink") Then
+                        collectionXml &= vbCrLf & vbTab & "<HelpLink>" & System.Net.WebUtility.HtmlEncode(CS.GetText("HelpLink")) & "</HelpLink>"
+                    End If
+                    '
+                    ' Help
+                    '
+                    collectionXml &= vbCrLf & vbTab & "<Help>" & System.Net.WebUtility.HtmlEncode(CS.GetText("Help")) & "</Help>"
+                    '
+                    ' Addons
+                    '
+                    Dim IncludeSharedStyleGuidList As String = ""
+                    Dim IncludeModuleGuidList As String = ""
+                    Using CS2 As CPCSBaseClass = cp.CSNew()
+                        CS2.Open("Add-ons", "collectionid=" & collectionId, "name", True, "id")
+                        Do While CS2.OK()
+                            collectionXml &= getAddonNode(cp, CS2.GetInteger("id"), IncludeModuleGuidList, IncludeSharedStyleGuidList)
+                            Call CS2.GoNext()
+                        Loop
+                    End Using
+                    '
+                    ' Data Records
+                    '
+                    Dim DataRecordList As String = CS.GetText("DataRecordList")
+                    collectionXml &= LegacyDataRecordNodeListController.getNodeList(cp, DataRecordList, tempPathFileList, tempExportPath)
+                    '
+                    ' CDef
+                    '
 
-                        For Each content As Models.ContentModel In Models.ContentModel.createListFromCollection(cp, collectionId)
-                            Dim reload As Boolean = False
-                            If (String.IsNullOrEmpty(content.ccguid)) Then
-                                content.ccguid = cp.Utils.CreateGuid()
-                                content.save(cp)
-                                reload = True
-                            End If
-                            Dim xmlTool As New xmlController(cp)
-                            Dim Node As String = xmlTool.GetXMLContentDefinition3(content.name)
-                            '
-                            ' remove the <collection> top node
-                            '
-                            Dim Pos As Integer = InStr(1, Node, "<cdef", vbTextCompare)
+                    For Each content As Models.ContentModel In Models.ContentModel.createListFromCollection(cp, collectionId)
+                        Dim reload As Boolean = False
+                        If (String.IsNullOrEmpty(content.ccguid)) Then
+                            content.ccguid = cp.Utils.CreateGuid()
+                            content.save(cp)
+                            reload = True
+                        End If
+                        Dim xmlTool As New LegacyXmlController(cp)
+                        Dim Node As String = xmlTool.GetXMLContentDefinition3(content.name)
+                        '
+                        ' remove the <collection> top node
+                        '
+                        Dim Pos As Integer = InStr(1, Node, "<cdef", vbTextCompare)
+                        If Pos > 0 Then
+                            Node = Mid(Node, Pos)
+                            Pos = InStr(1, Node, "</cdef>", vbTextCompare)
                             If Pos > 0 Then
-                                Node = Mid(Node, Pos)
-                                Pos = InStr(1, Node, "</cdef>", vbTextCompare)
-                                If Pos > 0 Then
-                                    Node = Mid(Node, 1, Pos + 6)
-                                    collectionXml &= vbCrLf & vbTab & Node
-                                End If
+                                Node = Mid(Node, 1, Pos + 6)
+                                collectionXml &= vbCrLf & vbTab & Node
+                            End If
+                        End If
+                    Next
+                    '
+                    ' Scripting Modules
+                    '
+                    'Call Main.testpoint("getCollection, 800")
+
+                    If IncludeModuleGuidList <> "" Then
+                        Dim Modules() As String = Split(IncludeModuleGuidList, vbCrLf)
+                        For Ptr = 0 To UBound(Modules)
+                            Dim ModuleGuid As String = Modules(Ptr)
+                            If ModuleGuid <> "" Then
+                                Using CS2 As CPCSBaseClass = cp.CSNew()
+                                    CS2.Open("Scripting Modules", "ccguid=" & cp.Db.EncodeSQLText(ModuleGuid))
+                                    If CS2.OK() Then
+                                        Dim Code As String = Trim(CS2.GetText("code"))
+                                        Code = EncodeCData(cp, Code)
+                                        collectionXml &= vbCrLf & vbTab & "<ScriptingModule Name=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("name")) & """ guid=""" & ModuleGuid & """>" & Code & "</ScriptingModule>"
+                                    End If
+                                    Call CS2.Close()
+                                End Using
                             End If
                         Next
-                        '
-                        ' Scripting Modules
-                        '
-                        'Call Main.testpoint("getCollection, 800")
-
-                        If IncludeModuleGuidList <> "" Then
-                            Dim Modules() As String = Split(IncludeModuleGuidList, vbCrLf)
-                            For Ptr = 0 To UBound(Modules)
-                                Dim ModuleGuid As String = Modules(Ptr)
-                                If ModuleGuid <> "" Then
-                                    Using CS2 As CPCSBaseClass = cp.CSNew()
-                                        CS2.Open("Scripting Modules", "ccguid=" & cp.Db.EncodeSQLText(ModuleGuid))
-                                        If CS2.OK() Then
-                                            Dim Code As String = Trim(CS2.GetText("code"))
-                                            Code = EncodeCData(cp, Code)
-                                            collectionXml &= vbCrLf & vbTab & "<ScriptingModule Name=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("name")) & """ guid=""" & ModuleGuid & """>" & Code & "</ScriptingModule>"
-                                        End If
-                                        Call CS2.Close()
-                                    End Using
-                                End If
-                            Next
-                        End If
-                        '
-                        ' shared styles
-                        '
-                        Dim recordGuids() As String
-                        Dim recordGuid As String
-                        If (IncludeSharedStyleGuidList <> "") Then
-                            recordGuids = Split(IncludeSharedStyleGuidList, vbCrLf)
-                            For Ptr = 0 To UBound(recordGuids)
-                                recordGuid = recordGuids(Ptr)
-                                If recordGuid <> "" Then
-                                    Using CS2 As CPCSBaseClass = cp.CSNew()
-                                        CS2.Open("Shared Styles", "ccguid=" & cp.Db.EncodeSQLText(recordGuid))
-                                        If CS2.OK() Then
-                                            collectionXml &= vbCrLf & vbTab & "<SharedStyle" _
+                    End If
+                    '
+                    ' shared styles
+                    '
+                    Dim recordGuids() As String
+                    Dim recordGuid As String
+                    If (IncludeSharedStyleGuidList <> "") Then
+                        recordGuids = Split(IncludeSharedStyleGuidList, vbCrLf)
+                        For Ptr = 0 To UBound(recordGuids)
+                            recordGuid = recordGuids(Ptr)
+                            If recordGuid <> "" Then
+                                Using CS2 As CPCSBaseClass = cp.CSNew()
+                                    CS2.Open("Shared Styles", "ccguid=" & cp.Db.EncodeSQLText(recordGuid))
+                                    If CS2.OK() Then
+                                        collectionXml &= vbCrLf & vbTab & "<SharedStyle" _
                                             & " Name=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("name")) & """" _
                                             & " guid=""" & recordGuid & """" _
                                             & " alwaysInclude=""" & CS2.GetBoolean("alwaysInclude") & """" _
@@ -161,65 +166,67 @@ Namespace Contensive.Addons.AddonManager51
                                             & ">" _
                                             & EncodeCData(cp, Trim(CS2.GetText("styleFilename"))) _
                                             & "</SharedStyle>"
+                                    End If
+                                    Call CS2.Close()
+                                End Using
+                            End If
+                        Next
+                    End If
+                    '
+                    ' Import Collections
+                    '
+                    If True Then
+                        Dim Node As String = ""
+                        Using CS3 As CPCSBaseClass = cp.CSNew()
+                            If CS3.Open("Add-on Collection Parent Rules", "parentid=" & collectionId) Then
+                                Do
+                                    Using CS2 As CPCSBaseClass = cp.CSNew()
+                                        If CS2.OpenRecord("Add-on Collections", CS3.GetInteger("childid")) Then
+                                            Dim Guid As String = CS2.GetText("ccGuid")
+                                            If Guid = "" Then
+                                                Guid = cp.Utils.CreateGuid()
+                                                Call CS2.SetField("ccGuid", Guid)
+                                            End If
+                                            Node = Node & vbCrLf & vbTab & "<ImportCollection name=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("name")) & """>" & Guid & "</ImportCollection>"
                                         End If
                                         Call CS2.Close()
                                     End Using
-                                End If
-                            Next
-                        End If
-                        '
-                        ' Import Collections
-                        '
-                        If True Then
-                            Dim Node As String = ""
-                            Using CS3 As CPCSBaseClass = cp.CSNew()
-                                If CS3.Open("Add-on Collection Parent Rules", "parentid=" & collectionId) Then
-                                    Do
-                                        Using CS2 As CPCSBaseClass = cp.CSNew()
-                                            CS2.OpenRecord("Add-on Collections", CS3.GetInteger("childid"))
-                                            If CS2.OK() Then
-                                                Dim Guid As String = CS2.GetText("ccGuid")
-                                                If Guid = "" Then
-                                                    Guid = cp.Utils.CreateGuid()
-                                                    Call CS2.SetField("ccGuid", Guid)
-                                                End If
-                                                Node = Node & vbCrLf & vbTab & "<ImportCollection name=""" & System.Net.WebUtility.HtmlEncode(CS2.GetText("name")) & """>" & Guid & "</ImportCollection>"
-                                            End If
-                                            Call CS2.Close()
-                                        End Using
-                                        Call CS3.GoNext()
-                                    Loop While CS3.OK()
-                                End If
-                                Call CS3.Close()
-                            End Using
-                            collectionXml &= Node
-                        End If
-                        '
-                        ' wwwFileList
-                        '
-                        If (True) Then
-                            Dim wwwFileList As String = CS.GetText("wwwFileList")
-                            If wwwFileList <> "" Then
-                                Dim Files() As String = Split(wwwFileList, vbCrLf)
-                                For Ptr = 0 To UBound(Files)
-                                    Dim PathFilename As String = Files(Ptr)
-                                    If PathFilename <> "" Then
-                                        PathFilename = Replace(PathFilename, "\", "/")
-                                        Dim Path As String = ""
-                                        Dim Filename As String = PathFilename
-                                        Dim Pos As Integer = InStrRev(PathFilename, "/")
-                                        If Pos > 0 Then
-                                            Filename = Mid(PathFilename, Pos + 1)
-                                            Path = Mid(PathFilename, 1, Pos - 1)
-                                        End If
-                                        If LCase(Filename) = "collection.hlp" Then
-                                            '
-                                            ' legacy file, remove it
-                                            '
+                                    Call CS3.GoNext()
+                                Loop While CS3.OK()
+                            End If
+                            Call CS3.Close()
+                        End Using
+                        collectionXml &= Node
+                    End If
+                    '
+                    ' wwwFileList
+                    '
+                    If (True) Then
+                        Dim wwwFileList As String = CS.GetText("wwwFileList")
+                        If wwwFileList <> "" Then
+                            Dim Files() As String = Split(wwwFileList, vbCrLf)
+                            For Ptr = 0 To UBound(Files)
+                                Dim PathFilename As String = Files(Ptr)
+                                If PathFilename <> "" Then
+                                    PathFilename = Replace(PathFilename, "\", "/")
+                                    Dim Path As String = ""
+                                    Dim Filename As String = PathFilename
+                                    Dim Pos As Integer = InStrRev(PathFilename, "/")
+                                    If Pos > 0 Then
+                                        Filename = Mid(PathFilename, Pos + 1)
+                                        Path = Mid(PathFilename, 1, Pos - 1)
+                                    End If
+                                    If LCase(Filename) = "collection.hlp" Then
+                                        '
+                                        ' legacy file, remove it
+                                        '
+                                    Else
+                                        PathFilename = Replace(PathFilename, "/", "\")
+                                        If tempPathFileList.Contains(tempExportPath & Filename) Then
+                                            Call cp.UserError.Add("There was an error exporting this collection because there were multiple files with the same filename [" & Filename & "]")
                                         Else
-                                            PathFilename = Replace(PathFilename, "/", "\")
-                                            If tempPathFileList.Contains(tempExportPath & Filename) Then
-                                                Call cp.UserError.Add("There was an error exporting this collection because there were multiple files with the same filename [" & Filename & "]")
+                                            If (Not cp.WwwFiles.FileExists(PathFilename)) Then
+                                                Call cp.UserError.Add("There was an error exporting this collection because the www file [" & PathFilename & "] was not found.")
                                             Else
                                                 cp.WwwFiles.Copy(PathFilename, tempExportPath & Filename, cp.TempFiles)
                                                 tempPathFileList.Add(tempExportPath & Filename)
@@ -227,73 +234,78 @@ Namespace Contensive.Addons.AddonManager51
                                             End If
                                         End If
                                     End If
-                                Next
-                            End If
-
+                                End If
+                            Next
                         End If
-                        '
-                        ' ContentFileList
-                        '
-                        If True Then
-                            Dim ContentFileList As String = CS.GetText("ContentFileList")
-                            If ContentFileList <> "" Then
-                                Dim Files() As String = Split(ContentFileList, vbCrLf)
-                                For Ptr = 0 To UBound(Files)
-                                    Dim PathFilename As String = Files(Ptr)
-                                    If PathFilename <> "" Then
-                                        PathFilename = Replace(PathFilename, "\", "/")
-                                        Dim Path As String = ""
-                                        Dim Filename As String = PathFilename
-                                        Dim Pos As Integer = InStrRev(PathFilename, "/")
-                                        If Pos > 0 Then
-                                            Filename = Mid(PathFilename, Pos + 1)
-                                            Path = Mid(PathFilename, 1, Pos - 1)
-                                        End If
-                                        If tempPathFileList.Contains(tempExportPath & Filename) Then
-                                            Call cp.UserError.Add("There was an error exporting this collection because there were multiple files with the same filename [" & Filename & "]")
+
+                    End If
+                    '
+                    ' ContentFileList
+                    '
+                    If True Then
+                        Dim ContentFileList As String = CS.GetText("ContentFileList")
+                        If ContentFileList <> "" Then
+                            Dim Files() As String = Split(ContentFileList, vbCrLf)
+                            For Ptr = 0 To UBound(Files)
+                                Dim PathFilename As String = Files(Ptr)
+                                If PathFilename <> "" Then
+                                    PathFilename = Replace(PathFilename, "\", "/")
+                                    Dim Path As String = ""
+                                    Dim Filename As String = PathFilename
+                                    Dim Pos As Integer = InStrRev(PathFilename, "/")
+                                    If Pos > 0 Then
+                                        Filename = Mid(PathFilename, Pos + 1)
+                                        Path = Mid(PathFilename, 1, Pos - 1)
+                                    End If
+                                    If tempPathFileList.Contains(tempExportPath & Filename) Then
+                                        Call cp.UserError.Add("There was an error exporting this collection because there were multiple files with the same filename [" & Filename & "]")
+                                    Else
+                                        If (Not cp.CdnFiles.FileExists(PathFilename)) Then
+                                            Call cp.UserError.Add("There was an error exporting this collection because the cdn file [" & PathFilename & "] was not found.")
                                         Else
                                             cp.CdnFiles.Copy(PathFilename, tempExportPath + Filename, cp.TempFiles)
                                             tempPathFileList.Add(tempExportPath & Filename)
                                             collectionXml &= vbCrLf & vbTab & "<Resource name=""" & System.Net.WebUtility.HtmlEncode(Filename) & """ type=""content"" path=""" & System.Net.WebUtility.HtmlEncode(Path) & """ />"
                                         End If
                                     End If
-                                Next
-                            End If
+                                End If
+                            Next
                         End If
-                        '
-                        ' ExecFileListNode
-                        '
-                        collectionXml &= resourceNodeList
-                        '
-                        ' Other XML
-                        '
-                        Dim OtherXML As String
-                        OtherXML = CS.GetText("otherxml")
-                        If Trim(OtherXML) <> "" Then
-                            collectionXml &= vbCrLf & OtherXML
-                        End If
-                        collectionXml &= vbCrLf & "</Collection>"
-                        Call CS.Close()
-                        Dim tempExportXml_Filename As String = encodeFilename(cp, CollectionName & ".xml")
-                        '
-                        ' Save the installation file and add it to the archive
-                        '
-                        Call cp.TempFiles.Save(tempExportPath & tempExportXml_Filename, collectionXml)
-                        If Not tempPathFileList.Contains(tempExportPath & tempExportXml_Filename) Then
-                            tempPathFileList.Add(tempExportPath & tempExportXml_Filename)
-                        End If
-                        Dim tempExportZip_Filename As String = encodeFilename(cp, CollectionName & ".zip")
-                        '
-                        ' -- zip up the folder to make the collection zip file in temp filesystem
-                        Call zipTempCdnFile(cp, tempExportPath & tempExportZip_Filename, tempPathFileList)
-                        '
-                        ' -- copy the collection zip file to the cdn filesystem as the download link
-                        cp.TempFiles.Copy(tempExportPath & tempExportZip_Filename, cdnExportZip_Filename, cp.CdnFiles)
-                        '
-                        ' -- delete the temp folder
-                        cp.TempFiles.DeleteFolder(tempExportPath)
                     End If
+                    '
+                    ' ExecFileListNode
+                    '
+                    collectionXml &= resourceNodeList
+                    '
+                    ' Other XML
+                    '
+                    Dim OtherXML As String
+                    OtherXML = CS.GetText("otherxml")
+                    If Trim(OtherXML) <> "" Then
+                        collectionXml &= vbCrLf & OtherXML
+                    End If
+                    collectionXml &= vbCrLf & "</Collection>"
+                    Call CS.Close()
+                    Dim tempExportXml_Filename As String = encodeFilename(cp, CollectionName & ".xml")
+                    '
+                    ' Save the installation file and add it to the archive
+                    '
+                    Call cp.TempFiles.Save(tempExportPath & tempExportXml_Filename, collectionXml)
+                    If Not tempPathFileList.Contains(tempExportPath & tempExportXml_Filename) Then
+                        tempPathFileList.Add(tempExportPath & tempExportXml_Filename)
+                    End If
+                    Dim tempExportZip_Filename As String = encodeFilename(cp, CollectionName & ".zip")
+                    '
+                    ' -- zip up the folder to make the collection zip file in temp filesystem
+                    Call zipTempCdnFile(cp, tempExportPath & tempExportZip_Filename, tempPathFileList)
+                    '
+                    ' -- copy the collection zip file to the cdn filesystem as the download link
+                    cp.TempFiles.Copy(tempExportPath & tempExportZip_Filename, cdnExportZip_Filename, cp.CdnFiles)
+                    '
+                    ' -- delete the temp folder
+                    cp.TempFiles.DeleteFolder(tempExportPath)
                 End Using
+
             Catch ex As Exception
                 cp.Site.ErrorReport(ex)
             End Try

@@ -10,7 +10,7 @@ Imports Contensive.BaseClasses
 Imports ICSharpCode.SharpZipLib
 
 Namespace Contensive.Addons.AddonManager51
-    Public Class DataRecordNodeListController
+    Public Class LegacyDataRecordNodeListController
         '
         '====================================================================================================
         '
@@ -18,7 +18,7 @@ Namespace Contensive.Addons.AddonManager51
             Try
                 Dim result As String = ""
                 If DataRecordList <> "" Then
-                    result &= vbCrLf & vbTab & "<DataRecordList>" & ExportController.EncodeCData(cp, DataRecordList) & "</DataRecordList>"
+                    result &= vbCrLf & vbTab & "<DataRecordList>" & LegacyExportController.EncodeCData(cp, DataRecordList) & "</DataRecordList>"
                     Dim DataRecords() As String = Split(DataRecordList, vbCrLf)
                     Dim RecordNodes As String = ""
                     For Ptr = 0 To UBound(DataRecords)
@@ -194,7 +194,7 @@ Namespace Contensive.Addons.AddonManager51
                                                             ' text files
                                                             '
                                                             FieldValue = CSData.GetText(FieldName)
-                                                            FieldValue = ExportController.EncodeCData(cp, FieldValue)
+                                                            FieldValue = LegacyExportController.EncodeCData(cp, FieldValue)
                                                         Case FieldTypeInteger
                                                             '
                                                             ' integer
@@ -248,14 +248,14 @@ Namespace Contensive.Addons.AddonManager51
                                                             ' text types
                                                             '
                                                             FieldValue = CSData.GetText(FieldName)
-                                                            FieldValue = ExportController.EncodeCData(cp, FieldValue)
+                                                            FieldValue = LegacyExportController.EncodeCData(cp, FieldValue)
                                                     End Select
                                                     FieldNodes = FieldNodes & vbCrLf & vbTab & "<field name=""" & System.Net.WebUtility.HtmlEncode(FieldName) & """>" & FieldValue & "</field>"
                                                 Next
                                                 RecordNodes = "" _
                                                         & RecordNodes _
                                                         & vbCrLf & vbTab & "<record content=""" & System.Net.WebUtility.HtmlEncode(DataContentName) & """ guid=""" & DataRecordGuid & """ name=""" & System.Net.WebUtility.HtmlEncode(DataRecordName) & """>" _
-                                                        & ExportController.tabIndent(cp, FieldNodes) _
+                                                        & LegacyExportController.tabIndent(cp, FieldNodes) _
                                                         & vbCrLf & vbTab & "</record>"
                                                 Call CSData.GoNext()
                                             Loop
@@ -270,7 +270,7 @@ Namespace Contensive.Addons.AddonManager51
                         result = "" _
                                 & result _
                                 & vbCrLf & vbTab & "<data>" _
-                                & ExportController.tabIndent(cp, RecordNodes) _
+                                & LegacyExportController.tabIndent(cp, RecordNodes) _
                                 & vbCrLf & vbTab & "</data>"
                     End If
                 End If

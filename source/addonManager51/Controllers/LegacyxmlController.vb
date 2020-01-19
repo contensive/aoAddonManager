@@ -8,7 +8,7 @@ Imports System.Text
 Imports Contensive.BaseClasses
 
 Namespace Contensive.Addons.AddonManager51
-    Public Class xmlController
+    Public Class LegacyXmlController
         '
         '========================================================================
         ' This page and its contents are copyright by Kidwell McGowan Associates.

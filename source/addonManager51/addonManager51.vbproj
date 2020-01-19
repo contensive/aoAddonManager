@@ -80,11 +80,11 @@
     <Reference Include="adminFramework, Version=1.0.7240.21241, Culture=neutral, PublicKeyToken=df99052d01433f97, processorArchitecture=MSIL">
       <HintPath>..\packages\Contensive.PortalApi.5.1.191028.3\lib\net461\adminFramework.dll</HintPath>
     </Reference>
-    <Reference Include="ContensiveDbModels, Version=5.19.1227.5, Culture=neutral, PublicKeyToken=c014b235a9c6bb22, processorArchitecture=MSIL">
-      <HintPath>..\packages\Contensive.DbModels.5.19.1227.5\lib\net461\ContensiveDbModels.dll</HintPath>
+    <Reference Include="ContensiveDbModels, Version=5.2001.19.7, Culture=neutral, PublicKeyToken=c014b235a9c6bb22, processorArchitecture=MSIL">
+      <HintPath>..\packages\Contensive.DbModels.5.2001.19.7\lib\net461\ContensiveDbModels.dll</HintPath>
     </Reference>
     <Reference Include="CPBase, Version=4.1.2.0, Culture=neutral, PublicKeyToken=10b3c53389b845fb, processorArchitecture=MSIL">
-      <HintPath>..\packages\Contensive.CPBaseClass.5.19.1227.5\lib\net472\CPBase.dll</HintPath>
+      <HintPath>..\packages\Contensive.CPBaseClass.5.2001.19.7\lib\net472\CPBase.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.2.0.246, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -106,12 +106,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="constants.vb" />
-    <Compile Include="Controllers\DataRecordNodeListController.vb" />
+    <Compile Include="Controllers\LegacyDataRecordNodeListController.vb" />
     <Compile Include="Controllers\_BlankNodeListController.vb" />
     <Compile Include="Controllers\ExportResourceListController.vb" />
     <Compile Include="Controllers\v5InstallController.vb" />
     <Compile Include="Controllers\genericController.vb" />
-    <Compile Include="Controllers\ExportController.vb" />
+    <Compile Include="Controllers\LegacyExportController.vb" />
     <Compile Include="Views\iisRecycle.vb" />
     <Compile Include="Views\exportClass.vb" />
     <Compile Include="Views\uploadClass.vb" />
@@ -138,7 +138,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Views\uninstallClass.vb" />
-    <Compile Include="Controllers\xmlController.vb" />
+    <Compile Include="Controllers\LegacyXmlController.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

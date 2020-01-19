@@ -25,7 +25,7 @@ Namespace Contensive.Addons.AddonManager51
                     '   and file will be sourced right from addon path
                     '
                     Dim CollectionPath As String = ""
-                    Call ExportController.GetLocalCollectionArgs(cp, CollectionGuid, CollectionPath, LastChangeDate)
+                    Call LegacyExportController.GetLocalCollectionArgs(cp, CollectionGuid, CollectionPath, LastChangeDate)
                     If CollectionPath <> "" Then
                         CollectionPath = CollectionPath & "\"
                     End If
