@@ -1,13 +1,6 @@
 ﻿
-Option Explicit On
-Option Strict On
-
-Imports System
-Imports System.Collections.Generic
-Imports System.Text
+Imports Contensive.Addons.PortalFramework
 Imports Contensive.BaseClasses
-Imports System.Xml
-Imports adminFramework
 
 Namespace Contensive.Addons.AddonManager51
     '
@@ -72,29 +65,18 @@ Namespace Contensive.Addons.AddonManager51
         Private Function GetCollectionLibrary() As String
             Dim returnResult As String = ""
             Try
-                '
-                Dim form As New formSimpleClass
+                Dim form As New FormSimpleClass
                 Dim showAddon As Boolean
-                'Dim cellTemplate As String
-                'Dim Cell As String
-                'Dim CollectionCheckbox As String
-                'Dim IsOnSite As Boolean
-                'Dim DisplaySystem As Boolean
                 Dim DbUpToDate As Boolean
                 Dim GuidFieldName As String
-                'Dim DateValue As Date
                 Dim ErrorMessage As String = ""
                 Dim UpgradeOK As Boolean
                 Dim LibCollections As Xml.XmlDocument
                 Dim installFolder As String
                 Dim LibGuids() As String
-                'Dim CollectionName As String
                 Dim CollectionGUID As String = ""
                 Dim CollectionVersion As String
-                'Dim CollectionDescription As String
-                'Dim CollectionImageLink As String
                 Dim CollectionContensiveVersion As String = ""
-                'Dim CollectionLastChangeDate As String
                 Dim cnt As Integer
                 Dim Ptr As Integer
                 Dim RowPtr As Integer
@@ -106,7 +88,6 @@ Namespace Contensive.Addons.AddonManager51
                 Dim ColSortable() As Boolean
                 Dim PreTableCopy As String
                 Dim BodyHTML As String = ""
-                'Dim cs As CPCSBaseClass = cp.CSNew
                 Dim UserError As String
                 Dim Button As String
                 Dim ButtonList As String
@@ -118,8 +99,6 @@ Namespace Contensive.Addons.AddonManager51
                 Dim InstallLibCollectionList As String = ""
                 Dim InstallPath As String
                 Dim SiteKey As String
-                'Dim CollectionHelpLink As String
-                'Dim CollectionDemoLink As String
                 '
                 SiteKey = cp.Site.GetText("sitekey", "")
                 If SiteKey = "" Then

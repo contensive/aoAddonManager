@@ -43,10 +43,11 @@ Namespace Contensive.Addons.AddonManager51
                 Else
                     '
                     ' -- create form
-                    Dim form As New adminFramework.formNameValueRowsClass
-                    form.title = "Upload Collection"
-                    form.body = cp.Html.p("Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added.")
-                    form.description = cp.Html.p("Upload a collection zip file to install the collection on this site. ")
+                    Dim form As New PortalFramework.FormNameValueRowsClass With {
+                        .title = "Upload Collection",
+                        .body = cp.Html.p("Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added."),
+                        .description = cp.Html.p("Upload a collection zip file to install the collection on this site. ")
+                    }
                     If Not cp.User.IsAdmin() Then
                         '
                         ' -- Put up error message
@@ -81,7 +82,15 @@ Namespace Contensive.Addons.AddonManager51
                                 Dim installDependencies As Boolean = Not cp.Doc.GetBoolean(rnBlockDependencies)
                                 If (v5InstallController.installCollectionFromUpload(cp, installDependencies, rnUploadCollectionFile, ErrorMessage)) Then
                                     cp.Addon.ExecuteAsync(iisRecycleAddonGuid)
-                                    form.body &= cp.Html.p("Installed collection files, iis will recycle in the next few seconds.")
+                                    If (Not String.IsNullOrEmpty(ErrorMessage)) Then
+                                        '
+                                        ' -- install successful, but a problem
+                                        form.body &= cp.Html.p("Installation completed with the follow message [" & ErrorMessage & "].")
+                                    Else
+                                        '
+                                        ' -- install failed
+                                        form.body &= cp.Html.p("Installation successful.")
+                                    End If
                                 Else
                                     form.body &= cp.Html.p("Error installing collection files, ERROR: " & ErrorMessage)
                                 End If

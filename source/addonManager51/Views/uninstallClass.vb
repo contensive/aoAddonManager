@@ -5,6 +5,7 @@ Option Strict On
 Imports System
 Imports System.Collections.Generic
 Imports System.Text
+Imports Contensive.Addons.PortalFramework
 Imports Contensive.BaseClasses
 Imports Contensive.Models.Db
 
@@ -76,7 +77,6 @@ Namespace Contensive.Addons.AddonManager51
                 Dim DisplaySystem As Boolean
                 Dim DbUpToDate As Boolean
                 Dim GuidFieldName As String
-                Dim installFolder As String
                 Dim AddonNavigatorID As Integer
                 Dim TargetCollectionName As String
                 Dim addonid As Integer
@@ -91,9 +91,8 @@ Namespace Contensive.Addons.AddonManager51
                 Dim status As String = ""
                 Dim collectionsToBeInstalledFromFolder As Boolean
                 Dim TargetCollectionID As Integer
-                Dim InstallPath As String
                 Dim SiteKey As String
-                Dim form As New adminFramework.ReportListClass(cp)
+                Dim form As New PortalFramework.ReportListClass(cp)
                 '
                 SiteKey = cp.Site.GetText("sitekey", "")
                 If SiteKey = "" Then
@@ -190,8 +189,8 @@ Namespace Contensive.Addons.AddonManager51
                         '
                         form.addColumn()
                         form.columnCaption = "Del"
-                        form.columnCaptionClass = adminFramework.AfwStyles.afwTextAlignCenter + " " + adminFramework.AfwStyles.afwWidth50px
-                        form.columnCellClass = adminFramework.AfwStyles.afwTextAlignCenter
+                        form.columnCaptionClass = AfwStyles.afwTextAlignCenter + " " + AfwStyles.afwWidth50px
+                        form.columnCellClass = AfwStyles.afwTextAlignCenter
                         form.columnDownloadable = False
                         form.columnName = ""
                         form.columnSortable = False
@@ -199,8 +198,8 @@ Namespace Contensive.Addons.AddonManager51
                         '
                         form.addColumn()
                         form.columnCaption = "Name"
-                        form.columnCaptionClass = adminFramework.AfwStyles.afwTextAlignLeft
-                        form.columnCellClass = adminFramework.AfwStyles.afwTextAlignLeft
+                        form.columnCaptionClass = AfwStyles.afwTextAlignLeft
+                        form.columnCellClass = AfwStyles.afwTextAlignLeft
                         form.columnDownloadable = False
                         form.columnName = ""
                         form.columnSortable = False

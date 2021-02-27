@@ -1,5 +1,6 @@
 
 Imports Contensive.Addons.AddonManager51.Models
+Imports Contensive.Addons.PortalFramework
 Imports Contensive.BaseClasses
 Imports Contensive.Models.Db
 Imports ICSharpCode.SharpZipLib
@@ -25,7 +26,7 @@ Namespace Contensive.Addons.AddonManager51
                 End If
                 '
                 ' -- create form
-                Dim form As New adminFramework.formNameValueRowsClass With {
+                Dim form As New FormNameValueRowsClass With {
                     .title = "Export Collection",
                     .body = CP.Html.p("Use this tool to create an Add-on Collection zip file that can be used to install a collection on another site.")
                 }
@@ -74,7 +75,7 @@ Namespace Contensive.Addons.AddonManager51
                             ' -- success
                             form.body &= CP.Html.p("Export Successful")
                         End If
-                        form.body &= CP.Html.p("Click <a href=""" & CP.Site.FilePath & Replace(CollectionFilename, "\", "/") & """>here</a> to download the collection file.</p>")
+                        form.body &= CP.Html.p("Click <a href=""" & CP.Http.CdnFilePathPrefixAbsolute & Replace(CollectionFilename, "\", "/") & """>here</a> to download the collection file.</p>")
                     End If
                 End If
                 '
