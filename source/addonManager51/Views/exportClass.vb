@@ -66,7 +66,11 @@ Namespace Contensive.Addons.AddonManager51
                             ' -- missing method, use the internal method
                             CollectionFilename = LegacyExportController.createCollectionZip_returnCdnPathFilename(CP, CollectionID)
                         End Try
-                        If Not CP.UserError.OK Then
+                        If (Not String.IsNullOrEmpty(userError)) Then
+                            '
+                            ' -- errors during export
+                            form.body = CP.Html.div(CP.Html.p("ERRORS during export: ") & CP.Html.ul(userError))
+                        ElseIf Not CP.UserError.OK Then
                             '
                             ' -- errors during export
                             form.body = CP.Html.div(CP.Html.p("ERRORS during export: ") & CP.Html.ul(CP.UserError.GetList()))
@@ -74,8 +78,8 @@ Namespace Contensive.Addons.AddonManager51
                             '
                             ' -- success
                             form.body &= CP.Html.p("Export Successful")
+                            form.body &= CP.Html.p("Click <a href=""" & CP.Http.CdnFilePathPrefixAbsolute & Replace(CollectionFilename, "\", "/") & """>here</a> to download the collection file.</p>")
                         End If
-                        form.body &= CP.Html.p("Click <a href=""" & CP.Http.CdnFilePathPrefixAbsolute & Replace(CollectionFilename, "\", "/") & """>here</a> to download the collection file.</p>")
                     End If
                 End If
                 '
