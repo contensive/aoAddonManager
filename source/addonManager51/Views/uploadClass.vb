@@ -1,12 +1,8 @@
-
-Imports System
-Imports System.Collections.Generic
-Imports System.Text
 Imports Contensive.BaseClasses
 
 Namespace Contensive.Addons.AddonManager51
     '
-    Public Class uploadClass
+    Public Class UploadClass
         Inherits AddonBaseClass
         '
         ' -- injected objects -- do not dispose
@@ -20,14 +16,13 @@ Namespace Contensive.Addons.AddonManager51
         '====================================================================================================
         '
         Public Overrides Function Execute(ByVal CP As CPBaseClass) As Object
-            Dim returnHtml As String = ""
             Try
                 Me.cp = CP
-                returnHtml = getUpload()
+                Return getUpload()
             Catch ex As Exception
                 CP.Site.ErrorReport(ex)
+                Throw
             End Try
-            Return returnHtml
         End Function
         '
         '====================================================================================================
@@ -70,7 +65,7 @@ Namespace Contensive.Addons.AddonManager51
                                 '
                                 ' -- use v5 method
                                 Dim ErrorMessage As String = ""
-                                If (Not v5InstallController.installCollectionFromLibrary(cp, "{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}", ErrorMessage)) Then
+                                If (Not InstallController.installCollectionFromLibrary(cp, "{8DAABAE6-8E45-4CEE-A42C-B02D180E799B}", ErrorMessage)) Then
                                     form.description &= cp.Html.p("ERROR: " & ErrorMessage)
                                 End If
                             End If
@@ -80,8 +75,7 @@ Namespace Contensive.Addons.AddonManager51
                                 ' -- version 5.0, separate class so this project can be built with contensive 5.0 reference, but run against contensive 4.1
                                 Dim ErrorMessage As String = ""
                                 Dim installDependencies As Boolean = Not cp.Doc.GetBoolean(rnBlockDependencies)
-                                If (v5InstallController.installCollectionFromUpload(cp, installDependencies, rnUploadCollectionFile, ErrorMessage)) Then
-                                    cp.Addon.ExecuteAsync(iisRecycleAddonGuid)
+                                If (InstallController.installCollectionFromUpload(cp, rnUploadCollectionFile, ErrorMessage)) Then
                                     If (Not String.IsNullOrEmpty(ErrorMessage)) Then
                                         '
                                         ' -- install successful, but a problem
@@ -110,10 +104,11 @@ Namespace Contensive.Addons.AddonManager51
                     End If
                     returnResult = form.getHtml(cp)
                 End If
+                Return returnResult
             Catch ex As Exception
                 cp.Site.ErrorReport(ex)
+                Throw
             End Try
-            Return returnResult
         End Function
     End Class
 End Namespace

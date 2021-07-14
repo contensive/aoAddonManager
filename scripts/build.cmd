@@ -9,7 +9,7 @@ rem
 c:
 cd \Git\aoAddonManager\scripts
 
-set appName=app200509
+set appName=app210629
 set collectionName=Add-on Manager
 set collectionPath=..\collections\Add-on Manager\
 set binPath=..\source\addonManager51\bin\debug\
@@ -76,10 +76,6 @@ rem
 echo Build addon collection
 rem
 
-rem remove old DLL files from the collection folder
-del "%collectionPath%"\*.DLL
-del "%collectionPath%"\*.dll.config
-
 rem copy bin folder assemblies to collection folder
 copy "%binPath%*.dll" "%collectionPath%"
 copy "%binPath%*.dep" "%collectionPath%"
@@ -93,3 +89,7 @@ del "%collectionName%.zip" /Q
 xcopy "%collectionName%.zip" "%deploymentFolderRoot%%versionNumber%" /Y
 cd ..\..\scripts
 
+
+rem remove files from the collection folder
+del "%collectionPath%"\*.DLL
+del "%collectionPath%"\*.dll.config

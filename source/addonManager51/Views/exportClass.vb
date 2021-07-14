@@ -1,12 +1,9 @@
-
-Imports Contensive.Addons.AddonManager51.Models
 Imports Contensive.Addons.PortalFramework
 Imports Contensive.BaseClasses
 Imports Contensive.Models.Db
-Imports ICSharpCode.SharpZipLib
 
 Namespace Contensive.Addons.AddonManager51
-    Public Class exportClass
+    Public Class ExportClass
         Inherits AddonBaseClass
         '
         '====================================================================================================
@@ -57,15 +54,9 @@ Namespace Contensive.Addons.AddonManager51
                         ' -- build collection zip file and return file
                         Dim CollectionFilename As String = ""
                         Dim userError As String = ""
-                        Try
-                            ''
-                            ' -- attempt new method
-                            CP.Addon.ExportCollection(CollectionID, CollectionFilename, userError)
-                        Catch ex As Exception
-                            '
-                            ' -- missing method, use the internal method
-                            CollectionFilename = LegacyExportController.createCollectionZip_returnCdnPathFilename(CP, CollectionID)
-                        End Try
+                        '
+                        ' -- attempt new method
+                        CP.Addon.ExportCollection(CollectionID, CollectionFilename, userError)
                         If (Not String.IsNullOrEmpty(userError)) Then
                             '
                             ' -- errors during export
@@ -93,7 +84,7 @@ Namespace Contensive.Addons.AddonManager51
                 Return form.getHtml(CP)
             Catch ex As Exception
                 CP.Site.ErrorReport(ex)
-                Return String.Empty
+                Throw
             End Try
         End Function
     End Class

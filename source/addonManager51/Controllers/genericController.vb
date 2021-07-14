@@ -1,60 +1,12 @@
-﻿
-Option Explicit On
-Option Strict On
-
-Imports System
-Imports System.Collections.Generic
-Imports System.IO
-Imports System.Text
+﻿Imports System.IO
 Imports Contensive.BaseClasses
 
 Namespace Contensive.Addons.AddonManager51
-    Module genericController
-        '
-        Public Function kmaIndent(source As String) As String
-            Return source
-        End Function
-        '
-        '
-        '========================================================================
-        ' ----- Get an XML nodes attribute based on its name
-        '========================================================================
-        '
-        Public Function GetXMLAttribute(found As Boolean, Node As Xml.XmlNode, Name As String, DefaultIfNotFound As String) As String
-            Dim result As String = ""
-            Try
-                Dim REsultNode As Xml.XmlNode
-                Dim UcaseName As String
-                '
-                found = False
-                REsultNode = Node.Attributes.GetNamedItem(Name)
-                If (REsultNode Is Nothing) Then
-                    UcaseName = UCase(Name)
-                    For Each kvp As KeyValuePair(Of String, System.Xml.XmlAttribute) In Node.Attributes
-
-                        If kvp.Value.Name.ToUpper() = UcaseName Then
-                            result = kvp.Value.Value
-                            found = True
-                            Exit For
-                        End If
-                    Next
-                Else
-                    result = REsultNode.Value
-                    found = True
-                End If
-                If Not found Then
-                    result = DefaultIfNotFound
-                End If
-            Catch ex As Exception
-                Throw
-            End Try
-            Return result
-        End Function
-
+    Module GenericController
         '
         '
         '
-        Public Sub GetForm_AddonManager_DeleteNavigatorBranch(cp As CPBaseClass, EntryName As String, EntryParentID As Integer)
+        Public Sub getForm_AddonManager_DeleteNavigatorBranch(cp As CPBaseClass, EntryName As String, EntryParentID As Integer)
             Try
                 '
                 Dim cs As CPCSBaseClass = cp.CSNew
@@ -73,7 +25,7 @@ Namespace Contensive.Addons.AddonManager51
                 If EntryID <> 0 Then
                     cs.Open("Navigator Entries", "(parentID=" & cp.Db.EncodeSQLNumber(EntryID) & ")")
                     Do While cs.OK
-                        Call GetForm_AddonManager_DeleteNavigatorBranch(cp, cs.GetText("name"), EntryID)
+                        Call getForm_AddonManager_DeleteNavigatorBranch(cp, cs.GetText("name"), EntryID)
                         Call cs.GoNext()
                     Loop
                     Call cs.Close()
@@ -81,14 +33,13 @@ Namespace Contensive.Addons.AddonManager51
                 End If
             Catch ex As Exception
                 cp.Site.ErrorReport(ex)
+                Throw
             End Try
         End Sub
-
-
         '
         '
         '
-        Public Function GetParentIDFromNameSpace(cp As CPBaseClass, ContentName As String, NameSpacex As String) As Integer
+        Public Function getParentIDFromNameSpace(cp As CPBaseClass, ContentName As String, NameSpacex As String) As Integer
             Dim result As Integer = 0
             Try
                 Dim ParentNameSpace As String
@@ -97,7 +48,7 @@ Namespace Contensive.Addons.AddonManager51
                 Dim Pos As Integer
                 Dim cs As CPCSBaseClass = cp.CSNew
                 '
-                If NameSpacex <> "" Then
+                If Not String.IsNullOrEmpty(NameSpacex) Then
                     Pos = InStr(1, NameSpacex, ".")
                     If Pos = 0 Then
                         ParentName = NameSpacex
@@ -106,13 +57,13 @@ Namespace Contensive.Addons.AddonManager51
                         ParentName = Mid(NameSpacex, Pos + 1)
                         ParentNameSpace = Mid(NameSpacex, 1, Pos - 1)
                     End If
-                    If ParentNameSpace = "" Then
+                    If String.IsNullOrEmpty(ParentNameSpace) Then
                         If cs.Open(ContentName, "(name=" & cp.Db.EncodeSQLText(ParentName) & ")and((parentid is null)or(parentid=0))", "ID", True, "ID") Then
                             result = cs.GetInteger("ID")
                         End If
                         Call cs.Close()
                     Else
-                        ParentID = GetParentIDFromNameSpace(cp, ContentName, ParentNameSpace)
+                        ParentID = getParentIDFromNameSpace(cp, ContentName, ParentNameSpace)
                         If cs.Open(ContentName, "(name=" & cp.Db.EncodeSQLText(ParentName) & ")and(parentid=" & ParentID & ")", "ID", True, "ID") Then
                             result = cs.GetInteger("ID")
                         End If
@@ -121,53 +72,9 @@ Namespace Contensive.Addons.AddonManager51
                 End If
             Catch ex As Exception
                 cp.Site.ErrorReport(ex)
+                Throw
             End Try
             Return result
-        End Function
-        '
-        '
-        '
-        Public Function getLayout(cp As CPBaseClass, layoutGuid As String, DefaultName As String) As String
-            Dim result As String = ""
-            Try
-                Dim cs As CPCSBaseClass = cp.CSNew
-                '
-                cs.Open("layouts", "ccguid=" & cp.Db.EncodeSQLText(layoutGuid), "id")
-                If Not cs.OK Then
-                    Call cs.Close()
-                    If cs.Insert("layouts") Then
-                        Call cs.SetField("ccguid", layoutGuid)
-                        Call cs.SetField("name", DefaultName)
-                        Call cs.SetField("layout", "<!-- layout record created " & Now & " -->")
-                    End If
-                End If
-                If cs.OK Then
-                    result = cs.GetText("layout")
-                End If
-                Call cs.Close()
-            Catch ex As Exception
-                cp.Site.ErrorReport(ex)
-            End Try
-            Return result
-        End Function
-        '
-        '
-        '
-        Public Function getPath(pathFilename As String) As String
-            Dim path As String = IO.Path.GetDirectoryName(pathFilename)
-            If (String.IsNullOrEmpty(path)) Then
-                Return String.Empty
-            End If
-            If (path.Substring(path.Length - 2, 1).Equals("\")) Then
-                Return path
-            End If
-            Return path + "\"
-        End Function
-        '
-        '
-        '
-        Public Function getFilename(pathFilename As String) As String
-            Return Path.GetFileName(pathFilename)
         End Function
     End Module
 End Namespace

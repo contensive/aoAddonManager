@@ -1,19 +1,11 @@
 ﻿
-Option Explicit On
-Option Strict On
-
-Imports System
-Imports System.Collections.Generic
-Imports System.Text
 Imports Contensive.Addons.PortalFramework
 Imports Contensive.BaseClasses
 Imports Contensive.Models.Db
 
 Namespace Contensive.Addons.AddonManager51
     '
-    ' Sample Vb addon
-    '
-    Public Class uninstallClass
+    Public Class UninstallClass
         Inherits AddonBaseClass
         '
         ' injected objects -- do not dispose
@@ -23,7 +15,6 @@ Namespace Contensive.Addons.AddonManager51
         ' class scope
         '
         Private Const RequestNameButton As String = "button"
-        Private Const CollectionListRootNode As String = "collectionlist"
         '
         Private Const ButtonCancel As String = " Cancel "
         Private Const ButtonOK As String = " OK "
@@ -43,33 +34,28 @@ Namespace Contensive.Addons.AddonManager51
             Public Navigators() As NavigatorType
         End Structure
         '
-        Private CollectionCnt As Integer
-        Private Collections() As Collection2Type
-        Private Const guidAddonManagerLibraryListCell = "{9767F464-3728-4B7D-904B-3442D7FD03BE}"
-        Private Const guidAddonManagerActiveX = "{1DC06F61-1837-419B-AF36-D5CC41E1C9FD}"
-        '
         '=====================================================================================
-        ' addon api
-        '=====================================================================================
-        '
+        ''' <summary>
+        ''' addon api
+        ''' </summary>
+        ''' <param name="CP"></param>
+        ''' <returns></returns>
         Public Overrides Function Execute(ByVal CP As CPBaseClass) As Object
-            Dim returnHtml As String = ""
             Try
                 Me.cp = CP
-                returnHtml = getUnistall()
+                Return getUnistall()
             Catch ex As Exception
                 CP.Site.ErrorReport(ex)
+                Throw
             End Try
-            Return returnHtml
         End Function
-
-        '
+        '       
         '==========================================================================================================================================
-        '   Addon Manager
-        '       This is a form that lets you upload an addon
-        '       Eventually, this should be substituted with a "Addon Manager Addon" - so the interface can be improved with Contensive recompile
-        '==========================================================================================================================================
-        '
+        ''' <summary>
+        ''' Addon Manager,  This is a form that lets you upload an addon
+        ''' Eventually, this should be substituted with a "Addon Manager Addon" - so the interface can be improved with Contensive recompile
+        ''' </summary>
+        ''' <returns></returns>
         Private Function getUnistall() As String
             Dim returnResult As String = ""
             Try
@@ -95,7 +81,7 @@ Namespace Contensive.Addons.AddonManager51
                 Dim form As New PortalFramework.ReportListClass(cp)
                 '
                 SiteKey = cp.Site.GetText("sitekey", "")
-                If SiteKey = "" Then
+                If String.IsNullOrEmpty(SiteKey) Then
                     SiteKey = cp.Utils.CreateGuid()
                     Call cp.Site.SetProperty("sitekey", SiteKey)
                 End If
@@ -167,7 +153,7 @@ Namespace Contensive.Addons.AddonManager51
                                             End If
                                             Call cs.Close()
                                             If AddonNavigatorID > 0 Then
-                                                Call GetForm_AddonManager_DeleteNavigatorBranch(cp, TargetCollectionName, AddonNavigatorID)
+                                                Call getForm_AddonManager_DeleteNavigatorBranch(cp, TargetCollectionName, AddonNavigatorID)
                                             End If
                                             '
                                             ' Now delete the Collection record
@@ -226,150 +212,16 @@ Namespace Contensive.Addons.AddonManager51
                     If Not DbUpToDate Then
                         form.description &= "<div style=""Margin-left:50px"">Warning: The site's Database needs to be upgraded.</div>"
                     End If
-                    If status <> "" Then
+                    If Not String.IsNullOrEmpty(status) Then
                         form.description &= "<div style=""Margin-left:50px"">" & status & "</div>"
                     End If
                     returnResult = form.getHtml(cp)
                 End If
+                Return returnResult
             Catch ex As Exception
                 cp.Site.ErrorReport(ex)
+                Throw
             End Try
-            Return returnResult
         End Function
-        '        '
-        '        '
-        '        '
-        '        Private Sub GetForm_AddonManager_DeleteNavigatorBranch(EntryName As String, EntryParentID As Integer)
-        '            On Error GoTo ErrorTrap
-        '            '
-        '            Dim cs As CPCSBaseClass = cp.CSNew
-        '            Dim EntryID As Integer
-        '            '
-        '            Call AppendLogFile2(main.ApplicationName, "Deleting Navigator Branch", App.EXEName, "AdminClass", "GetForm_AddonManager_DeleteNavigatorBranch", 0, "", "", False, True, main.ServerLink, "AddonInstall", "")
-        '            '
-        '            If EntryParentID = 0 Then
-        '                cs.open("Navigator Entries", "(name=" & cp.Db.EncodeSQLText(EntryName) & ")and((parentID is null)or(parentid=0))")
-        '            Else
-        '                cs.open("Navigator Entries", "(name=" & cp.Db.EncodeSQLText(EntryName) & ")and(parentID=" & cp.Db.EncodeSQLNumber(EntryParentID) & ")")
-        '            End If
-        '            If cs.ok Then
-        '                EntryID = cs.getinteger("ID")
-        '            End If
-        '            Call cs.close()
-        '            '
-        '            If EntryID <> 0 Then
-        '                cs.open("Navigator Entries", "(parentID=" & cp.Db.EncodeSQLNumber(EntryID) & ")")
-        '                Do While cs.ok
-        '                    Call GetForm_AddonManager_DeleteNavigatorBranch(cs.getText("name"), EntryID)
-        '                    Call cs.goNext()
-        '                Loop
-        '                Call cs.close()
-        '                Call cp.Content.Delete("Navigator Entries", EntryID)
-        '            End If
-        '            '
-        '            Exit Sub
-        'ErrorTrap:
-        '            Call HandleClassTrapError("GetForm_AddonManager_DeleteNavigatorBranch")
-        '        End Sub
-
-        '        '
-        '        '
-        '        Private Function GetParentIDFromNameSpace(ContentName As String, NameSpacex As String) As Integer
-        '            On Error GoTo ErrorTrap
-        '            '
-        '            Dim NameSplit() As String
-        '            Dim ParentNameSpace As String
-        '            Dim ParentName As String
-        '            Dim ParentID As Integer
-        '            Dim Pos As Integer
-        '            Dim cs As CPCSBaseClass = cp.CSNew
-        '            '
-        '            GetParentIDFromNameSpace = 0
-        '            If NameSpacex <> "" Then
-        '                'ParentName = ParentNameSpace
-        '                Pos = InStr(1, NameSpacex, ".")
-        '                If Pos = 0 Then
-        '                    ParentName = NameSpacex
-        '                    ParentNameSpace = ""
-        '                Else
-        '                    ParentName = Mid(NameSpacex, Pos + 1)
-        '                    ParentNameSpace = Mid(NameSpacex, 1, Pos - 1)
-        '                End If
-        '                If ParentNameSpace = "" Then
-        '                    cs.open(ContentName, "(name=" & cp.Db.EncodeSQLText(ParentName) & ")and((parentid is null)or(parentid=0))", "ID", , , , "ID")
-        '                    If cs.ok Then
-        '                        GetParentIDFromNameSpace = cs.getinteger("ID")
-        '                    End If
-        '                    Call cs.close()
-        '                Else
-        '                    ParentID = GetParentIDFromNameSpace(ContentName, ParentNameSpace)
-        '                    cs.open(ContentName, "(name=" & cp.Db.EncodeSQLText(ParentName) & ")and(parentid=" & ParentID & ")", "ID", , , , "ID")
-        '                    If cs.ok Then
-        '                        GetParentIDFromNameSpace = cs.getinteger("ID")
-        '                    End If
-        '                    Call cs.close()
-        '                End If
-        '            End If
-        '            '
-        '            Exit Function
-        '            '
-        '            ' ----- Error Trap
-        '            '
-        'ErrorTrap:
-        '            Call HandleClassTrapError("GetParentIDFromNameSpace", False)
-        '        End Function
-        '        '
-        '        '
-        '        '
-        '        Private Function getLayout(layoutGuid As String, DefaultName As String) As String
-        '            On Error GoTo ErrorTrap
-        '            '
-        '            Dim cs As CPCSBaseClass = cp.CSNew
-        '            '
-        '            cs.open("layouts", "ccguid=" & cp.Db.EncodeSQLText(layoutGuid))
-        '            If Not cs.ok Then
-        '                Call cs.close()
-        '                cs = main.InsertCSContent("layouts")
-        '                If cs.ok Then
-        '                    Call cs.SetField("ccguid", layoutGuid)
-        '                    Call cs.SetField("name", DefaultName)
-        '                    Call cs.SetField("layout", "<!-- layout record created " & Now & " -->")
-        '                End If
-        '            End If
-        '            If cs.ok Then
-        '                getLayout = cs.get(cs, "layout")
-        '            End If
-        '            Call cs.close()
-        '            '
-        '            Exit Function
-        '            '
-        '            ' ----- Error Trap
-        '            '
-        'ErrorTrap:
-        '            Call HandleClassTrapError("getLayout", False)
-        '        End Function
-        '        '
-        '        '========================================================================
-        '        '   HandleError
-        '        '       Logs the error and either resumes next, or raises it to the next level
-        '        '========================================================================
-        '        '
-        '        Public Sub HandleError(cp As CPBaseClass, ByVal ex As Exception, ByVal className As String, ByVal methodName As String, ByVal cause As String)
-        '            Try
-        '                Dim errMsg As String = className & "." & methodName & ", cause=[" & cause & "], ex=[" & ex.ToString & "]"
-        '                cp.Site.ErrorReport(ex, errMsg)
-        '            Catch exIgnore As Exception
-        '                '
-        '            End Try
-        '        End Sub
-        '        '
-        '        Public Sub HandleError(cp As CPBaseClass, ByVal ex As Exception)
-        '            Dim frame As StackFrame = New StackFrame(1)
-        '            Dim method As System.Reflection.MethodBase = frame.GetMethod()
-        '            Dim type As System.Type = method.DeclaringType()
-        '            Dim methodName As String = method.Name
-        '            '
-        '            Call HandleError(cp, ex, type.Name, methodName, "unexpected exception")
-        '        End Sub
     End Class
 End Namespace
