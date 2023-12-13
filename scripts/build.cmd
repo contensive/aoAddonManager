@@ -11,7 +11,7 @@ cd \Git\aoAddonManager\scripts
 
 set collectionName=Add-on Manager
 set collectionPath=..\collections\Add-on Manager\
-set binPath=..\source\addonManager51\bin\debug\
+set binPath=..\source\addonManager51\bin\debug\net472\
 set deploymentFolderRoot=C:\Deployments\aoAddonManager\Dev\
 set msbuildLocation=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\
 set NuGetLocalPackagesFolder=C:\NuGetLocalPackages\
@@ -70,6 +70,8 @@ if errorlevel 1 (
 
 cd ..\scripts
 
+rem pause
+
 rem ==============================================================
 rem
 echo Build addon collection
@@ -77,8 +79,8 @@ rem
 
 rem copy bin folder assemblies to collection folder
 copy "%binPath%*.dll" "%collectionPath%"
-copy "%binPath%*.dep" "%collectionPath%"
-copy "%binPath%*.dll.config" "%collectionPath%"
+
+rem pause
 
 rem create new collection zip file
 c:
@@ -91,4 +93,3 @@ cd ..\..\scripts
 
 rem remove files from the collection folder
 del "%collectionPath%"\*.DLL
-del "%collectionPath%"\*.dll.config

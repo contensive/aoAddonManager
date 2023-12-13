@@ -63,7 +63,7 @@ Namespace Contensive.Addons.AddonManager51
         Private Function getCollectionLibrary() As String
             Dim returnResult As String = ""
             Try
-                Dim form As New FormSimpleClass
+                Dim form As New LayoutBuilderSimple
                 Dim showAddon As Boolean
                 Dim DbUpToDate As Boolean
                 Dim GuidFieldName As String
@@ -147,6 +147,14 @@ Namespace Contensive.Addons.AddonManager51
                                 '
                                 ' -- use v5 method
                                 UpgradeOK = InstallController.installCollectionFromLibrary(cp, LibGuids(Ptr), ErrorMessage)
+                                If Not UpgradeOK Then
+                                    form.failMessage += ErrorMessage
+                                    Continue For
+                                End If
+                                If Not String.IsNullOrEmpty(ErrorMessage) Then
+                                    form.warningMessage += ErrorMessage
+                                    Continue For
+                                End If
                             Next
                         End If
                     End If
