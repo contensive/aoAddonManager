@@ -1,6 +1,8 @@
 
 rem build and deliver to deployment folder
 
+set appName=ecommercetest
+
 call build.cmd
 
 rem upload to contensive application

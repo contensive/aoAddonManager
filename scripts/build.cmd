@@ -9,7 +9,6 @@ rem
 c:
 cd \Git\aoAddonManager\scripts
 
-set appName=app210629
 set collectionName=Add-on Manager
 set collectionPath=..\collections\Add-on Manager\
 set binPath=..\source\addonManager51\bin\debug\

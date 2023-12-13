@@ -5,7 +5,6 @@
 	<Addon name="Add-on Manager" guid="{4DD876E7-BCC4-4AF0-B32E-59FFAB816478}" type="Tool">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<ActiveXProgramID></ActiveXProgramID>
 		<DotNetClass></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
@@ -49,7 +48,6 @@ end function]]></Code>
 	<Addon name="addonManager-CollectionLibrary" guid="{7360E5BB-0404-461C-94E4-A56066CA0B02}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<ActiveXProgramID></ActiveXProgramID>
 		<DotNetClass><![CDATA[Contensive.Addons.AddonManager51.collectionLibraryClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
@@ -90,7 +88,6 @@ end function]]></Code>
 	<Addon name="addonManager-Export" guid="{B7013B2B-DCF8-48C7-A665-6F258CACAF4D}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<ActiveXProgramID></ActiveXProgramID>
 		<DotNetClass><![CDATA[Contensive.Addons.AddonManager51.exportClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
@@ -196,7 +193,6 @@ end function]]></Code>
 	<Addon name="addonManager-iisRecycle" guid="{164C4B6F-2A89-4A0D-AAA0-7B34BB2DD77D}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<ActiveXProgramID></ActiveXProgramID>
 		<DotNetClass><![CDATA[Contensive.Addons.AddonManager51.iisRecycleClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
@@ -236,7 +232,6 @@ end function]]></Code>
 	<Addon name="addonManager-Includes" guid="{71A95926-D611-40AF-ACA4-100C18449F0D}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<ActiveXProgramID></ActiveXProgramID>
 		<DotNetClass></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
@@ -331,7 +326,6 @@ end function]]></Code>
 	<Addon name="addonManager-Uninstall" guid="{3092AD1E-9660-4104-81D3-C29210C3183C}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<ActiveXProgramID></ActiveXProgramID>
 		<DotNetClass><![CDATA[Contensive.Addons.AddonManager51.uninstallClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
@@ -372,7 +366,6 @@ end function]]></Code>
 	<Addon name="addonManager-Upload" guid="{2D928D71-D97F-4F0A-9D6E-DB850B06D7C8}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<ActiveXProgramID></ActiveXProgramID>
 		<DotNetClass><![CDATA[Contensive.Addons.AddonManager51.uploadClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
