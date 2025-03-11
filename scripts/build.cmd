@@ -13,7 +13,7 @@ set collectionName=Add-on Manager
 set collectionPath=..\collections\Add-on Manager\
 set binPath=..\source\addonManager51\bin\debug\net472\
 set deploymentFolderRoot=C:\Deployments\aoAddonManager\Dev\
-set msbuildLocation=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\
+set msbuildLocation=C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\
 set NuGetLocalPackagesFolder=C:\NuGetLocalPackages\
 
 rem @echo off
