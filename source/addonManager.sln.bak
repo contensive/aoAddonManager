@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "addonManager51", "addonManager51\addonManager51.csproj", "{7F1D2593-0BEF-05F7-3C87-DE8F786E1AE4}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "addonManager51", "addonManager51\addonManager51.vbproj", "{CD39A4F8-C7B7-4A06-BEDF-14F11AF92E44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7F1D2593-0BEF-05F7-3C87-DE8F786E1AE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F1D2593-0BEF-05F7-3C87-DE8F786E1AE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7F1D2593-0BEF-05F7-3C87-DE8F786E1AE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7F1D2593-0BEF-05F7-3C87-DE8F786E1AE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD39A4F8-C7B7-4A06-BEDF-14F11AF92E44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD39A4F8-C7B7-4A06-BEDF-14F11AF92E44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD39A4F8-C7B7-4A06-BEDF-14F11AF92E44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD39A4F8-C7B7-4A06-BEDF-14F11AF92E44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
