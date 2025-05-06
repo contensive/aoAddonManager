@@ -24,9 +24,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
-    <PackageReference Include="Contensive.CPBaseClass" Version="23.10.30.5" />
-    <PackageReference Include="Contensive.DbModels" Version="23.10.30.5" />
-    <PackageReference Include="Contensive.PortalApi" Version="23.12.13.4" />
+    <PackageReference Include="Contensive.CPBaseClass" Version="25.4.21.4" />
+    <PackageReference Include="Contensive.DbModels" Version="25.4.21.4" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources.Designer.cs">

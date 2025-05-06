@@ -1,11 +1,12 @@
 ﻿using System;
-using Contensive.Addons.PortalFramework;
 using Contensive.BaseClasses;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace Contensive.Addons.AddonManager51 {
-    // 
+    /// <summary>
+    /// This is the Add-on Library. 
+    /// </summary>
     public class CollectionLibraryClass : AddonBaseClass {
         // 
         // injected objects -- do not dispose
@@ -64,7 +65,8 @@ namespace Contensive.Addons.AddonManager51 {
         private string getCollectionLibrary() {
             string returnResult = "";
             try {
-                var form = new LayoutBuilderSimple();
+                var form = cp.AdminUI.CreateLayoutBuilder();
+                //var form = new LayoutBuilderSimple();
                 bool showAddon;
                 bool DbUpToDate;
                 string GuidFieldName;
@@ -398,18 +400,14 @@ namespace Contensive.Addons.AddonManager51 {
                 // 
                 form.title = "Add-on Library";
                 form.description = "";
-                if (!DbUpToDate) {
-                    form.description += "<div style=\"Margin-left:50px\">The Add-on Manager is disabled because this site's Database needs to be upgraded.</div>";
-                }
                 if (!string.IsNullOrEmpty(status)) {
                     form.description = form.description + "<div style=\"Margin-left:50px\">" + status + "</div>";
                 }
-                return form.getHtml(cp);
+                return form.getHtml();
             } catch (Exception ex) {
                 cp.Site.ErrorReport(ex);
                 throw;
             }
-            return returnResult;
         }
     }
 }

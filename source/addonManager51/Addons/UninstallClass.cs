@@ -1,11 +1,12 @@
 ﻿using System;
-using Contensive.Addons.PortalFramework;
 using Contensive.BaseClasses;
 using Contensive.Models.Db;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace Contensive.Addons.AddonManager51 {
-    // 
+    /// <summary>
+    /// uninstall a collection
+    /// </summary>
     public class UninstallClass : AddonBaseClass {
         // 
         // injected objects -- do not dispose
@@ -78,7 +79,7 @@ namespace Contensive.Addons.AddonManager51 {
                 bool collectionsToBeInstalledFromFolder;
                 int TargetCollectionID;
                 string SiteKey;
-                var form = new ReportListClass(cp);
+                var form = cp.AdminUI.CreateLayoutBuilderList();
                 // 
                 SiteKey = cp.Site.GetText("sitekey", "");
                 if (string.IsNullOrEmpty(SiteKey)) {
@@ -217,7 +218,7 @@ namespace Contensive.Addons.AddonManager51 {
                     if (!string.IsNullOrEmpty(status)) {
                         form.description += "<div style=\"Margin-left:50px\">" + status + "</div>";
                     }
-                    returnResult = form.getHtml(cp);
+                    returnResult = form.getHtml();
                 }
                 return returnResult;
             } catch (Exception ex) {

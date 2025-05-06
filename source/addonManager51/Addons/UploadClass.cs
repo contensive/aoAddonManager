@@ -39,11 +39,10 @@ namespace Contensive.Addons.AddonManager51 {
                 } else {
                     // 
                     // -- create form
-                    var form = new PortalFramework.FormNameValueRowsClass() {
-                        title = "Upload Collection",
-                        body = cp.Html.p("Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added."),
-                        description = cp.Html.p("Upload a collection zip file to install the collection on this site. ")
-                    };
+                    var form = cp.AdminUI.CreateLayoutBuilderNameValue();
+                    form.title = "Upload Collection";
+                    form.body = cp.Html.p("Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added.");
+                    form.description = cp.Html.p("Upload a collection zip file to install the collection on this site. ");
                     if (!cp.User.IsAdmin) {
                         // 
                         // -- Put up error message
@@ -103,7 +102,7 @@ namespace Contensive.Addons.AddonManager51 {
                         form.addFormButton(ButtonOK);
                         form.addFormButton(ButtonCancel);
                     }
-                    returnResult = form.getHtml(cp);
+                    returnResult = form.getHtml();
                 }
                 return returnResult;
             } catch (Exception ex) {

@@ -61,7 +61,7 @@ cd ..\source
 
 dotnet clean %solutionName%
 
-dotnet build addonManager51/addonManager51.vbproj --no-restore --configuration Debug --no-dependencies /property:Version=%versionNumber% /property:AssemblyVersion=%versionNumber% /property:FileVersion=%versionNumber%
+dotnet build addonManager51/addonManager51.csproj --no-restore --configuration Debug --no-dependencies /property:Version=%versionNumber% /property:AssemblyVersion=%versionNumber% /property:FileVersion=%versionNumber%
 if errorlevel 1 (
    echo failure building addonManager51
    pause
