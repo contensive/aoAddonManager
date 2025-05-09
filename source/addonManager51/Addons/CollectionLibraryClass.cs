@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Contensive.BaseClasses;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
@@ -39,6 +40,11 @@ namespace Contensive.Addons.AddonManager51 {
         private readonly int CollectionCnt;
         private readonly Collection2Type[] Collections;
         private const string guidAddonManagerLibraryListCell = "{9767F464-3728-4B7D-904B-3442D7FD03BE}";
+        private const string nameAddonManagerLibraryLisCell = "Add-on Manager Library List Body Layout";
+        private const string pathFilenameAddonManagerLibraryLisCell = "AdminUILayoutBuilderAddonLibraryBody.html";
+
+
+
         private const string guidAddonManagerActiveX = "{1DC06F61-1837-419B-AF36-D5CC41E1C9FD}";
         // 
         // =====================================================================================
@@ -209,6 +215,8 @@ namespace Contensive.Addons.AddonManager51 {
                             RowPtr = 0;
                             // Content = ""
                             string cellTemplate = My.Resources.Resources.AddonManagerLibraryListCell;
+                            LibraryViewModel viewModel = new LibraryViewModel();
+
                             foreach (System.Xml.XmlNode CDef_Node in LibCollections.DocumentElement.ChildNodes) {
                                 string Cell = cellTemplate;
                                 string CollectionImageLink = "";
@@ -352,6 +360,15 @@ namespace Contensive.Addons.AddonManager51 {
                                                 CollectionDescription = CollectionDescription + "<div class=\"amHelpLink\"><a target=\"_blank\" href=\"" + CollectionHelpLink + "\">Reference</a></div>";
                                             }
                                             if (showAddon) {
+                                                LibraryViewModel_collectionList collectionCell = new LibraryViewModel_collectionList();
+                                                viewModel.collectionList.Add(new LibraryViewModel_collectionList() {
+                                                    name = CollectionName,
+                                                    imageLink = CollectionImageLink,
+                                                    checkbox = CollectionCheckbox,
+                                                    lastUpdatedString = CollectionModifiedDateCaption,
+                                                    description = CollectionDescription 
+                                                });
+                                                //
                                                 Cell = Strings.Replace(Cell, "##imageLink##", CollectionImageLink);
                                                 Cell = Strings.Replace(Cell, "##checkbox##", CollectionCheckbox);
                                                 Cell = Strings.Replace(Cell, "##name##", CollectionName);
@@ -365,7 +382,8 @@ namespace Contensive.Addons.AddonManager51 {
                                 }
                             }
                         }
-                        BodyHTML = "" + constants.cr + "<script language=\"JavaScript\">" + "function clearLibraryRows(r) {" + "var c,p;" + "c=document.getElementsByName('LibraryRow');" + "for (p=0;p<c.length;p++){" + "if(c[p].value!=r)c[p].checked=false;" + "}" + "" + "}" + "</script>" + "<input type=hidden name=LibraryCnt value=\"" + RowPtr + "\">" + constants.cr + "<div style=\"width:100%\">" + BodyHTML + constants.cr + "</div>" + "";
+                        string layout = cp.Layout.GetLayout(guidAddonManagerLibraryListCell,nameAddonManagerLibraryLisCell, pathFilenameAddonManagerLibraryLisCell);
+                        BodyHTML = "<script language=\"JavaScript\">function clearLibraryRows(r) {var c,p;c=document.getElementsByName('LibraryRow');for (p=0;p<c.length;p++){if(c[p].value!=r)c[p].checked=false;}}</script><input type=hidden name=LibraryCnt value=\"" + RowPtr + "\">" + constants.cr + "<div style=\"width:100%\">" + BodyHTML + constants.cr + "</div>";
 
 
 
@@ -410,4 +428,38 @@ namespace Contensive.Addons.AddonManager51 {
             }
         }
     }
-}
+    /// <summary>
+    /// rendering class for the Add-on Library
+    /// </summary>
+    public class LibraryViewModel {
+        /// <summary>
+        /// list of collections
+        /// </summary>
+        public List<LibraryViewModel_collectionList> collectionList { get; set; } = new List<LibraryViewModel_collectionList>();  
+    }
+    /// <summary>
+    /// a collection entry in the library list
+    /// </summary>
+    public class LibraryViewModel_collectionList {
+        /// <summary>
+        /// collection name
+        /// </summary>
+        public string name { get; set; }
+        /// <summary>
+        /// image
+        /// </summary>
+        public string imageLink { get; set; }
+        /// <summary>
+        /// checkbox (should be in the form)
+        /// </summary>
+        public string checkbox { get; set; }
+        /// <summary>
+        /// string that represents the date updated
+        /// </summary>
+        public string lastUpdatedString { get; set; }
+        /// <summary>
+        /// description
+        /// </summary>
+        public string description { get; set; }
+
+    }

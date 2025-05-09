@@ -486,4 +486,5 @@ end function]]></Code>
 	<Resource name="addonManager51.dll" type="executable" path="" />
 	<Resource name="adminFramework.dll" type="executable" path="" />
 	<Resource name="ICSharpCode.SharpZipLib.dll" type="executable" path="" />
+	<Resource name="AddonManagerLibraryBody.html" type="file" path="addonmanager" />
 </Collection>
