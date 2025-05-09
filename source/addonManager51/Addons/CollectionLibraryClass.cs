@@ -39,13 +39,10 @@ namespace Contensive.Addons.AddonManager51 {
         // 
         private readonly int CollectionCnt;
         private readonly Collection2Type[] Collections;
+        //
         private const string guidAddonManagerLibraryListCell = "{9767F464-3728-4B7D-904B-3442D7FD03BE}";
         private const string nameAddonManagerLibraryLisCell = "Add-on Manager Library List Body Layout";
-        private const string pathFilenameAddonManagerLibraryLisCell = "AdminUILayoutBuilderAddonLibraryBody.html";
-
-
-
-        private const string guidAddonManagerActiveX = "{1DC06F61-1837-419B-AF36-D5CC41E1C9FD}";
+        private const string pathFilenameAddonManagerLibraryLisCell = "addonmanager/AddonManagerLibraryBody.html";
         // 
         // =====================================================================================
         /// <summary>
@@ -203,6 +200,8 @@ namespace Contensive.Addons.AddonManager51 {
                     // 
                     LibCollections = new System.Xml.XmlDocument();
                     LibCollections.Load("http://support.contensive.com/GetCollectionList?iv=" + cp.Version + "&key=" + cp.Utils.EncodeRequestVariable(SiteKey) + "&name=" + cp.Utils.EncodeRequestVariable(cp.Site.Name) + "&primaryDomain=" + cp.Utils.EncodeRequestVariable(cp.Site.DomainPrimary));
+                    //
+                    LibraryViewModel viewModel = new LibraryViewModel();
                     if (true) {
                         if ((LibCollections.DocumentElement.Name.ToLower() ?? "") != (CollectionListRootNode.ToLower() ?? "")) {
                             UserError = "There was an error reading the Collection Library file. The '" + CollectionListRootNode + "' element was not found.";
@@ -215,7 +214,6 @@ namespace Contensive.Addons.AddonManager51 {
                             RowPtr = 0;
                             // Content = ""
                             string cellTemplate = My.Resources.Resources.AddonManagerLibraryListCell;
-                            LibraryViewModel viewModel = new LibraryViewModel();
 
                             foreach (System.Xml.XmlNode CDef_Node in LibCollections.DocumentElement.ChildNodes) {
                                 string Cell = cellTemplate;
@@ -366,7 +364,7 @@ namespace Contensive.Addons.AddonManager51 {
                                                     imageLink = CollectionImageLink,
                                                     checkbox = CollectionCheckbox,
                                                     lastUpdatedString = CollectionModifiedDateCaption,
-                                                    description = CollectionDescription 
+                                                    description = CollectionDescription
                                                 });
                                                 //
                                                 Cell = Strings.Replace(Cell, "##imageLink##", CollectionImageLink);
@@ -382,28 +380,11 @@ namespace Contensive.Addons.AddonManager51 {
                                 }
                             }
                         }
-                        string layout = cp.Layout.GetLayout(guidAddonManagerLibraryListCell,nameAddonManagerLibraryLisCell, pathFilenameAddonManagerLibraryLisCell);
-                        BodyHTML = "<script language=\"JavaScript\">function clearLibraryRows(r) {var c,p;c=document.getElementsByName('LibraryRow');for (p=0;p<c.length;p++){if(c[p].value!=r)c[p].checked=false;}}</script><input type=hidden name=LibraryCnt value=\"" + RowPtr + "\">" + constants.cr + "<div style=\"width:100%\">" + BodyHTML + constants.cr + "</div>";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        form.body = BodyHTML;
-                        form.description = "Select Add-ons to install from the Contensive Add-on Library. Please select only one at a time. Click OK to install the selected Add-on. The site may need to be stopped during the installation, but will be available again in approximately one minute";
-
-                        // BodyHTML = AdminUI.GetEditPanel(main, True, "Add-on Collection Library", "Select Add-ons to install from the Contensive Add-on Library. Please select only one at a time. Click OK to install the selected Add-on. The site may need to be stopped during the installation, but will be available again in approximately one minute.", BodyHTML)
-                        // BodyHTML = BodyHTML & cp.Html.Hidden("AOCnt", RowPtr)
-                        // Call main.AddLiveTabEntry("<NOBR>Collection&nbsp;Library</NOBR>", BodyHTML, "ccAdminTab")
+                        string layout = cp.Layout.GetLayout(guidAddonManagerLibraryListCell, nameAddonManagerLibraryLisCell, pathFilenameAddonManagerLibraryLisCell);
+                        form.body = cp.Mustache.Render(layout, viewModel);
+                        //BodyHTML = "<script language=\"JavaScript\">function clearLibraryRows(r) {var c,p;c=document.getElementsByName('LibraryRow');for (p=0;p<c.length;p++){if(c[p].value!=r)c[p].checked=false;}}</script><input type=hidden name=LibraryCnt value=\"" + RowPtr + "\">" + constants.cr + "<div style=\"width:100%\">" + BodyHTML + constants.cr + "</div>";
+                        //form.body = BodyHTML;
+                        //form.description = "Select Add-ons to install from the Contensive Add-on Library. Please select only one at a time. Click OK to install the selected Add-on. The site may need to be stopped during the installation, but will be available again in approximately one minute";
                     }
                     // 
                     // --------------------------------------------------------------------------------
@@ -435,7 +416,7 @@ namespace Contensive.Addons.AddonManager51 {
         /// <summary>
         /// list of collections
         /// </summary>
-        public List<LibraryViewModel_collectionList> collectionList { get; set; } = new List<LibraryViewModel_collectionList>();  
+        public List<LibraryViewModel_collectionList> collectionList { get; set; } = new List<LibraryViewModel_collectionList>();
     }
     /// <summary>
     /// a collection entry in the library list
@@ -463,3 +444,4 @@ namespace Contensive.Addons.AddonManager51 {
         public string description { get; set; }
 
     }
+}

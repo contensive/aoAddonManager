@@ -52,6 +52,30 @@ rem rd /S /Q "..\source\addonManager51\obj"
 rem 
 rem rd /S /Q "..\source\addonManager51\bin"
 rem rd /S /Q "..\source\addonManager51\obj"
+
+rem ==============================================================
+rem
+
+del "..\collections\Add-on Manager\ui.zip"
+del "..\collections\Add-on Manager\Add-on Manager.zip"
+
+pause
+
+rem ==============================================================
+rem
+rem copy UI files
+rem
+
+rem new install, as zip files
+rem layouts are developed in a folder with a subfolder for assets, named catalogassets, etc.
+rem when deployed, they are saved in the root folder so the asset subfolder is off the root, to make the html src consistent
+
+cd ..\ui
+"c:\program files\7-zip\7z.exe" a "..\collections\Add-on Manager\ui.zip" 
+cd ..\scripts
+
+pause
+
 rem 
 rem ==============================================================
 rem
