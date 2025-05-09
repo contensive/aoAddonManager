@@ -1,24 +1,39 @@
 <style>
+	.card-img-top {
+		width: 125px;
+		height: 100%;
+		object-fit: contain;
+	}
 </style>
-<div style="width:100%">
-	{{#collectionList}}
-	<div class="amLibraryListCell">
-		<table>
-			<tbody>
-				<tr>
-					<td class="amImage"><img src="{{imageLink}}" ></td>
-					<td class="amBody">
-						<div class="amHeadline">{{name}}</div>
-						<div class="amCheckbox">{{{checkbox}}}</div>
-						<div class="amDate">Last updated: {{lastUpdatedString}}</div>
-						<div class="amDescription">{{description}}</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+<div class="container-fluid">
+	<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3">
+		{{#collectionList}}
+		<div class="col mb-3">
+			<div class="card h-100 rounded-2 p-2">
+				<div class="">
+					<div class="d-flex flex-row align-items-center">
+						<div class="pe-4">
+							<img class="img-thumbnail card-img-top border" src="{{imageLink}}" data-image="la3p7077q2lx">
+						</div>
+						<div>
+							<h5 class="card-title amHeadline my-0">{{name}}</h5>
+							<div class="amDate mb-4"><small class="text-body-secondary">Last updated: {{lastUpdatedString}}</small></div>
+							<button type="submit" name="button" value="{{collectionId}}" class="btn btn-outline-primary btn-sm">Update</button>
+							
+						</div>
+					</div>
+					<hr>
+					<div class="card-body pt-0">
+						<div class="amDescription card-text small">{{{description}}}</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		{{/collectionList}}
 	</div>
-	{{/collectionList}}
 </div>
+
 <input type=hidden name=LibraryCnt value="0">
 <script language="JavaScript">
 	function clearLibraryRows(r) {
