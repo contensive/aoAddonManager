@@ -404,7 +404,7 @@ end function]]></Code>
 		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
 	</Addon>
 	<data>
-		<record content="portals" guid="{9DF996D7-2280-431E-8D34-2ED059CB988C}" name="Add-on Manager">
+		<record content="portals" guid="{9DF996D7-2280-431E-8D34-2ED059CB988C}" name="Add-ons">
 			<field name="active">True</field>
 			<field name="defaultconfigjson"></field>
 			<field name="defaultfeatureid">{7360E5BB-0404-461C-94E4-A56066CA0B02}</field>
