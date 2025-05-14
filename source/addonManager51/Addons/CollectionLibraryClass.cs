@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Contensive.BaseClasses;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
@@ -39,10 +40,6 @@ namespace Contensive.Addons.AddonManager51 {
         // 
         private readonly int CollectionCnt;
         private readonly Collection2Type[] Collections;
-        //
-        private const string guidAddonManagerLibraryListCell = "{9767F464-3728-4B7D-904B-3442D7FD03BE}";
-        private const string nameAddonManagerLibraryLisCell = "Add-on Manager Library List Body Layout";
-        private const string pathFilenameAddonManagerLibraryLisCell = "addonmanager/AddonManagerLibraryBody.html";
         // 
         // =====================================================================================
         /// <summary>
@@ -132,6 +129,8 @@ namespace Contensive.Addons.AddonManager51 {
                     installFolder = "CollectionUpload" + cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "");
                     InstallPath = installFolder + @"\";
                     if ((Button ?? "") == ButtonOK) {
+                        //
+                        // -- legacy
                         // 
                         // ---------------------------------------------------------------------------------------------
                         // Download and install Collections from the Collection Library
@@ -162,6 +161,17 @@ namespace Contensive.Addons.AddonManager51 {
                                     continue;
                                 }
                             }
+                        }
+                    } else if (!string.IsNullOrEmpty(Button ?? "")) {
+                        //
+                        // -- button value is the guid of the collection to install
+                        // 
+                        // -- use v5 method
+                        UpgradeOK = InstallController.installCollectionFromLibrary(cp, Button, ref ErrorMessage);
+                        if (!UpgradeOK) {
+                            form.failMessage += ErrorMessage;
+                        } else if (!string.IsNullOrEmpty(ErrorMessage)) {
+                            form.warningMessage += ErrorMessage;
                         }
                     }
                     // 
@@ -322,13 +332,18 @@ namespace Contensive.Addons.AddonManager51 {
                                                 CollectionDescription = "No description is available for this add-on collection.";
                                             }
                                             showAddon = false;
+                                            bool isInstall = false;
+                                            bool isUpgrade = false;
+                                            bool isRepair = false;
+                                            string installedDateString = "";
                                             if (!string.IsNullOrEmpty(CollectionName)) {
                                                 if (!string.IsNullOrEmpty(CollectionGUID)) {
                                                     var cs = cp.CSNew();
-                                                    var modifiedDate = DateTime.MinValue;
+                                                    var installedDate = DateTime.MinValue;
                                                     bool IsOnSite = false;
                                                     if (cs.Open("Add-on Collections", GuidFieldName + "=" + cp.Db.EncodeSQLText(CollectionGUID), "", true, "ID,ModifiedDate")) {
-                                                        modifiedDate = cs.GetDate("ModifiedDate");
+                                                        installedDate = cs.GetDate("ModifiedDate");
+                                                        installedDateString = installedDate.ToShortDateString();
                                                         IsOnSite = true;
                                                     }
                                                     cs.Close();
@@ -336,16 +351,19 @@ namespace Contensive.Addons.AddonManager51 {
                                                     if (!IsOnSite) {
                                                         // 
                                                         // -- not installed
+                                                        isInstall = true;
                                                         showAddon = true;
                                                         CollectionCheckbox += "&nbsp;Install";
-                                                    } else if (modifiedDate >= CollectionModifiedDate) {
+                                                    } else if (installedDate >= CollectionModifiedDate) {
                                                         // 
                                                         // -- up to date, reinstall
+                                                        isRepair = true;
                                                         showAddon = true;
                                                         CollectionCheckbox += "&nbsp;Reinstall";
                                                     } else {
                                                         // 
                                                         // -- old version, upgrade
+                                                        isUpgrade = true;
                                                         showAddon = true;
                                                         CollectionCheckbox += "&nbsp;Upgrade";
                                                     }
@@ -364,7 +382,12 @@ namespace Contensive.Addons.AddonManager51 {
                                                     imageLink = CollectionImageLink,
                                                     checkbox = CollectionCheckbox,
                                                     lastUpdatedString = CollectionModifiedDateCaption,
-                                                    description = CollectionDescription
+                                                    description = CollectionDescription,
+                                                    isInstall = isInstall,
+                                                    isUpgrade = isUpgrade,
+                                                    isRepair = isRepair,
+                                                    buttonValue = CollectionGUID,
+                                                    installedDate = installedDateString
                                                 });
                                                 //
                                                 Cell = Strings.Replace(Cell, "##imageLink##", CollectionImageLink);
@@ -380,7 +403,7 @@ namespace Contensive.Addons.AddonManager51 {
                                 }
                             }
                         }
-                        string layout = cp.Layout.GetLayout(guidAddonManagerLibraryListCell, nameAddonManagerLibraryLisCell, pathFilenameAddonManagerLibraryLisCell);
+                        string layout = cp.Layout.GetLayout(constants.guidAddonManagerLibraryListCell, constants.nameAddonManagerLibraryLisCell, constants.pathFilenameAddonManagerLibraryLisCell);
                         form.body = cp.Mustache.Render(layout, viewModel);
                         //BodyHTML = "<script language=\"JavaScript\">function clearLibraryRows(r) {var c,p;c=document.getElementsByName('LibraryRow');for (p=0;p<c.length;p++){if(c[p].value!=r)c[p].checked=false;}}</script><input type=hidden name=LibraryCnt value=\"" + RowPtr + "\">" + constants.cr + "<div style=\"width:100%\">" + BodyHTML + constants.cr + "</div>";
                         //form.body = BodyHTML;
@@ -442,6 +465,27 @@ namespace Contensive.Addons.AddonManager51 {
         /// description
         /// </summary>
         public string description { get; set; }
+        /// <summary>
+        /// it is not currently installed
+        /// </summary>
+        public bool isInstall { get; set; }
+        /// <summary>
+        /// a previous version is installed
+        /// </summary>
+        public bool isUpgrade { get; set; }
+        /// <summary>
+        /// it is installed and up to date. Click to reinstall/Repair
+        /// </summary>
+        public bool isRepair { get; set; }
+        /// <summary>
+        /// The button name is 'button'
+        /// This is the value of the button pressed. It will be the collectionId
+        /// </summary>
+        public string buttonValue { get; set; } = "";
+        /// <summary>
+        /// if isupgrade or isrepair, this is the date it was installed
+        /// </summary>
+        public string installedDate { get; set; } = "";
 
     }
 }

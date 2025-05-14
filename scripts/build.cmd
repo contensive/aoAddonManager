@@ -59,7 +59,7 @@ rem
 del "..\collections\Add-on Manager\ui.zip"
 del "..\collections\Add-on Manager\Add-on Manager.zip"
 
-pause
+
 
 rem ==============================================================
 rem
@@ -74,7 +74,7 @@ cd ..\ui
 "c:\program files\7-zip\7z.exe" a "..\collections\Add-on Manager\ui.zip" 
 cd ..\scripts
 
-pause
+
 
 rem 
 rem ==============================================================

@@ -178,8 +178,8 @@ namespace Contensive.Addons.AddonManager51 {
                         // 
                         form.addColumn();
                         form.columnCaption = "Del";
-                        form.columnCaptionClass = AfwStyles.afwTextAlignCenter + " " + AfwStyles.afwWidth50px;
-                        form.columnCellClass = AfwStyles.afwTextAlignCenter;
+                        form.columnCaptionClass = constants.AfwStyles.afwTextAlignCenter + " " + constants.AfwStyles.afwWidth50px;
+                        form.columnCellClass = constants.AfwStyles.afwTextAlignCenter;
                         form.columnDownloadable = false;
                         form.columnName = "";
                         form.columnSortable = false;
@@ -187,8 +187,8 @@ namespace Contensive.Addons.AddonManager51 {
                         // 
                         form.addColumn();
                         form.columnCaption = "Name";
-                        form.columnCaptionClass = AfwStyles.afwTextAlignLeft;
-                        form.columnCellClass = AfwStyles.afwTextAlignLeft;
+                        form.columnCaptionClass = constants.AfwStyles.afwTextAlignLeft;
+                        form.columnCellClass = constants.AfwStyles.afwTextAlignLeft;
                         form.columnDownloadable = false;
                         form.columnName = "";
                         form.columnSortable = false;
