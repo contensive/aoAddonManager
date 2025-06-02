@@ -485,10 +485,6 @@ end function]]></Code>
 			<field name="sortorder"><![CDATA[Add-on Collections]]></field>
 		</record>
 </data>
-	<ImportCollection name="Portal Framework">{87249F75-A065-4F2F-8DCD-FBBF2CA0DCCD}</ImportCollection>
 	<Resource name="librarynoimage.jpg" type="www" path="addonmanager" />
-	<Resource name="addonManager51.dll" type="executable" path="" />
-	<Resource name="adminFramework.dll" type="executable" path="" />
-	<Resource name="ICSharpCode.SharpZipLib.dll" type="executable" path="" />
 	<Resource name="ui.zip" type="file" path="addonmanager" />
 </Collection>
