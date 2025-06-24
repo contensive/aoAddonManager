@@ -419,7 +419,7 @@ end function]]></Code>
 			<field name="ccguid"><![CDATA[{9DF996D7-2280-431E-8D34-2ED059CB988C}]]></field>
 			<field name="portallinks" />
 			<field name="collectionid">{a3e58089-74fc-4fb3-b847-0ad22b51aa72}</field>
-			<field Name="icon">dashboardIcons\add-ons.svg</field>
+			<field Name="icon">addonmanager\dashboardIcons\add-ons.svg</field>
 		</record>
 		<record content="portal features" guid="{23E6E281-B5A6-4368-A0E6-9681D9F142BC}" name="addonManager-Export">
 			<field name="active">True</field>
