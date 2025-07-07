@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Contensive.BaseClasses;
+using Contensive.Models.Db;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 
@@ -90,7 +91,6 @@ namespace Contensive.Addons.AddonManager51 {
                 string PreTableCopy;
                 string BodyHTML = "";
                 string UserError;
-                string Button;
                 string ButtonList;
                 string CollectionFilename = "";
                 var Doc = new System.Xml.XmlDocument();
@@ -107,7 +107,8 @@ namespace Contensive.Addons.AddonManager51 {
                 }
                 // 
                 DbUpToDate = Operators.CompareString(cp.Site.GetText("buildVersion"), cp.Version, false) >= 0;
-                Button = cp.Doc.GetText(RequestNameButton);
+                string Button = cp.Doc.GetText(RequestNameButton);
+                string ButtonRemove = cp.Doc.GetText("remove");
                 collectionsToBeInstalledFromFolder = false;
                 GuidFieldName = "ccguid";
                 if ((Button ?? "") == ButtonCancel) {
@@ -128,7 +129,12 @@ namespace Contensive.Addons.AddonManager51 {
                     PreTableCopy = "Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added.";
                     installFolder = "CollectionUpload" + cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "");
                     InstallPath = installFolder + @"\";
-                    if ((Button ?? "") == ButtonOK) {
+                    if (!string.IsNullOrEmpty(ButtonRemove ?? "")) {
+                        //
+                        // -- uninstall
+                        var collection = DbBaseModel.create<AddonCollectionModel>(cp, ButtonRemove);    
+                        InstallController.UninstallCollection(cp, collection.id);
+                    } else if ((Button ?? "") == ButtonOK) {
                         //
                         // -- legacy
                         // 

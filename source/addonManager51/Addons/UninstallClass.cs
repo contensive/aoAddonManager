@@ -95,55 +95,7 @@ namespace Contensive.Addons.AddonManager51 {
                                 for (Ptr = 0; Ptr <= loopTo; Ptr++) {
                                     if (cp.Doc.GetBoolean("ac" + Ptr)) {
                                         int TargetCollectionID = cp.Doc.GetInteger("acID" + Ptr);
-                                        string TargetCollectionName = cp.Content.GetRecordName("Add-on Collections", TargetCollectionID);
-                                        // 
-                                        // Clean up rules associating this collection to other objects
-                                        // 
-                                        cp.Content.Delete("Add-on Collection CDef Rules", "collectionid=" + TargetCollectionID);
-                                        cp.Content.Delete("Add-on Collection Module Rules", "collectionid=" + TargetCollectionID);
-                                        var cs = cp.CSNew();
-                                        // 
-                                        // Delete any addons from this collection
-                                        // 
-                                        if (cs.Open("add-ons", "collectionid=" + TargetCollectionID)) {
-                                            do {
-                                                // 
-                                                // Clean up the rules that might have pointed to the addon
-                                                // 
-                                                int addonid = cs.GetInteger("id");
-                                                cp.Content.Delete("Admin Menuing", "addonid=" + addonid);
-                                                cp.Content.Delete("Shared Styles Add-on Rules", "addonid=" + addonid);
-                                                cp.Content.Delete("Add-on Scripting Module Rules", "addonid=" + addonid);
-                                                cp.Content.Delete("Add-on Include Rules", "addonid=" + addonid);
-                                                cp.Content.Delete("Add-on Include Rules", "includedaddonid=" + addonid);
-                                                cs.GoNext();
-                                            }
-                                            while (cs.OK());
-                                        }
-                                        cs.Close();
-                                        cp.Content.Delete("add-ons", "collectionid=" + TargetCollectionID);
-                                        // 
-                                        // Delete the navigator entry for the collection under 'Add-ons'
-                                        // 
-                                        if (TargetCollectionID > 0) {
-                                            int AddonNavigatorID = 0;
-                                            cs.Open("Navigator Entries", "name='Manage Add-ons' and ((parentid=0)or(parentid is null))");
-                                            if (cs.OK()) {
-                                                AddonNavigatorID = cs.GetInteger("ID");
-                                            }
-                                            cs.Close();
-                                            if (AddonNavigatorID > 0) {
-                                                GenericController.getForm_AddonManager_DeleteNavigatorBranch(cp, TargetCollectionName, AddonNavigatorID);
-                                            }
-                                            // 
-                                            // Now delete the Collection record
-                                            // 
-                                            cp.Content.Delete("Add-on Collections", "id=" + TargetCollectionID);
-                                            // 
-                                            // Delete Navigator Entries set as installed by the collection (this may be all that is needed)
-                                            // 
-                                            cp.Content.Delete("Navigator Entries", "installedbycollectionid=" + TargetCollectionID);
-                                        }
+                                        InstallController.UninstallCollection(cp, TargetCollectionID);
                                     }
                                 }
                             }
@@ -203,5 +155,6 @@ namespace Contensive.Addons.AddonManager51 {
                 throw;
             }
         }
+
     }
 }

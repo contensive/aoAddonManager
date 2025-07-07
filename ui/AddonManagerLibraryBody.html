@@ -9,7 +9,7 @@
 	<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3">
 		{{#collectionList}}
 		<div class="col mb-3">
-			<div class="card h-100 rounded-2 p-2 shadow-sm">
+			<div class="card h-100 rounded-2 p-2 shadow-sm{{#isRepair}} bg-primary-subtle{{/isRepair}}{{#isUpgrade}} bg-warning-subtle{{/isUpgrade}}">
 				<div class="">
 					<div class="d-flex flex-row align-items-center">
 						<div class="pe-4">
@@ -17,15 +17,23 @@
 						</div>
 						<div>
 							<h5 class="card-title amHeadline my-0">{{name}}</h5>
-							<div class="amDate mb-4"><small class="text-body-secondary">Last updated: {{lastUpdatedString}}</small></div>
-							<button type="submit" name="button" value="{{collectionId}}" class="btn btn-outline-primary btn-sm">Update</button>
+							<div class="amDate mb-4">
+								<div><small class="text-body-secondary">Last updated: {{lastUpdatedString}}</small></div>
+								{{#isUpgrade}}<div><small class="text-body-secondary">Installed: {{installedDate}}</small></div>{{/isUpgrade}}
+								{{#isRepair}}<div><small class="text-body-secondary">Installed: {{installedDate}}</small></div>{{/isRepair}}
+							</div>
+							<!-- -->
+							{{#isInstall}}<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Install</button>{{/isInstall}}
+							{{#isUpgrade}}<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Upgrade</button>{{/isUpgrade}}
+							{{#isRepair}}<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Reinstall</button>{{/isRepair}}
+							{{#isRepair}}<button type="submit" name="button-remove" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Remove</button>{{/isRepair}}
 							
 						</div>
 					</div>
 					<hr>
 					<div class="card-body pt-0">
 						<div class="amDescription card-text small">{{{description}}}</div>
-					</div>
+				</div>
 				</div>
 			</div>
 		</div>
