@@ -23,10 +23,17 @@
 								{{#isRepair}}<div><small class="text-body-secondary">Installed: {{installedDate}}</small></div>{{/isRepair}}
 							</div>
 							<!-- -->
-							{{#isInstall}}<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Install</button>{{/isInstall}}
-							{{#isUpgrade}}<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Upgrade</button>{{/isUpgrade}}
-							{{#isRepair}}<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Reinstall</button>{{/isRepair}}
-							{{#isRepair}}<button type="submit" name="button-remove" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Remove</button>{{/isRepair}}
+							{{#isInstall}}
+								<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Install</button>
+							{{/isInstall}}
+							{{#isUpgrade}}
+								<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Upgrade</button>
+								<button type="submit" name="button-remove" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Remove</button>
+							{{/isUpgrade}}
+							{{#isRepair}}
+								<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Reinstall</button>
+								<button type="submit" name="button-remove" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Remove</button>
+							{{/isRepair}}
 							
 						</div>
 					</div>

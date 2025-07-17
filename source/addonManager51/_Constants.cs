@@ -1,7 +1,12 @@
 ﻿using Microsoft.VisualBasic;
 
 namespace Contensive.Addons.AddonManager51 {
-    public static class constants {
+    /// <summary>
+    /// 
+    /// </summary>
+    public static class _Constants {
+        // 
+        public const string CollectionListRootNode = "collectionlist";
         /// <summary>
         /// 
         /// </summary>
@@ -18,7 +23,7 @@ namespace Contensive.Addons.AddonManager51 {
         /// <summary>
         /// 
         /// </summary>
-        public const string cr = Constants.vbCrLf;
+        public const string cr = Microsoft.VisualBasic.Constants.vbCrLf;
         /// <summary>
         /// 
         /// </summary>
@@ -47,6 +52,14 @@ namespace Contensive.Addons.AddonManager51 {
         /// 
         /// </summary>
         public const string ButtonOK = " OK ";
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string ButtonRemove = "button-remove";
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string ButtonReinstall = "button-reinstall";
         /// <summary>
         /// 
         /// </summary>

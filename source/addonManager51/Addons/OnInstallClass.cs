@@ -10,7 +10,7 @@ namespace Contensive.Addons.AddonManager51 {
         // 
         public override object Execute(CPBaseClass CP) {
             try {
-                CP.Layout.updateLayout(constants.guidAddonManagerLibraryListCell, constants.nameAddonManagerLibraryLisCell, constants.pathFilenameAddonManagerLibraryLisCell);
+                CP.Layout.updateLayout(_Constants.guidAddonManagerLibraryListCell, _Constants.nameAddonManagerLibraryLisCell, _Constants.pathFilenameAddonManagerLibraryLisCell);
                 return "";
             } catch (Exception ex) {
                 CP.Site.ErrorReport(ex);

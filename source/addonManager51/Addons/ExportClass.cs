@@ -18,8 +18,8 @@ namespace Contensive.Addons.AddonManager51 {
         /// <returns></returns>
         public override object Execute(CPBaseClass cp) {
             try {
-                string Button = cp.Doc.GetText(constants.RequestNameButton);
-                if ((Button ?? "") == constants.ButtonCancel) {
+                string Button = cp.Doc.GetText(_Constants.RequestNameButton);
+                if ((Button ?? "") == _Constants.ButtonCancel) {
                     // 
                     // ----- redirect back to the root
                     cp.Response.Redirect(cp.Site.GetText("adminUrl"));
@@ -43,10 +43,10 @@ namespace Contensive.Addons.AddonManager51 {
                 }
                 // 
                 // -- Upload tool
-                if ((Button ?? "") == constants.ButtonOK) {
+                if ((Button ?? "") == _Constants.ButtonOK) {
                     // 
                     // -- export
-                    int CollectionID = cp.Doc.GetInteger(constants.RequestNameCollectionID);
+                    int CollectionID = cp.Doc.GetInteger(_Constants.RequestNameCollectionID);
                     var addonCollection = DbBaseModel.create<AddonCollectionModel>(cp, CollectionID);
                     if (addonCollection is null) {
                         // 
@@ -80,10 +80,10 @@ namespace Contensive.Addons.AddonManager51 {
                 // Get Form
                 form.addRow();
                 form.rowName = "Add-on Collection";
-                form.rowValue = cp.Html.SelectContent(constants.RequestNameCollectionID, "0", "Add-on Collections", "", "Select Collection To Export", "form-control");
+                form.rowValue = cp.Html.SelectContent(_Constants.RequestNameCollectionID, "0", "Add-on Collections", "", "Select Collection To Export", "form-control");
                 form.addFormHidden("UploadCount", "1");
-                form.addFormButton(constants.ButtonOK);
-                form.addFormButton(constants.ButtonCancel);
+                form.addFormButton(_Constants.ButtonOK);
+                form.addFormButton(_Constants.ButtonCancel);
                 return form.getHtml();
             } catch (Exception ex) {
                 cp.Site.ErrorReport(ex);

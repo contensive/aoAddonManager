@@ -70,13 +70,13 @@ namespace Contensive.Addons.AddonManager51 {
                                 form.description += cp.Html.p("ERROR: " + ErrorMessage);
                             }
                         }
-                        string uploadFilename = cp.Doc.GetText(constants.rnUploadCollectionFile);
+                        string uploadFilename = cp.Doc.GetText(_Constants.rnUploadCollectionFile);
                         if (!string.IsNullOrEmpty(uploadFilename)) {
                             // 
                             // -- version 5.0, separate class so this project can be built with contensive 5.0 reference, but run against contensive 4.1
                             string ErrorMessage = "";
-                            bool installDependencies = !cp.Doc.GetBoolean(constants.rnBlockDependencies);
-                            if (InstallController.installCollectionFromUpload(cp, constants.rnUploadCollectionFile, ref ErrorMessage)) {
+                            bool installDependencies = !cp.Doc.GetBoolean(_Constants.rnBlockDependencies);
+                            if (InstallController.installCollectionFromUpload(cp, _Constants.rnUploadCollectionFile, ref ErrorMessage)) {
                                 if (!string.IsNullOrEmpty(ErrorMessage)) {
                                     // 
                                     // -- install successful, but a problem
@@ -95,11 +95,11 @@ namespace Contensive.Addons.AddonManager51 {
                     // Get Form
                     form.addRow();
                     form.rowName = "Collection Zip File";
-                    form.rowValue = cp.Html.InputFile(constants.rnUploadCollectionFile);
+                    form.rowValue = cp.Html.InputFile(_Constants.rnUploadCollectionFile);
                     //
                     form.addRow();
                     form.rowName = "Block Dependencies";
-                    form.rowValue = cp.Html.CheckBox(constants.rnBlockDependencies);
+                    form.rowValue = cp.Html.CheckBox(_Constants.rnBlockDependencies);
                     //
                     form.addFormHidden("UploadCount", "1");
                     form.addFormButton(ButtonOK);

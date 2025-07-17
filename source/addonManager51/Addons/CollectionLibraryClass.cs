@@ -16,14 +16,6 @@ namespace Contensive.Addons.AddonManager51 {
         // 
         private CPBaseClass cp;
         // 
-        // class scope
-        // 
-        private const string RequestNameButton = "button";
-        private const string CollectionListRootNode = "collectionlist";
-        // 
-        private const string ButtonCancel = " Cancel ";
-        private const string ButtonOK = " OK ";
-        // 
         private struct NavigatorType {
             public string Name;
             public string NameSpacex;
@@ -107,11 +99,11 @@ namespace Contensive.Addons.AddonManager51 {
                 }
                 // 
                 DbUpToDate = Operators.CompareString(cp.Site.GetText("buildVersion"), cp.Version, false) >= 0;
-                string Button = cp.Doc.GetText(RequestNameButton);
-                string ButtonRemove = cp.Doc.GetText("remove");
+                string Button = cp.Doc.GetText(_Constants.RequestNameButton);
+                string ButtonRemove = cp.Doc.GetText(_Constants.ButtonRemove);
                 collectionsToBeInstalledFromFolder = false;
                 GuidFieldName = "ccguid";
-                if ((Button ?? "") == ButtonCancel) {
+                if ((Button ?? "") == _Constants.ButtonCancel) {
                     // 
                     // ----- redirect back to the root
                     // 
@@ -122,7 +114,7 @@ namespace Contensive.Addons.AddonManager51 {
                     // 
                     // ----- Put up error message
                     // 
-                    ButtonList = ButtonCancel;
+                    ButtonList = _Constants.ButtonCancel;
                     BodyHTML = cp.Html.p("You must be an administrator to use this tool.");
                 } else {
                     // 
@@ -134,7 +126,7 @@ namespace Contensive.Addons.AddonManager51 {
                         // -- uninstall
                         var collection = DbBaseModel.create<AddonCollectionModel>(cp, ButtonRemove);    
                         InstallController.UninstallCollection(cp, collection.id);
-                    } else if ((Button ?? "") == ButtonOK) {
+                    } else if ((Button ?? "") == _Constants.ButtonOK) {
                         //
                         // -- legacy
                         // 
@@ -219,8 +211,8 @@ namespace Contensive.Addons.AddonManager51 {
                     //
                     LibraryViewModel viewModel = new LibraryViewModel();
                     if (true) {
-                        if ((LibCollections.DocumentElement.Name.ToLower() ?? "") != (CollectionListRootNode.ToLower() ?? "")) {
-                            UserError = "There was an error reading the Collection Library file. The '" + CollectionListRootNode + "' element was not found.";
+                        if ((LibCollections.DocumentElement.Name.ToLower() ?? "") != (_Constants.CollectionListRootNode.ToLower() ?? "")) {
+                            UserError = "There was an error reading the Collection Library file. The '" + _Constants.CollectionListRootNode + "' element was not found.";
                             status = status + "<BR>" + UserError;
                             cp.UserError.Add(UserError);
                         } else {
@@ -409,7 +401,7 @@ namespace Contensive.Addons.AddonManager51 {
                                 }
                             }
                         }
-                        string layout = cp.Layout.GetLayout(constants.guidAddonManagerLibraryListCell, constants.nameAddonManagerLibraryLisCell, constants.pathFilenameAddonManagerLibraryLisCell);
+                        string layout = cp.Layout.GetLayout(_Constants.guidAddonManagerLibraryListCell, _Constants.nameAddonManagerLibraryLisCell, _Constants.pathFilenameAddonManagerLibraryLisCell);
                         form.body = cp.Mustache.Render(layout, viewModel);
                         //BodyHTML = "<script language=\"JavaScript\">function clearLibraryRows(r) {var c,p;c=document.getElementsByName('LibraryRow');for (p=0;p<c.length;p++){if(c[p].value!=r)c[p].checked=false;}}</script><input type=hidden name=LibraryCnt value=\"" + RowPtr + "\">" + constants.cr + "<div style=\"width:100%\">" + BodyHTML + constants.cr + "</div>";
                         //form.body = BodyHTML;
@@ -420,8 +412,8 @@ namespace Contensive.Addons.AddonManager51 {
                     // Build Page from tabs
                     // --------------------------------------------------------------------------------
                     // 
-                    form.addFormButton(ButtonCancel);
-                    form.addFormButton(ButtonOK);
+                    form.addFormButton(_Constants.ButtonCancel);
+                    form.addFormButton(_Constants.ButtonOK);
                 }
                 // 
                 // Output the Add-on
