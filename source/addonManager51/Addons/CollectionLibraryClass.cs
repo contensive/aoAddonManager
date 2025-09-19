@@ -1,38 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Contensive.BaseClasses;
+﻿using Contensive.BaseClasses;
 using Contensive.Models.Db;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace Contensive.Addons.AddonManager51 {
     /// <summary>
     /// This is the Add-on Library. 
     /// </summary>
     public class CollectionLibraryClass : AddonBaseClass {
-        // 
-        // injected objects -- do not dispose
-        // 
+        //
         private CPBaseClass cp;
-        // 
-        private struct NavigatorType {
-            public string Name;
-            public string NameSpacex;
-        }
-
-        private struct Collection2Type {
-            public int AddonCnt;
-            public string[] AddonGuid;
-            public string[] AddonName;
-            public int MenuCnt;
-            public string[] Menus;
-            public int NavigatorCnt;
-            public NavigatorType[] Navigators;
-        }
-        // 
-        private readonly int CollectionCnt;
-        private readonly Collection2Type[] Collections;
         // 
         // =====================================================================================
         /// <summary>
@@ -56,53 +37,17 @@ namespace Contensive.Addons.AddonManager51 {
         /// </summary>
         /// <returns></returns>
         private string getCollectionLibrary() {
-            string returnResult = "";
             try {
                 var form = cp.AdminUI.CreateLayoutBuilder();
-                //var form = new LayoutBuilderSimple();
-                bool showAddon;
-                bool DbUpToDate;
-                string GuidFieldName;
-                string ErrorMessage = "";
-                bool UpgradeOK;
-                System.Xml.XmlDocument LibCollections;
-                string installFolder;
-                string[] LibGuids;
-                string CollectionGUID = "";
-                string CollectionVersion;
-                string CollectionContensiveVersion = "";
-                int cnt;
-                int Ptr;
-                var RowPtr = default(int);
-                int PageNumber;
-                int ColumnCnt;
-                string[] ColCaption;
-                string[] ColAlign;
-                string[] ColWidth;
-                bool[] ColSortable;
-                string PreTableCopy;
-                string BodyHTML = "";
-                string UserError;
-                string ButtonList;
-                string CollectionFilename = "";
-                var Doc = new System.Xml.XmlDocument();
-                string status = "";
-                bool collectionsToBeInstalledFromFolder;
-                string InstallLibCollectionList = "";
-                string InstallPath;
-                string SiteKey;
                 // 
-                SiteKey = cp.Site.GetText("sitekey", "");
+                string SiteKey = cp.Site.GetText("sitekey", "");
                 if (string.IsNullOrEmpty(SiteKey)) {
                     SiteKey = cp.Utils.CreateGuid();
                     cp.Site.SetProperty("sitekey", SiteKey);
                 }
                 // 
-                DbUpToDate = Operators.CompareString(cp.Site.GetText("buildVersion"), cp.Version, false) >= 0;
                 string Button = cp.Doc.GetText(_Constants.RequestNameButton);
                 string ButtonRemove = cp.Doc.GetText(_Constants.ButtonRemove);
-                collectionsToBeInstalledFromFolder = false;
-                GuidFieldName = "ccguid";
                 if ((Button ?? "") == _Constants.ButtonCancel) {
                     // 
                     // ----- redirect back to the root
@@ -110,21 +55,19 @@ namespace Contensive.Addons.AddonManager51 {
                     cp.Response.Redirect(cp.Site.GetText("adminUrl"));
                     return "";
                 }
+                string status = "";
                 if (!cp.User.IsAdmin) {
-                    // 
-                    // ----- Put up error message
-                    // 
-                    ButtonList = _Constants.ButtonCancel;
-                    BodyHTML = cp.Html.p("You must be an administrator to use this tool.");
+                    return cp.Html.p("You must be an administrator to use this tool.");
                 } else {
-                    // 
-                    PreTableCopy = "Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added.";
-                    installFolder = "CollectionUpload" + cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "");
-                    InstallPath = installFolder + @"\";
+                    string installFolder = "CollectionUpload" + cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "");
+                    string InstallPath = installFolder + @"\";
+                    string ErrorMessage = "";
+                    bool UpgradeOK;
+                    string CollectionGUID = "";
                     if (!string.IsNullOrEmpty(ButtonRemove ?? "")) {
                         //
                         // -- uninstall
-                        var collection = DbBaseModel.create<AddonCollectionModel>(cp, ButtonRemove);    
+                        var collection = DbBaseModel.create<AddonCollectionModel>(cp, ButtonRemove);
                         InstallController.UninstallCollection(cp, collection.id);
                     } else if ((Button ?? "") == _Constants.ButtonOK) {
                         //
@@ -134,7 +77,8 @@ namespace Contensive.Addons.AddonManager51 {
                         // Download and install Collections from the Collection Library
                         // ---------------------------------------------------------------------------------------------
                         // 
-                        InstallLibCollectionList = "";
+                        string InstallLibCollectionList = "";
+                        int Ptr;
                         if (!string.IsNullOrEmpty(cp.Doc.GetText("LibraryRow"))) {
                             Ptr = cp.Doc.GetInteger("LibraryRow");
                             CollectionGUID = cp.Doc.GetText("LibraryRowguid" + Ptr);
@@ -143,8 +87,8 @@ namespace Contensive.Addons.AddonManager51 {
                         // 
                         if (!string.IsNullOrEmpty(InstallLibCollectionList)) {
                             InstallLibCollectionList = Strings.Mid(InstallLibCollectionList, 2);
-                            LibGuids = Strings.Split(InstallLibCollectionList, ",");
-                            cnt = Information.UBound(LibGuids) + 1;
+                            string[] LibGuids = Strings.Split(InstallLibCollectionList, ",");
+                            int cnt = Information.UBound(LibGuids) + 1;
                             var loopTo = cnt - 1;
                             for (Ptr = 0; Ptr <= loopTo; Ptr++) {
                                 // 
@@ -172,241 +116,199 @@ namespace Contensive.Addons.AddonManager51 {
                             form.warningMessage += ErrorMessage;
                         }
                     }
+
+
                     // 
-                    // --------------------------------------------------------------------------------
-                    // Get Form
-                    // --------------------------------------------------------------------------------
-                    // Get the Collection Library tab
-                    // --------------------------------------------------------------------------------
-                    // 
-                    ColumnCnt = 4;
-                    PageNumber = 1;
-                    ColCaption = new string[4];
-                    ColAlign = new string[4];
-                    ColWidth = new string[4];
-                    ColSortable = new bool[4];
-                    // 
-                    ColCaption[0] = "Install";
-                    ColAlign[0] = "center";
-                    ColWidth[0] = "50";
-                    ColSortable[0] = false;
-                    // 
-                    ColCaption[1] = "Name";
-                    ColAlign[1] = "left";
-                    ColWidth[1] = "200";
-                    ColSortable[1] = false;
-                    // 
-                    ColCaption[2] = "Last&nbsp;Updated";
-                    ColAlign[2] = "right";
-                    ColWidth[2] = "200";
-                    ColSortable[2] = false;
-                    // 
-                    ColCaption[3] = "Description";
-                    ColAlign[3] = "left";
-                    ColWidth[3] = "99%";
-                    ColSortable[3] = false;
-                    // 
-                    LibCollections = new System.Xml.XmlDocument();
-                    LibCollections.Load("http://support.contensive.com/GetCollectionList?iv=" + cp.Version + "&key=" + cp.Utils.EncodeRequestVariable(SiteKey) + "&name=" + cp.Utils.EncodeRequestVariable(cp.Site.Name) + "&primaryDomain=" + cp.Utils.EncodeRequestVariable(cp.Site.DomainPrimary));
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    System.Xml.XmlDocument LibCollections = new System.Xml.XmlDocument();
+                    LibCollections.Load("https://support.contensive.com/GetCollectionList?iv=" + cp.Version + "&key=" + cp.Utils.EncodeRequestVariable(SiteKey) + "&name=" + cp.Utils.EncodeRequestVariable(cp.Site.Name) + "&primaryDomain=" + cp.Utils.EncodeRequestVariable(cp.Site.DomainPrimary));
                     //
                     LibraryViewModel viewModel = new LibraryViewModel();
-                    if (true) {
-                        if ((LibCollections.DocumentElement.Name.ToLower() ?? "") != (_Constants.CollectionListRootNode.ToLower() ?? "")) {
-                            UserError = "There was an error reading the Collection Library file. The '" + _Constants.CollectionListRootNode + "' element was not found.";
-                            status = status + "<BR>" + UserError;
-                            cp.UserError.Add(UserError);
-                        } else {
-                            // 
-                            // Go through file to validate the XML, and build status message -- since service process can not communicate to user
-                            // 
-                            RowPtr = 0;
-                            // Content = ""
-                            string cellTemplate = My.Resources.Resources.AddonManagerLibraryListCell;
+                    if ((LibCollections.DocumentElement.Name.ToLower() ?? "") != (_Constants.CollectionListRootNode.ToLower() ?? "")) {
+                        string UserError = "There was an error reading the Collection Library file. The '" + _Constants.CollectionListRootNode + "' element was not found.";
+                        status = status + "<BR>" + UserError;
+                        cp.UserError.Add(UserError);
+                    } else {
+                        var RowPtr = default(int);
+                        // 
+                        // Go through file to validate the XML, and build status message -- since service process can not communicate to user
+                        // 
+                        RowPtr = 0;
+                        // Content = ""
+                        string cellTemplate = My.Resources.Resources.AddonManagerLibraryListCell;
 
-                            foreach (System.Xml.XmlNode CDef_Node in LibCollections.DocumentElement.ChildNodes) {
-                                string Cell = cellTemplate;
-                                string CollectionImageLink = "";
-                                string CollectionCheckbox = "";
-                                string CollectionName = "";
-                                var CollectionModifiedDate = DateTime.MinValue;
-                                string CollectionModifiedDateCaption = "";
-                                string CollectionDescription = "";
-                                string CollectionHelpLink = "";
-                                string CollectionDemoLink = "";
-                                switch (Strings.LCase(CDef_Node.Name) ?? "") {
-                                    case "collection": {
-                                            // 
-                                            // Read the collection
-                                            // 
-                                            foreach (System.Xml.XmlNode CollectionNode in CDef_Node.ChildNodes) {
-                                                switch (CollectionNode.Name.ToLower() ?? "") {
-                                                    case "name": {
-                                                            // 
-                                                            // Name
-                                                            // 
-                                                            CollectionName = CollectionNode.InnerText;
-                                                            break;
+                        foreach (System.Xml.XmlNode CDef_Node in LibCollections.DocumentElement.ChildNodes) {
+                            string CollectionImageLink = "";
+                            string CollectionCheckbox = "";
+                            string CollectionName = "";
+                            var CollectionModifiedDate = DateTime.MinValue;
+                            string CollectionModifiedDateCaption = "";
+                            string CollectionDescription = "";
+                            string CollectionHelpLink = "";
+                            string CollectionDemoLink = "";
+                            switch (Strings.LCase(CDef_Node.Name) ?? "") {
+                                case "collection": {
+                                        // 
+                                        // Read the collection
+                                        // 
+                                        foreach (System.Xml.XmlNode CollectionNode in CDef_Node.ChildNodes) {
+                                            switch (CollectionNode.Name.ToLower() ?? "") {
+                                                case "name": {
+                                                        // 
+                                                        // Name
+                                                        // 
+                                                        CollectionName = CollectionNode.InnerText;
+                                                        break;
+                                                    }
+                                                case "helplink": {
+                                                        // 
+                                                        // helpLink
+                                                        // 
+                                                        CollectionHelpLink = CollectionNode.InnerText;
+                                                        break;
+                                                    }
+                                                case "demolink": {
+                                                        // 
+                                                        // demoLink
+                                                        // 
+                                                        CollectionDemoLink = CollectionNode.InnerText;
+                                                        break;
+                                                    }
+                                                case "guid": {
+                                                        // 
+                                                        // Guid
+                                                        // 
+                                                        CollectionGUID = CollectionNode.InnerText;
+                                                        break;
+                                                    }
+                                                case "version": {
+                                                        // 
+                                                        // Version
+                                                        // 
+                                                        string CollectionVersion = CollectionNode.InnerText;
+                                                        break;
+                                                    }
+                                                case "description": {
+                                                        // 
+                                                        // Version
+                                                        // 
+                                                        CollectionDescription = CollectionNode.InnerText;
+                                                        break;
+                                                    }
+                                                case "imagelink": {
+                                                        // 
+                                                        // Version
+                                                        // 
+                                                        CollectionImageLink = CollectionNode.InnerText;
+                                                        break;
+                                                    }
+                                                case "contensiveversion": {
+                                                        // 
+                                                        // Version
+                                                        // 
+                                                        string CollectionContensiveVersion = CollectionNode.InnerText;
+                                                        break;
+                                                    }
+                                                case "lastchangedate": {
+                                                        break;
+                                                    }
+                                                // 
+                                                // last change - legacy field used by 4.1 to auto install, no longer updated
+                                                // 
+                                                case "lastmodifieddate": {
+                                                        // 
+                                                        // last modified
+                                                        // 
+                                                        CollectionModifiedDate = DateTime.MinValue;
+                                                        if (Information.IsDate(CollectionNode.InnerText)) {
+                                                            CollectionModifiedDate = Conversions.ToDate(CollectionNode.InnerText);
                                                         }
-                                                    case "helplink": {
-                                                            // 
-                                                            // helpLink
-                                                            // 
-                                                            CollectionHelpLink = CollectionNode.InnerText;
-                                                            break;
+                                                        if (CollectionModifiedDate <= DateTime.MinValue) {
+                                                            CollectionModifiedDateCaption = "unknown";
+                                                        } else {
+                                                            CollectionModifiedDateCaption = CollectionModifiedDate.Date.ToShortDateString();
                                                         }
-                                                    case "demolink": {
-                                                            // 
-                                                            // demoLink
-                                                            // 
-                                                            CollectionDemoLink = CollectionNode.InnerText;
-                                                            break;
-                                                        }
-                                                    case "guid": {
-                                                            // 
-                                                            // Guid
-                                                            // 
-                                                            CollectionGUID = CollectionNode.InnerText;
-                                                            break;
-                                                        }
-                                                    case "version": {
-                                                            // 
-                                                            // Version
-                                                            // 
-                                                            CollectionVersion = CollectionNode.InnerText;
-                                                            break;
-                                                        }
-                                                    case "description": {
-                                                            // 
-                                                            // Version
-                                                            // 
-                                                            CollectionDescription = CollectionNode.InnerText;
-                                                            break;
-                                                        }
-                                                    case "imagelink": {
-                                                            // 
-                                                            // Version
-                                                            // 
-                                                            CollectionImageLink = CollectionNode.InnerText;
-                                                            break;
-                                                        }
-                                                    case "contensiveversion": {
-                                                            // 
-                                                            // Version
-                                                            // 
-                                                            CollectionContensiveVersion = CollectionNode.InnerText;
-                                                            break;
-                                                        }
-                                                    case "lastchangedate": {
-                                                            break;
-                                                        }
-                                                    // 
-                                                    // last change - legacy field used by 4.1 to auto install, no longer updated
-                                                    // 
-                                                    case "lastmodifieddate": {
-                                                            // 
-                                                            // last modified
-                                                            // 
-                                                            CollectionModifiedDate = DateTime.MinValue;
-                                                            if (Information.IsDate(CollectionNode.InnerText)) {
-                                                                CollectionModifiedDate = Conversions.ToDate(CollectionNode.InnerText);
-                                                            }
-                                                            if (CollectionModifiedDate <= DateTime.MinValue) {
-                                                                CollectionModifiedDateCaption = "unknown";
-                                                            } else {
-                                                                CollectionModifiedDateCaption = CollectionModifiedDate.Date.ToShortDateString();
-                                                            }
 
-                                                            break;
-                                                        }
-                                                }
-                                            }
-                                            if (string.IsNullOrEmpty(CollectionImageLink)) {
-                                                CollectionImageLink = "/addonManager/libraryNoImage.jpg";
-                                            }
-                                            if (string.IsNullOrEmpty(CollectionModifiedDateCaption)) {
-                                                CollectionModifiedDateCaption = "unknown";
-                                            }
-                                            if (string.IsNullOrEmpty(CollectionDescription)) {
-                                                CollectionDescription = "No description is available for this add-on collection.";
-                                            }
-                                            showAddon = false;
-                                            bool isInstall = false;
-                                            bool isUpgrade = false;
-                                            bool isRepair = false;
-                                            string installedDateString = "";
-                                            if (!string.IsNullOrEmpty(CollectionName)) {
-                                                if (!string.IsNullOrEmpty(CollectionGUID)) {
-                                                    var cs = cp.CSNew();
-                                                    var installedDate = DateTime.MinValue;
-                                                    bool IsOnSite = false;
-                                                    if (cs.Open("Add-on Collections", GuidFieldName + "=" + cp.Db.EncodeSQLText(CollectionGUID), "", true, "ID,ModifiedDate")) {
-                                                        installedDate = cs.GetDate("ModifiedDate");
-                                                        installedDateString = installedDate.ToShortDateString();
-                                                        IsOnSite = true;
+                                                        break;
                                                     }
-                                                    cs.Close();
-                                                    CollectionCheckbox = "<input TYPE=\"CheckBox\" NAME=\"LibraryRow\" VALUE=\"" + RowPtr + "\" onClick=\"clearLibraryRows('" + RowPtr + "');\">" + cp.Html.Hidden("LibraryRowGuid" + RowPtr, CollectionGUID) + cp.Html.Hidden("LibraryRowName" + RowPtr, CollectionName);
-                                                    if (!IsOnSite) {
-                                                        // 
-                                                        // -- not installed
-                                                        isInstall = true;
-                                                        showAddon = true;
-                                                        CollectionCheckbox += "&nbsp;Install";
-                                                    } else if (installedDate >= CollectionModifiedDate) {
-                                                        // 
-                                                        // -- up to date, reinstall
-                                                        isRepair = true;
-                                                        showAddon = true;
-                                                        CollectionCheckbox += "&nbsp;Reinstall";
-                                                    } else {
-                                                        // 
-                                                        // -- old version, upgrade
-                                                        isUpgrade = true;
-                                                        showAddon = true;
-                                                        CollectionCheckbox += "&nbsp;Upgrade";
-                                                    }
-                                                }
                                             }
-                                            if (!string.IsNullOrEmpty(CollectionDemoLink)) {
-                                                CollectionDescription = CollectionDescription + "<div class=\"amDemoLink\"><a target=\"_blank\" href=\"" + CollectionDemoLink + "\">Demo</a></div>";
-                                            }
-                                            if (!string.IsNullOrEmpty(CollectionHelpLink)) {
-                                                CollectionDescription = CollectionDescription + "<div class=\"amHelpLink\"><a target=\"_blank\" href=\"" + CollectionHelpLink + "\">Reference</a></div>";
-                                            }
-                                            if (showAddon) {
-                                                LibraryViewModel_collectionList collectionCell = new LibraryViewModel_collectionList();
-                                                viewModel.collectionList.Add(new LibraryViewModel_collectionList() {
-                                                    name = CollectionName,
-                                                    imageLink = CollectionImageLink,
-                                                    checkbox = CollectionCheckbox,
-                                                    lastUpdatedString = CollectionModifiedDateCaption,
-                                                    description = CollectionDescription,
-                                                    isInstall = isInstall,
-                                                    isUpgrade = isUpgrade,
-                                                    isRepair = isRepair,
-                                                    buttonValue = CollectionGUID,
-                                                    installedDate = installedDateString
-                                                });
-                                                //
-                                                Cell = Strings.Replace(Cell, "##imageLink##", CollectionImageLink);
-                                                Cell = Strings.Replace(Cell, "##checkbox##", CollectionCheckbox);
-                                                Cell = Strings.Replace(Cell, "##name##", CollectionName);
-                                                Cell = Strings.Replace(Cell, "##date##", CollectionModifiedDateCaption);
-                                                Cell = Strings.Replace(Cell, "##description##", CollectionDescription);
-                                                BodyHTML += Cell;
-                                            }
-                                            RowPtr += 1;
-                                            break;
                                         }
-                                }
+                                        if (string.IsNullOrEmpty(CollectionImageLink)) {
+                                            CollectionImageLink = "/addonManager/libraryNoImage.jpg";
+                                        }
+                                        if (string.IsNullOrEmpty(CollectionModifiedDateCaption)) {
+                                            CollectionModifiedDateCaption = "unknown";
+                                        }
+                                        if (string.IsNullOrEmpty(CollectionDescription)) {
+                                            CollectionDescription = "No description is available for this add-on collection.";
+                                        }
+                                        bool showAddon = false;
+                                        bool isInstall = false;
+                                        bool isUpgrade = false;
+                                        bool isRepair = false;
+                                        string installedDateString = "";
+                                        if (!string.IsNullOrEmpty(CollectionName)) {
+                                            if (!string.IsNullOrEmpty(CollectionGUID)) {
+                                                var cs = cp.CSNew();
+                                                var installedDate = DateTime.MinValue;
+                                                bool IsOnSite = false;
+                                                if (cs.Open("Add-on Collections", "ccguid=" + cp.Db.EncodeSQLText(CollectionGUID), "", true, "ID,ModifiedDate")) {
+                                                    installedDate = cs.GetDate("ModifiedDate");
+                                                    installedDateString = installedDate.ToShortDateString();
+                                                    IsOnSite = true;
+                                                }
+                                                cs.Close();
+                                                CollectionCheckbox = "<input TYPE=\"CheckBox\" NAME=\"LibraryRow\" VALUE=\"" + RowPtr + "\" onClick=\"clearLibraryRows('" + RowPtr + "');\">" + cp.Html.Hidden("LibraryRowGuid" + RowPtr, CollectionGUID) + cp.Html.Hidden("LibraryRowName" + RowPtr, CollectionName);
+                                                if (!IsOnSite) {
+                                                    // 
+                                                    // -- not installed
+                                                    isInstall = true;
+                                                    showAddon = true;
+                                                    CollectionCheckbox += "&nbsp;Install";
+                                                } else if (installedDate >= CollectionModifiedDate) {
+                                                    // 
+                                                    // -- up to date, reinstall
+                                                    isRepair = true;
+                                                    showAddon = true;
+                                                    CollectionCheckbox += "&nbsp;Reinstall";
+                                                } else {
+                                                    // 
+                                                    // -- old version, upgrade
+                                                    isUpgrade = true;
+                                                    showAddon = true;
+                                                    CollectionCheckbox += "&nbsp;Upgrade";
+                                                }
+                                            }
+                                        }
+                                        if (!string.IsNullOrEmpty(CollectionDemoLink)) {
+                                            CollectionDescription = CollectionDescription + "<div class=\"amDemoLink\"><a target=\"_blank\" href=\"" + CollectionDemoLink + "\">Demo</a></div>";
+                                        }
+                                        if (!string.IsNullOrEmpty(CollectionHelpLink)) {
+                                            CollectionDescription = CollectionDescription + "<div class=\"amHelpLink\"><a target=\"_blank\" href=\"" + CollectionHelpLink + "\">Reference</a></div>";
+                                        }
+                                        if (showAddon) {
+                                            LibraryViewModel_collectionList collectionCell = new LibraryViewModel_collectionList();
+                                            viewModel.collectionList.Add(new LibraryViewModel_collectionList() {
+                                                name = CollectionName,
+                                                imageLink = CollectionImageLink,
+                                                checkbox = CollectionCheckbox,
+                                                lastUpdatedString = CollectionModifiedDateCaption,
+                                                description = CollectionDescription,
+                                                isInstall = isInstall,
+                                                isUpgrade = isUpgrade,
+                                                isRepair = isRepair,
+                                                buttonValue = CollectionGUID,
+                                                installedDate = installedDateString
+                                            });
+                                        }
+                                        RowPtr += 1;
+                                        break;
+                                    }
                             }
                         }
-                        string layout = cp.Layout.GetLayout(_Constants.guidAddonManagerLibraryListCell, _Constants.nameAddonManagerLibraryLisCell, _Constants.pathFilenameAddonManagerLibraryLisCell);
-                        form.body = cp.Mustache.Render(layout, viewModel);
-                        //BodyHTML = "<script language=\"JavaScript\">function clearLibraryRows(r) {var c,p;c=document.getElementsByName('LibraryRow');for (p=0;p<c.length;p++){if(c[p].value!=r)c[p].checked=false;}}</script><input type=hidden name=LibraryCnt value=\"" + RowPtr + "\">" + constants.cr + "<div style=\"width:100%\">" + BodyHTML + constants.cr + "</div>";
-                        //form.body = BodyHTML;
-                        //form.description = "Select Add-ons to install from the Contensive Add-on Library. Please select only one at a time. Click OK to install the selected Add-on. The site may need to be stopped during the installation, but will be available again in approximately one minute";
                     }
+                    string layout = cp.Layout.GetLayout(_Constants.guidAddonManagerLibraryListCell, _Constants.nameAddonManagerLibraryLisCell, _Constants.pathFilenameAddonManagerLibraryLisCell);
+                    form.body = cp.Mustache.Render(layout, viewModel);
                     // 
                     // --------------------------------------------------------------------------------
                     // Build Page from tabs
