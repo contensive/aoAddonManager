@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RootNamespace></RootNamespace>
     <SignAssembly>true</SignAssembly>
@@ -24,8 +24,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
-    <PackageReference Include="Contensive.CPBaseClass" Version="25.7.18.3" />
-    <PackageReference Include="Contensive.DbModels" Version="25.7.18.3" />
+    <PackageReference Include="Contensive.CPBaseClass" Version="25.10.4.2" />
+    <PackageReference Include="Contensive.DbModels" Version="25.10.4.2" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources.Designer.cs">
