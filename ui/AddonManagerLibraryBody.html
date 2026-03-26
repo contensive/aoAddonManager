@@ -28,7 +28,7 @@
 	<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3">
 		{{#collectionList}}
 		<div class="col mb-3" data-am-name="{{name}}" data-am-status="{{#isInstall}}install{{/isInstall}}{{#isUpgrade}}upgrade{{/isUpgrade}}{{#isRepair}}repair{{/isRepair}}">
-			<div class="card h-100 rounded-2 p-2 shadow-sm{{#isRepair}} bg-primary-subtle{{/isRepair}}{{#isUpgrade}} bg-warning-subtle{{/isUpgrade}}">
+			<div class="card h-100 rounded-2 p-2 shadow-sm{{#isRepair}}{{#requiresNewerContensive}} bg-danger-subtle{{/requiresNewerContensive}}{{^requiresNewerContensive}} bg-primary-subtle{{/requiresNewerContensive}}{{/isRepair}}{{#isUpgrade}}{{#requiresNewerContensive}} bg-danger-subtle{{/requiresNewerContensive}}{{^requiresNewerContensive}} bg-warning-subtle{{/requiresNewerContensive}}{{/isUpgrade}}">
 				<div class="">
 					<div class="d-flex flex-row align-items-center">
 						<div class="pe-4">
@@ -43,7 +43,7 @@
 							</div>
 							<!-- -->
 							{{#isInstall}}
-								<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Install</button>
+								<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-sm{{#requiresNewerContensive}} btn-outline-danger{{/requiresNewerContensive}}{{^requiresNewerContensive}} btn-outline-primary{{/requiresNewerContensive}}">Install</button>
 							{{/isInstall}}
 							{{#isUpgrade}}
 								<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Upgrade</button>
@@ -60,6 +60,9 @@
 					<div class="card-body pt-0">
 						<div class="amDescription card-text small">{{{description}}}</div>
 				</div>
+				{{#requiresNewerContensive}}
+				<div class="bg-danger text-white text-center small rounded-1 py-1 mt-2">A newer version of Contensive is required</div>
+				{{/requiresNewerContensive}}
 				</div>
 			</div>
 		</div>

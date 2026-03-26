@@ -3,7 +3,7 @@ rem build and deliver to deployment folder
 
 set appName=veronica
 
-call build.cmd
+call "%~dp0build.cmd"
 
 rem upload to contensive application
 c:

@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(git -C /c/Git/aoAddonManager log --oneline -20)",
-      "Bash(git -C /c/Git/aoAddonManager log --graph --oneline -10)"
+      "Bash(git -C /c/Git/aoAddonManager log --graph --oneline -10)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(cmd.exe /c \"cd /d C:\\\\Git\\\\aoAddonManager\\\\scripts && build.cmd\")",
+      "Bash(cmd.exe /c \"cd /d C:\\\\Git\\\\aoAddonManager\\\\scripts && call build.cmd && echo BUILD_SUCCESS\")",
+      "Bash(cmd.exe //c \"cd /d C:\\\\Git\\\\aoAddonManager\\\\scripts & build.cmd\")",
+      "Bash(echo:*)",
+      "Bash(cmd.exe //c \"C:\\\\Git\\\\aoAddonManager\\\\scripts\\\\build-veronica.cmd\")",
+      "Bash(cmd.exe //c \"cd /d C:\\\\Git\\\\aoAddonManager\\\\scripts && dir build.cmd\")"
     ]
   }
 }

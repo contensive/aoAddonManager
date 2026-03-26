@@ -146,6 +146,7 @@ namespace Contensive.Addons.AddonManager51 {
                             string CollectionDescription = "";
                             string CollectionHelpLink = "";
                             string CollectionDemoLink = "";
+                            string CollectionContensiveVersion = "";
                             switch (Strings.LCase(CDef_Node.Name) ?? "") {
                                 case "collection": {
                                         // 
@@ -203,10 +204,10 @@ namespace Contensive.Addons.AddonManager51 {
                                                         break;
                                                     }
                                                 case "contensiveversion": {
-                                                        // 
-                                                        // Version
-                                                        // 
-                                                        string CollectionContensiveVersion = CollectionNode.InnerText;
+                                                        //
+                                                        // Minimum Contensive version required
+                                                        //
+                                                        CollectionContensiveVersion = CollectionNode.InnerText;
                                                         break;
                                                     }
                                                 case "lastchangedate": {
@@ -286,8 +287,17 @@ namespace Contensive.Addons.AddonManager51 {
                                         if (!string.IsNullOrEmpty(CollectionHelpLink)) {
                                             CollectionDescription = CollectionDescription + "<div class=\"amHelpLink\"><a target=\"_blank\" href=\"" + CollectionHelpLink + "\">Reference</a></div>";
                                         }
+                                        bool requiresNewerContensive = false;
+                                        if (!string.IsNullOrEmpty(CollectionContensiveVersion)) {
+                                            try {
+                                                var requiredVersion = new Version(CollectionContensiveVersion);
+                                                var currentVersion = new Version(cp.Version);
+                                                requiresNewerContensive = requiredVersion > currentVersion;
+                                            } catch (Exception) {
+                                                // -- ignore version parse errors
+                                            }
+                                        }
                                         if (showAddon) {
-                                            LibraryViewModel_collectionList collectionCell = new LibraryViewModel_collectionList();
                                             viewModel.collectionList.Add(new LibraryViewModel_collectionList() {
                                                 name = CollectionName,
                                                 imageLink = CollectionImageLink,
@@ -298,7 +308,8 @@ namespace Contensive.Addons.AddonManager51 {
                                                 isUpgrade = isUpgrade,
                                                 isRepair = isRepair,
                                                 buttonValue = CollectionGUID,
-                                                installedDate = installedDateString
+                                                installedDate = installedDateString,
+                                                requiresNewerContensive = requiresNewerContensive
                                             });
                                         }
                                         RowPtr += 1;
@@ -386,6 +397,10 @@ namespace Contensive.Addons.AddonManager51 {
         /// if isupgrade or isrepair, this is the date it was installed
         /// </summary>
         public string installedDate { get; set; } = "";
+        /// <summary>
+        /// true if the collection requires a newer version of Contensive than is currently installed
+        /// </summary>
+        public bool requiresNewerContensive { get; set; }
 
     }
 }
