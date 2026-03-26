@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="windows-1252"?> 
-<Collection name="Add-on Manager" guid="{A3E58089-74FC-4FB3-B847-0AD22B51AA72}" system="No" updatable="Yes" blockNavigatorNode="No" onInstallAddonGuid="{F379C86F-DE77-4B43-9ECD-B14CB5D415AF}">
+<Collection name="Add-on Manager" guid="{A3E58089-74FC-4FB3-B847-0AD22B51AA72}" system="No" updatable="Yes" blockNavigatorNode="No" onInstallAddonGuid="{F379C86F-DE77-4B43-9ECD-B14CB5D415AF}"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://contensive.s3.amazonaws.com/xsd/Collection.xsd"
+>
 	<HelpLink></HelpLink>
 	<Help></Help>
 	<Addon name="OnInstall" guid="{F379C86F-DE77-4B43-9ECD-B14CB5D415AF}" type="Add-on"> 
