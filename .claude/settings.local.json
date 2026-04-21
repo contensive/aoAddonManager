@@ -9,7 +9,8 @@
       "Bash(cmd.exe //c \"cd /d C:\\\\Git\\\\aoAddonManager\\\\scripts & build.cmd\")",
       "Bash(echo:*)",
       "Bash(cmd.exe //c \"C:\\\\Git\\\\aoAddonManager\\\\scripts\\\\build-veronica.cmd\")",
-      "Bash(cmd.exe //c \"cd /d C:\\\\Git\\\\aoAddonManager\\\\scripts && dir build.cmd\")"
+      "Bash(cmd.exe //c \"cd /d C:\\\\Git\\\\aoAddonManager\\\\scripts && dir build.cmd\")",
+      "Bash(cmd.exe //c \"C:\\\\Git\\\\aoAddonManager\\\\scripts\\\\build.cmd\")"
     ]
   }
 }

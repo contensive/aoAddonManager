@@ -59,6 +59,7 @@ namespace Contensive.Addons.AddonManager51 {
                 if (!cp.User.IsAdmin) {
                     return cp.Html.p("You must be an administrator to use this tool.");
                 } else {
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     string installFolder = "CollectionUpload" + cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "");
                     string InstallPath = installFolder + @"\";
                     string ErrorMessage = "";
@@ -118,12 +119,16 @@ namespace Contensive.Addons.AddonManager51 {
                     }
 
 
-                    // 
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    //
                     System.Xml.XmlDocument LibCollections = new System.Xml.XmlDocument();
                     LibCollections.Load("https://support.contensive.com/GetCollectionList?iv=" + cp.Version + "&key=" + cp.Utils.EncodeRequestVariable(SiteKey) + "&name=" + cp.Utils.EncodeRequestVariable(cp.Site.Name) + "&primaryDomain=" + cp.Utils.EncodeRequestVariable(cp.Site.DomainPrimary));
                     //
-                    LibraryViewModel viewModel = new LibraryViewModel();
+                    LibraryViewModel viewModel = new LibraryViewModel {
+                        filterSearch = cp.Doc.GetText("amFilterSearchValue"),
+                        filterInstalled = cp.Doc.GetBoolean("amFilterInstalledValue"),
+                        filterUpgrades = cp.Doc.GetBoolean("amFilterUpgradesValue"),
+                        filterNotInstalled = cp.Doc.GetBoolean("amFilterNotInstalledValue")
+                    };
                     if ((LibCollections.DocumentElement.Name.ToLower() ?? "") != (_Constants.CollectionListRootNode.ToLower() ?? "")) {
                         string UserError = "There was an error reading the Collection Library file. The '" + _Constants.CollectionListRootNode + "' element was not found.";
                         status = status + "<BR>" + UserError;
@@ -247,16 +252,18 @@ namespace Contensive.Addons.AddonManager51 {
                                         bool isInstall = false;
                                         bool isUpgrade = false;
                                         bool isRepair = false;
+                                        bool isNotUpdatable = false;
                                         string installedDateString = "";
                                         if (!string.IsNullOrEmpty(CollectionName)) {
                                             if (!string.IsNullOrEmpty(CollectionGUID)) {
                                                 var cs = cp.CSNew();
                                                 var installedDate = DateTime.MinValue;
                                                 bool IsOnSite = false;
-                                                if (cs.Open("Add-on Collections", "ccguid=" + cp.Db.EncodeSQLText(CollectionGUID), "", true, "ID,ModifiedDate")) {
+                                                if (cs.Open("Add-on Collections", "ccguid=" + cp.Db.EncodeSQLText(CollectionGUID), "", true, "ID,ModifiedDate,updatable")) {
                                                     installedDate = cs.GetDate("ModifiedDate");
                                                     installedDateString = installedDate.ToShortDateString();
                                                     IsOnSite = true;
+                                                    isNotUpdatable = !cs.GetBoolean("updatable");
                                                 }
                                                 cs.Close();
                                                 CollectionCheckbox = "<input TYPE=\"CheckBox\" NAME=\"LibraryRow\" VALUE=\"" + RowPtr + "\" onClick=\"clearLibraryRows('" + RowPtr + "');\">" + cp.Html.Hidden("LibraryRowGuid" + RowPtr, CollectionGUID) + cp.Html.Hidden("LibraryRowName" + RowPtr, CollectionName);
@@ -309,7 +316,8 @@ namespace Contensive.Addons.AddonManager51 {
                                                 isRepair = isRepair,
                                                 buttonValue = CollectionGUID,
                                                 installedDate = installedDateString,
-                                                requiresNewerContensive = requiresNewerContensive
+                                                requiresNewerContensive = requiresNewerContensive,
+                                                notUpdatable = isNotUpdatable
                                             });
                                         }
                                         RowPtr += 1;
@@ -351,6 +359,22 @@ namespace Contensive.Addons.AddonManager51 {
         /// list of collections
         /// </summary>
         public List<LibraryViewModel_collectionList> collectionList { get; set; } = new List<LibraryViewModel_collectionList>();
+        /// <summary>
+        /// persisted search text filter
+        /// </summary>
+        public string filterSearch { get; set; } = "";
+        /// <summary>
+        /// persisted installed filter checkbox
+        /// </summary>
+        public bool filterInstalled { get; set; }
+        /// <summary>
+        /// persisted upgrades filter checkbox
+        /// </summary>
+        public bool filterUpgrades { get; set; }
+        /// <summary>
+        /// persisted not-installed filter checkbox
+        /// </summary>
+        public bool filterNotInstalled { get; set; }
     }
     /// <summary>
     /// a collection entry in the library list
@@ -401,6 +425,10 @@ namespace Contensive.Addons.AddonManager51 {
         /// true if the collection requires a newer version of Contensive than is currently installed
         /// </summary>
         public bool requiresNewerContensive { get; set; }
+        /// <summary>
+        /// true if the installed collection is marked as not updatable
+        /// </summary>
+        public bool notUpdatable { get; set; }
 
     }
 }

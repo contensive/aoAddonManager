@@ -46,12 +46,24 @@
 								<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-sm{{#requiresNewerContensive}} btn-outline-danger{{/requiresNewerContensive}}{{^requiresNewerContensive}} btn-outline-primary{{/requiresNewerContensive}}">Install</button>
 							{{/isInstall}}
 							{{#isUpgrade}}
+								{{#notUpdatable}}
+								<button type="submit" name="button-remove" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Remove</button>
+								<div class="text-danger small mt-1">This collection is not upgradable</div>
+								{{/notUpdatable}}
+								{{^notUpdatable}}
 								<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Upgrade</button>
 								<button type="submit" name="button-remove" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Remove</button>
+								{{/notUpdatable}}
 							{{/isUpgrade}}
 							{{#isRepair}}
+								{{#notUpdatable}}
+								<button type="submit" name="button-remove" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Remove</button>
+								<div class="text-danger small mt-1">This collection is not upgradable</div>
+								{{/notUpdatable}}
+								{{^notUpdatable}}
 								<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Reinstall</button>
 								<button type="submit" name="button-remove" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Remove</button>
+								{{/notUpdatable}}
 							{{/isRepair}}
 							
 						</div>
@@ -70,7 +82,11 @@
 	</div>
 </div>
 
-<input type=hidden name=LibraryCnt value="0">
+<input type="hidden" name="LibraryCnt" value="0">
+<input type="hidden" name="amFilterSearchValue" id="amFilterSearchValue" value="{{filterSearch}}">
+<input type="hidden" name="amFilterInstalledValue" id="amFilterInstalledValue" value="{{filterInstalled}}">
+<input type="hidden" name="amFilterUpgradesValue" id="amFilterUpgradesValue" value="{{filterUpgrades}}">
+<input type="hidden" name="amFilterNotInstalledValue" id="amFilterNotInstalledValue" value="{{filterNotInstalled}}">
 <script language="JavaScript">
 	function clearLibraryRows(r) {
 		var c,p;
@@ -79,7 +95,14 @@
 			if(c[p].value!=r)c[p].checked=false;
 		}
 	}
+	function amSyncHiddenFilters() {
+		document.getElementById('amFilterSearchValue').value = document.getElementById('amFilterSearch').value;
+		document.getElementById('amFilterInstalledValue').value = document.getElementById('amFilterInstalled').checked ? 'true' : 'false';
+		document.getElementById('amFilterUpgradesValue').value = document.getElementById('amFilterUpgrades').checked ? 'true' : 'false';
+		document.getElementById('amFilterNotInstalledValue').value = document.getElementById('amFilterNotInstalled').checked ? 'true' : 'false';
+	}
 	function amApplyFilters() {
+		amSyncHiddenFilters();
 		var searchText = document.getElementById('amFilterSearch').value.toLowerCase();
 		var showInstalled = document.getElementById('amFilterInstalled').checked;
 		var showUpgrades = document.getElementById('amFilterUpgrades').checked;
@@ -98,4 +121,12 @@
 			card.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
 		}
 	}
+	(function amRestoreFilters() {
+		var search = document.getElementById('amFilterSearchValue').value;
+		if (search) { document.getElementById('amFilterSearch').value = search; }
+		if (document.getElementById('amFilterInstalledValue').value === 'true') { document.getElementById('amFilterInstalled').checked = true; }
+		if (document.getElementById('amFilterUpgradesValue').value === 'true') { document.getElementById('amFilterUpgrades').checked = true; }
+		if (document.getElementById('amFilterNotInstalledValue').value === 'true') { document.getElementById('amFilterNotInstalled').checked = true; }
+		amApplyFilters();
+	})();
 </script>
