@@ -124,9 +124,15 @@
 	(function amRestoreFilters() {
 		var search = document.getElementById('amFilterSearchValue').value;
 		if (search) { document.getElementById('amFilterSearch').value = search; }
-		if (document.getElementById('amFilterInstalledValue').value === 'true') { document.getElementById('amFilterInstalled').checked = true; }
-		if (document.getElementById('amFilterUpgradesValue').value === 'true') { document.getElementById('amFilterUpgrades').checked = true; }
-		if (document.getElementById('amFilterNotInstalledValue').value === 'true') { document.getElementById('amFilterNotInstalled').checked = true; }
+		if (document.getElementById('amFilterInstalledValue').value.toLowerCase() === 'true') { document.getElementById('amFilterInstalled').checked = true; }
+		if (document.getElementById('amFilterUpgradesValue').value.toLowerCase() === 'true') { document.getElementById('amFilterUpgrades').checked = true; }
+		if (document.getElementById('amFilterNotInstalledValue').value.toLowerCase() === 'true') { document.getElementById('amFilterNotInstalled').checked = true; }
 		amApplyFilters();
+	})();
+	(function amHookFormSubmit() {
+		var form = document.getElementById('amFilterSearchValue').closest('form');
+		if (form) {
+			form.addEventListener('submit', function() { amSyncHiddenFilters(); });
+		}
 	})();
 </script>

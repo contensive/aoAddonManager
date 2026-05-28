@@ -215,12 +215,6 @@ namespace Contensive.Addons.AddonManager51 {
                                                         CollectionContensiveVersion = CollectionNode.InnerText;
                                                         break;
                                                     }
-                                                case "lastchangedate": {
-                                                        break;
-                                                    }
-                                                // 
-                                                // last change - legacy field used by 4.1 to auto install, no longer updated
-                                                // 
                                                 case "lastmodifieddate": {
                                                         // 
                                                         // last modified

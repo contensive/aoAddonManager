@@ -1,15 +1,18 @@
+@echo off
+setlocal
 
-rem build and deliver to deployment folder
+@echo Build project and deploy to veronica
 
-set appName=veronica
-
-call "%~dp0build.cmd"
+rem run the build
+call "%~dp0build.cmd" /nopause
+if not "%errorlevel%"=="0" (
+    echo Build failed, skipping deploy.
+    pause
+    exit /b 1
+)
 
 rem upload to contensive application
-c:
-cd %collectionPath%
-cc -a %appName% --installFile "%collectionName%.zip"
-cd ..\..\scripts
+cc -a veronica --installFile "%~dp0..\collections\Add-on Manager\Add-on Manager.zip"
 
-rem -- done --
 pause
+exit /b %errorlevel%
