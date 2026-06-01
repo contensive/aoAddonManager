@@ -495,8 +495,8 @@ end function]]></Code>
 			<field name="sortorder"><![CDATA[Add-on Collections]]></field>
 		</record>
 </data>
-	<Resource name="wwwFiles" type="wwwFiles" />
-	<Resource name="publicFiles" type="publicFiles" />
-	<Resource name="privateFiles" type="privateFiles" />
-	<Resource name="layoutFiles" type="layoutFiles" />
+	<Resource name="wwwFiles.zip" type="wwwFiles" />
+	<Resource name="publicFiles.zip" type="publicFiles" />
+	<Resource name="privateFiles.zip" type="privateFiles" />
+	<Resource name="layoutFiles.zip" type="layoutFiles" />
 </Collection>
