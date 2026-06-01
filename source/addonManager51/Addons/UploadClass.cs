@@ -1,6 +1,5 @@
 ﻿using System;
 using Contensive.BaseClasses;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace Contensive.Addons.AddonManager51 {
     // 
@@ -49,7 +48,7 @@ namespace Contensive.Addons.AddonManager51 {
                     // -- Put up error message
                     form.body += cp.Html.p("You must be an administrator to use this tool.");
                 } else {
-                    if (Operators.CompareString(cp.Site.GetText("buildVersion"), cp.Version, false) < 0) {
+                    if (string.Compare(cp.Site.GetText("buildVersion"), cp.Version, StringComparison.Ordinal) < 0) {
                         // 
                         // -- database needs to be upgraded
                         form.description += cp.Html.p("WARNING: The site database needs to be upgraded. You should do this before installing addon collections.");

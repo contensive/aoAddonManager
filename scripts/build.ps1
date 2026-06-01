@@ -13,12 +13,12 @@ Invoke-ContensiveBuild `
     -CollectionPath    "$projectRoot\collections\Add-on Manager" `
     -SolutionPath      "$projectRoot\source\addonManager.sln" `
     -DotnetProjectPath "$projectRoot\source\addonManager51\addonManager51.csproj" `
-    -BinPath           "$projectRoot\source\addonManager51\bin\Debug\net48" `
-    -Configuration     'Debug' `
+    -BinPath           "$projectRoot\source\addonManager51\bin\Release\netstandard2.0" `
+    -Configuration     'Release' `
     -DeploymentRoot    'C:\Deployments\aoAddonManager' `
     -CleanFolders      @(
                            "$projectRoot\source\addonManager51\bin"
                            "$projectRoot\source\addonManager51\obj"
                        ) `
-    -UiPath            "$projectRoot" `
-    -UiAssetFolders    @('ui')
+    -UiPath            "$projectRoot\ui" `
+    -UiAssetFolders    @('wwwFiles', 'publicFiles', 'privateFiles', 'layoutFiles')

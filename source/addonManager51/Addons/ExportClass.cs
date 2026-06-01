@@ -1,8 +1,6 @@
 ﻿using System;
 using Contensive.BaseClasses;
 using Contensive.Models.Db;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace Contensive.Addons.AddonManager51 {
     /// <summary>
@@ -36,7 +34,7 @@ namespace Contensive.Addons.AddonManager51 {
                     form.body += cp.Html.p("You must be an administrator to use this tool.");
                     return form.getHtml();
                 }
-                if (Operators.CompareString(cp.Site.GetText("buildVersion"), cp.Version, false) < 0) {
+                if (string.Compare(cp.Site.GetText("buildVersion"), cp.Version, StringComparison.Ordinal) < 0) {
                     // 
                     // -- database needs to be upgraded
                     form.description += cp.Html.p("Warning: The site's Database needs to be upgraded. You should do this before installing addons.");
@@ -72,7 +70,7 @@ namespace Contensive.Addons.AddonManager51 {
                             // 
                             // -- success
                             form.body += cp.Html.p("Export Successful");
-                            form.body += cp.Html.p("Click <a href=\"" + cp.Http.CdnFilePathPrefixAbsolute + Strings.Replace(CollectionFilename, @"\", "/") + "\">here</a> to download the collection file.</p>");
+                            form.body += cp.Html.p($"Click <a href=\"{cp.Http.CdnFilePathPrefixAbsolute}{CollectionFilename.Replace(@"\", "/")}\">here</a> to download the collection file.</p>");
                         }
                     }
                 }

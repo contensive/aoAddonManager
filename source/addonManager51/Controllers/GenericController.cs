@@ -1,6 +1,5 @@
 ﻿using System;
 using Contensive.BaseClasses;
-using Microsoft.VisualBasic;
 
 namespace Contensive.Addons.AddonManager51 {
     static class GenericController {
@@ -50,13 +49,13 @@ namespace Contensive.Addons.AddonManager51 {
                 var cs = cp.CSNew();
                 // 
                 if (!string.IsNullOrEmpty(NameSpacex)) {
-                    Pos = Strings.InStr(1, NameSpacex, ".");
+                    Pos = NameSpacex.IndexOf(".", StringComparison.Ordinal) + 1;
                     if (Pos == 0) {
                         ParentName = NameSpacex;
                         ParentNameSpace = "";
                     } else {
-                        ParentName = Strings.Mid(NameSpacex, Pos + 1);
-                        ParentNameSpace = Strings.Mid(NameSpacex, 1, Pos - 1);
+                        ParentName = NameSpacex.Substring(Pos);
+                        ParentNameSpace = NameSpacex.Substring(0, Pos - 1);
                     }
                     if (string.IsNullOrEmpty(ParentNameSpace)) {
                         if (cs.Open(ContentName, "(name=" + cp.Db.EncodeSQLText(ParentName) + ")and((parentid is null)or(parentid=0))", "ID", true, "ID")) {

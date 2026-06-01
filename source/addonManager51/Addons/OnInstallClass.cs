@@ -1,6 +1,5 @@
 ﻿using System;
 using Contensive.BaseClasses;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace Contensive.Addons.AddonManager51 {
     // 

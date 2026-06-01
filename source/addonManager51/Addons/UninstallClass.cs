@@ -1,7 +1,6 @@
 ﻿using System;
 using Contensive.BaseClasses;
 using Contensive.Models.Db;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace Contensive.Addons.AddonManager51 {
     /// <summary>
@@ -68,7 +67,7 @@ namespace Contensive.Addons.AddonManager51 {
                     cp.Site.SetProperty("sitekey", SiteKey);
                 }
                 // 
-                bool DbUpToDate = Operators.CompareString(cp.Site.GetText("buildVersion"), cp.Version, false) >= 0;
+                bool DbUpToDate = string.Compare(cp.Site.GetText("buildVersion"), cp.Version, StringComparison.Ordinal) >= 0;
                 string Button = cp.Doc.GetText(RequestNameButton);
                 if ((Button ?? "") == ButtonCancel) {
                     // 

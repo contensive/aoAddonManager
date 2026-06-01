@@ -495,6 +495,8 @@ end function]]></Code>
 			<field name="sortorder"><![CDATA[Add-on Collections]]></field>
 		</record>
 </data>
-	<Resource name="librarynoimage.jpg" type="www" path="addonmanager" />
-	<Resource name="ui.zip" type="file" path="addonmanager" />
+	<Resource name="wwwFiles" type="wwwFiles" />
+	<Resource name="publicFiles" type="publicFiles" />
+	<Resource name="privateFiles" type="privateFiles" />
+	<Resource name="layoutFiles" type="layoutFiles" />
 </Collection>

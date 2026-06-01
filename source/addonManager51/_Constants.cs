@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-
-namespace Contensive.Addons.AddonManager51 {
+﻿namespace Contensive.Addons.AddonManager51 {
     /// <summary>
     /// 
     /// </summary>
@@ -21,9 +19,9 @@ namespace Contensive.Addons.AddonManager51 {
         public const string pathFilenameAddonManagerLibraryLisCell = "addonmanager/AddonManagerLibraryBody.html";
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
-        public const string cr = Microsoft.VisualBasic.Constants.vbCrLf;
+        public const string cr = "\r\n";
         /// <summary>
         /// 
         /// </summary>

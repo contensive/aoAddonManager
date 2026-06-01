@@ -1,7 +1,5 @@
 ﻿using Contensive.BaseClasses;
 using Contensive.Models.Db;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -87,9 +85,9 @@ namespace Contensive.Addons.AddonManager51 {
                         }
                         // 
                         if (!string.IsNullOrEmpty(InstallLibCollectionList)) {
-                            InstallLibCollectionList = Strings.Mid(InstallLibCollectionList, 2);
-                            string[] LibGuids = Strings.Split(InstallLibCollectionList, ",");
-                            int cnt = Information.UBound(LibGuids) + 1;
+                            InstallLibCollectionList = InstallLibCollectionList.Substring(1);
+                            string[] LibGuids = InstallLibCollectionList.Split(',');
+                            int cnt = LibGuids.Length;
                             var loopTo = cnt - 1;
                             for (Ptr = 0; Ptr <= loopTo; Ptr++) {
                                 // 
@@ -152,7 +150,7 @@ namespace Contensive.Addons.AddonManager51 {
                             string CollectionHelpLink = "";
                             string CollectionDemoLink = "";
                             string CollectionContensiveVersion = "";
-                            switch (Strings.LCase(CDef_Node.Name) ?? "") {
+                            switch (CDef_Node.Name.ToLower() ?? "") {
                                 case "collection": {
                                         // 
                                         // Read the collection
@@ -220,8 +218,8 @@ namespace Contensive.Addons.AddonManager51 {
                                                         // last modified
                                                         // 
                                                         CollectionModifiedDate = DateTime.MinValue;
-                                                        if (Information.IsDate(CollectionNode.InnerText)) {
-                                                            CollectionModifiedDate = Conversions.ToDate(CollectionNode.InnerText);
+                                                        if (DateTime.TryParse(CollectionNode.InnerText, out DateTime parsedDate)) {
+                                                            CollectionModifiedDate = parsedDate;
                                                         }
                                                         if (CollectionModifiedDate <= DateTime.MinValue) {
                                                             CollectionModifiedDateCaption = "unknown";
