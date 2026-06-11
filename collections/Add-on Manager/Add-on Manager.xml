@@ -496,7 +496,7 @@ end function]]></Code>
 		</record>
 </data>
 	<Resource name="wwwFiles.zip" type="wwwFiles" />
-	<Resource name="publicFiles.zip" type="publicFiles" />
+	<Resource name="cdnFiles.zip" type="cdnFiles" />
 	<Resource name="privateFiles.zip" type="privateFiles" />
 	<Resource name="layoutFiles.zip" type="layoutFiles" />
 </Collection>
