@@ -12,6 +12,7 @@ namespace Contensive.Addons.AddonManager51 {
         /// <param name="cp"></param>
         /// <param name="TargetCollectionID"></param>
         public static  void UninstallCollection(CPBaseClass cp, int TargetCollectionID) {
+            if (!cp.User.IsAdmin) { throw new Exception("Administrator access required."); }
             string TargetCollectionName = cp.Content.GetRecordName("Add-on Collections", TargetCollectionID);
             // 
             // Clean up rules associating this collection to other objects
@@ -66,7 +67,8 @@ namespace Contensive.Addons.AddonManager51 {
         // 
         // -- method provided here because these methods are not included in the c41 interface, so this call can only be created if v5 code
         public static bool installCollectionFromLibrary(CPBaseClass cp, string collectionGuid, ref string ErrorMessage) {
-            // 
+            if (!cp.User.IsAdmin) { throw new Exception("Administrator access required."); }
+            //
             cp.Utils.AppendLog("installCollectionFromLibrary, collectionGuid [" + collectionGuid + "]");
             // 
             cp.Addon.InstallCollectionFromLibrary(collectionGuid, ref ErrorMessage);
@@ -88,7 +90,8 @@ namespace Contensive.Addons.AddonManager51 {
         // 
         // -- method provided here because these methods are not included in the c41 interface, so this call can only be created if v5 code
         public static bool installCollectionFromUpload(CPBaseClass cp, string requestName, ref string ErrorMessage) {
-            // 
+            if (!cp.User.IsAdmin) { throw new Exception("Administrator access required."); }
+            //
             cp.Utils.AppendLog("installCollectionFromUpload, requestName [" + requestName + "]");
             try {
                 // 

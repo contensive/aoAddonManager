@@ -60,24 +60,26 @@ namespace Contensive.Addons.AddonManager51 {
             string returnResult = "";
             try {
                 var form = cp.AdminUI.CreateLayoutBuilderList();
-                // 
+                //
+                if (!cp.User.IsAdmin) {
+                    return cp.Html.p("You must be an administrator to use this tool.");
+                }
+                //
                 string SiteKey = cp.Site.GetText("sitekey", "");
                 if (string.IsNullOrEmpty(SiteKey)) {
                     SiteKey = cp.Utils.CreateGuid();
                     cp.Site.SetProperty("sitekey", SiteKey);
                 }
-                // 
+                //
                 bool DbUpToDate = string.Compare(cp.Site.GetText("buildVersion"), cp.Version, StringComparison.Ordinal) >= 0;
                 string Button = cp.Doc.GetText(RequestNameButton);
                 if ((Button ?? "") == ButtonCancel) {
-                    // 
+                    //
                     // ----- redirect back to the root
-                    // 
+                    //
                     cp.Response.Redirect(cp.Site.GetText("adminUrl"));
                 } else {
-                    if (!cp.User.IsAdmin) {
-                        string BodyHTML = cp.Html.p("You must be an administrator to use this tool.");
-                    } else {
+                    {
                         // installFolder = "CollectionUpload" & cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "")
                         // InstallPath = cp.Site.PhysicalFilePath & installFolder & "\"
                         if ((Button ?? "") == ButtonOK) {

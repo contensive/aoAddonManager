@@ -30,24 +30,24 @@ namespace Contensive.Addons.AddonManager51 {
         private string getUpload() {
             string returnResult = "";
             try {
+                //
+                if (!cp.User.IsAdmin) {
+                    return cp.Html.p("You must be an administrator to use this tool.");
+                }
+                //
                 string Button = cp.Doc.GetText(RequestNameButton);
                 if ((Button ?? "") == ButtonCancel) {
-                    // 
+                    //
                     // ----- redirect back to the root
                     cp.Response.Redirect(cp.Site.GetText("adminUrl"));
                 }
-                // 
+                //
                 // -- create form
                 var form = cp.AdminUI.CreateLayoutBuilderNameValue();
                 form.title = "Upload Collection";
-                //form.includeForm = true;
                 form.body = cp.Html.p("Use this form to upload an add-on collection. If the GUID of the add-on matches one already installed on this server, it will be updated. If the GUID is new, it will be added.");
                 form.description = cp.Html.p("Upload a collection zip file to install the collection on this site. ");
-                if (!cp.User.IsAdmin) {
-                    // 
-                    // -- Put up error message
-                    form.body += cp.Html.p("You must be an administrator to use this tool.");
-                } else {
+                {
                     if (string.Compare(cp.Site.GetText("buildVersion"), cp.Version, StringComparison.Ordinal) < 0) {
                         // 
                         // -- database needs to be upgraded

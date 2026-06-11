@@ -16,24 +16,23 @@ namespace Contensive.Addons.AddonManager51 {
         /// <returns></returns>
         public override object Execute(CPBaseClass cp) {
             try {
+                //
+                if (!cp.User.IsAdmin) {
+                    return cp.Html.p("You must be an administrator to use this tool.");
+                }
+                //
                 string Button = cp.Doc.GetText(_Constants.RequestNameButton);
                 if ((Button ?? "") == _Constants.ButtonCancel) {
-                    // 
+                    //
                     // ----- redirect back to the root
                     cp.Response.Redirect(cp.Site.GetText("adminUrl"));
                     return string.Empty;
                 }
-                // 
+                //
                 // -- create form
                 var form = cp.AdminUI.CreateLayoutBuilderNameValue();
                 form.title = "Export Collection";
                 form.body = cp.Html.p("Use this tool to create an Add-on Collection zip file that can be used to install a collection on another site.");
-                if (!cp.User.IsAdmin) {
-                    // 
-                    // -- Put up error message
-                    form.body += cp.Html.p("You must be an administrator to use this tool.");
-                    return form.getHtml();
-                }
                 if (string.Compare(cp.Site.GetText("buildVersion"), cp.Version, StringComparison.Ordinal) < 0) {
                     // 
                     // -- database needs to be upgraded

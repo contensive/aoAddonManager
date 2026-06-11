@@ -37,26 +37,28 @@ namespace Contensive.Addons.AddonManager51 {
         private string getCollectionLibrary() {
             try {
                 var form = cp.AdminUI.CreateLayoutBuilder();
-                // 
+                //
+                if (!cp.User.IsAdmin) {
+                    return cp.Html.p("You must be an administrator to use this tool.");
+                }
+                //
                 string SiteKey = cp.Site.GetText("sitekey", "");
                 if (string.IsNullOrEmpty(SiteKey)) {
                     SiteKey = cp.Utils.CreateGuid();
                     cp.Site.SetProperty("sitekey", SiteKey);
                 }
-                // 
+                //
                 string Button = cp.Doc.GetText(_Constants.RequestNameButton);
                 string ButtonRemove = cp.Doc.GetText(_Constants.ButtonRemove);
                 if ((Button ?? "") == _Constants.ButtonCancel) {
-                    // 
+                    //
                     // ----- redirect back to the root
-                    // 
+                    //
                     cp.Response.Redirect(cp.Site.GetText("adminUrl"));
                     return "";
                 }
                 string status = "";
-                if (!cp.User.IsAdmin) {
-                    return cp.Html.p("You must be an administrator to use this tool.");
-                } else {
+                {
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     string installFolder = "CollectionUpload" + cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "");
                     string InstallPath = installFolder + @"\";
