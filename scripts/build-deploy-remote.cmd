@@ -33,9 +33,9 @@ if not exist "%LOCALAPPDATA%\contensive" mkdir "%LOCALAPPDATA%\contensive"
 rem derive site name from first segment of domain
 for /f "tokens=1 delims=." %%a in ("!domain!") do set siteName=%%a
 
-@echo Build project and deploy to !domain!
+@echo Build project (Debug) and deploy to !domain!
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-    "& '%~dp0build.ps1' -RemoteDeployTarget @{Url='https://!domain!/installCollection'; SiteName='!siteName!'}"
+    "& '%~dp0build.ps1' -Configuration 'Debug' -RemoteDeployTarget @{Url='https://!domain!/installCollection'; SiteName='!siteName!'}"
 set deployExit=%errorlevel%
 pause
 exit /b %deployExit%

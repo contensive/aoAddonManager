@@ -12,7 +12,7 @@
 	<Addon name="Add-on Manager" guid="{4DD876E7-BCC4-4AF0-B32E-59FFAB816478}" type="Tool">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<DotNetClass></DotNetClass>
+		<DotNetClass><![CDATA[Contensive.Addons.AddonManager51.AddonManagerRedirectClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
 		<Filter>No</Filter>
@@ -46,11 +46,7 @@
 		<RemoteAssetLink></RemoteAssetLink>
 		<Styles></Styles>
 		<styleslinkhref></styleslinkhref>
-		<Scripting Language="VBScript" EntryPoint="" Timeout="5000">
-			<Code><![CDATA[function m
-cp.response.redirect( "?addonguid=%7BA1BCA00C-2657-42A1-8F98-BED1E5A42025%7D&setPortalGuid=%7B9DF996D7-2280-431E-8D34-2ED059CB988C%7D" )
-end function]]></Code>
-		</Scripting>
+		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
 	<Addon name="addonManager-CollectionLibrary" guid="{7360E5BB-0404-461C-94E4-A56066CA0B02}" type="Add-on">
 		<Copy></Copy>

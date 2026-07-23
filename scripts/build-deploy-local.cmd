@@ -30,9 +30,9 @@ rem save the app name for next time (shared across all addons)
 if not exist "%LOCALAPPDATA%\contensive" mkdir "%LOCALAPPDATA%\contensive"
 >"%defaultsFile%" echo !appName!
 
-@echo Build project and install on site: !appName!
+@echo Build project (Debug) and install on site: !appName!
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-    "& '%~dp0build.ps1' -LocalDeployTarget '!appName!'"
+    "& '%~dp0build.ps1' -Configuration 'Debug' -LocalDeployTarget '!appName!'"
 set deployExit=%errorlevel%
 pause
 exit /b %deployExit%
