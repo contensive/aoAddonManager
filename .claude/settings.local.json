@@ -11,7 +11,10 @@
       "Bash(cmd.exe //c \"C:\\\\Git\\\\aoAddonManager\\\\scripts\\\\build-veronica.cmd\")",
       "Bash(cmd.exe //c \"cd /d C:\\\\Git\\\\aoAddonManager\\\\scripts && dir build.cmd\")",
       "Bash(cmd.exe //c \"C:\\\\Git\\\\aoAddonManager\\\\scripts\\\\build.cmd\")",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "WebFetch(domain:support.contensive.com)",
+      "WebFetch(domain:contensive.io)",
+      "WebFetch(domain:api.github.com)"
     ]
   }
 }
