@@ -2,7 +2,7 @@
 using Contensive.BaseClasses;
 using Contensive.Models.Db;
 
-namespace Contensive.Addons.AddonManager51 {
+namespace Contensive.AddonManager.Addons {
     /// <summary>
     /// Export Addon Collection
     /// </summary>
@@ -21,8 +21,8 @@ namespace Contensive.Addons.AddonManager51 {
                     return cp.Html.p("You must be an administrator to use this tool.");
                 }
                 //
-                string Button = cp.Doc.GetText(_Constants.RequestNameButton);
-                if ((Button ?? "") == _Constants.ButtonCancel) {
+                string Button = cp.Doc.GetText(Constants.requestNameButton);
+                if ((Button ?? "") == Constants.buttonCancel) {
                     //
                     // ----- redirect back to the root
                     cp.Response.Redirect(cp.Site.GetText("adminUrl"));
@@ -40,10 +40,10 @@ namespace Contensive.Addons.AddonManager51 {
                 }
                 // 
                 // -- Upload tool
-                if ((Button ?? "") == _Constants.ButtonOK) {
+                if ((Button ?? "") == Constants.buttonOK) {
                     // 
                     // -- export
-                    int CollectionID = cp.Doc.GetInteger(_Constants.RequestNameCollectionID);
+                    int CollectionID = cp.Doc.GetInteger(Constants.requestNameCollectionID);
                     var addonCollection = DbBaseModel.create<AddonCollectionModel>(cp, CollectionID);
                     if (addonCollection is null) {
                         // 
@@ -77,14 +77,14 @@ namespace Contensive.Addons.AddonManager51 {
                 // Get Form
                 form.addRow();
                 form.rowName = "Add-on Collection";
-                form.rowValue = cp.Html.SelectContent(_Constants.RequestNameCollectionID, "0", "Add-on Collections", "", "Select Collection To Export", "form-control");
+                form.rowValue = cp.Html.SelectContent(Constants.requestNameCollectionID, "0", "Add-on Collections", "", "Select Collection To Export", "form-control");
                 form.addFormHidden("UploadCount", "1");
-                form.addFormButton(_Constants.ButtonOK);
-                form.addFormButton(_Constants.ButtonCancel);
+                form.addFormButton(Constants.buttonOK);
+                form.addFormButton(Constants.buttonCancel);
                 return form.getHtml();
             } catch (Exception ex) {
                 cp.Site.ErrorReport(ex);
-                throw;
+                return "<p>An error occurred during collection export. Please try again.</p>";
             }
         }
     }

@@ -1,11 +1,11 @@
-﻿using Contensive.BaseClasses;
+﻿using Contensive.AddonManager.Controllers;
+using Contensive.BaseClasses;
 using Contensive.Models.Db;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Runtime.CompilerServices;
 
-namespace Contensive.Addons.AddonManager51 {
+namespace Contensive.AddonManager.Addons {
     /// <summary>
     /// This is the Add-on Library. 
     /// </summary>
@@ -25,7 +25,7 @@ namespace Contensive.Addons.AddonManager51 {
                 return getCollectionLibrary();
             } catch (Exception ex) {
                 CP.Site.ErrorReport(ex);
-                throw;
+                return "<p>An error occurred loading the collection library. Please try again.</p>";
             }
         }
         // 
@@ -48,9 +48,9 @@ namespace Contensive.Addons.AddonManager51 {
                     cp.Site.SetProperty("sitekey", SiteKey);
                 }
                 //
-                string Button = cp.Doc.GetText(_Constants.RequestNameButton);
-                string ButtonRemove = cp.Doc.GetText(_Constants.ButtonRemove);
-                if ((Button ?? "") == _Constants.ButtonCancel) {
+                string Button = cp.Doc.GetText(Constants.requestNameButton);
+                string ButtonRemove = cp.Doc.GetText(Constants.buttonRemove);
+                if ((Button ?? "") == Constants.buttonCancel) {
                     //
                     // ----- redirect back to the root
                     //
@@ -69,8 +69,8 @@ namespace Contensive.Addons.AddonManager51 {
                         //
                         // -- uninstall
                         var collection = DbBaseModel.create<AddonCollectionModel>(cp, ButtonRemove);
-                        InstallController.UninstallCollection(cp, collection.id);
-                    } else if ((Button ?? "") == _Constants.ButtonOK) {
+                        InstallController.uninstallCollection(cp, collection.id);
+                    } else if ((Button ?? "") == Constants.buttonOK) {
                         //
                         // -- legacy
                         // 
@@ -82,8 +82,8 @@ namespace Contensive.Addons.AddonManager51 {
                         int Ptr;
                         if (!string.IsNullOrEmpty(cp.Doc.GetText("LibraryRow"))) {
                             Ptr = cp.Doc.GetInteger("LibraryRow");
-                            CollectionGUID = cp.Doc.GetText("LibraryRowguid" + Ptr);
-                            InstallLibCollectionList = InstallLibCollectionList + "," + CollectionGUID;
+                            CollectionGUID = cp.Doc.GetText($"LibraryRowguid{Ptr}");
+                            InstallLibCollectionList += $",{CollectionGUID}";
                         }
                         // 
                         if (!string.IsNullOrEmpty(InstallLibCollectionList)) {
@@ -120,18 +120,18 @@ namespace Contensive.Addons.AddonManager51 {
 
 
                     //
-                    System.Xml.XmlDocument LibCollections = new System.Xml.XmlDocument();
-                    LibCollections.Load("https://support.contensive.com/GetCollectionList?iv=" + cp.Version + "&key=" + cp.Utils.EncodeRequestVariable(SiteKey) + "&name=" + cp.Utils.EncodeRequestVariable(cp.Site.Name) + "&primaryDomain=" + cp.Utils.EncodeRequestVariable(cp.Site.DomainPrimary));
+                    System.Xml.XmlDocument LibCollections = new();
+                    LibCollections.Load($"https://support.contensive.com/GetCollectionList?iv={cp.Version}&key={cp.Utils.EncodeRequestVariable(SiteKey)}&name={cp.Utils.EncodeRequestVariable(cp.Site.Name)}&primaryDomain={cp.Utils.EncodeRequestVariable(cp.Site.DomainPrimary)}");
                     //
-                    LibraryViewModel viewModel = new LibraryViewModel {
+                    LibraryViewModel viewModel = new() {
                         filterSearch = cp.Doc.GetText("amFilterSearchValue"),
                         filterInstalled = cp.Doc.GetBoolean("amFilterInstalledValue"),
                         filterUpgrades = cp.Doc.GetBoolean("amFilterUpgradesValue"),
                         filterNotInstalled = cp.Doc.GetBoolean("amFilterNotInstalledValue")
                     };
-                    if ((LibCollections.DocumentElement.Name.ToLower() ?? "") != (_Constants.CollectionListRootNode.ToLower() ?? "")) {
-                        string UserError = "There was an error reading the Collection Library file. The '" + _Constants.CollectionListRootNode + "' element was not found.";
-                        status = status + "<BR>" + UserError;
+                    if ((LibCollections.DocumentElement.Name.ToLower() ?? "") != (Constants.collectionListRootNode.ToLower() ?? "")) {
+                        string UserError = $"There was an error reading the Collection Library file. The '{Constants.collectionListRootNode}' element was not found.";
+                        status += $"<BR>{UserError}";
                         cp.UserError.Add(UserError);
                     } else {
                         var RowPtr = default(int);
@@ -188,10 +188,6 @@ namespace Contensive.Addons.AddonManager51 {
                                                         break;
                                                     }
                                                 case "version": {
-                                                        // 
-                                                        // Version
-                                                        // 
-                                                        string CollectionVersion = CollectionNode.InnerText;
                                                         break;
                                                     }
                                                 case "description": {
@@ -253,14 +249,14 @@ namespace Contensive.Addons.AddonManager51 {
                                                 var cs = cp.CSNew();
                                                 var installedDate = DateTime.MinValue;
                                                 bool IsOnSite = false;
-                                                if (cs.Open("Add-on Collections", "ccguid=" + cp.Db.EncodeSQLText(CollectionGUID), "", true, "ID,ModifiedDate,updatable")) {
+                                                if (cs.Open("Add-on Collections", $"ccguid={cp.Db.EncodeSQLText(CollectionGUID)}", "", true, "ID,ModifiedDate,updatable")) {
                                                     installedDate = cs.GetDate("ModifiedDate");
                                                     installedDateString = installedDate.ToShortDateString();
                                                     IsOnSite = true;
                                                     isNotUpdatable = !cs.GetBoolean("updatable");
                                                 }
                                                 cs.Close();
-                                                CollectionCheckbox = "<input TYPE=\"CheckBox\" NAME=\"LibraryRow\" VALUE=\"" + RowPtr + "\" onClick=\"clearLibraryRows('" + RowPtr + "');\">" + cp.Html.Hidden("LibraryRowGuid" + RowPtr, CollectionGUID) + cp.Html.Hidden("LibraryRowName" + RowPtr, CollectionName);
+                                                CollectionCheckbox = $"<input TYPE=\"CheckBox\" NAME=\"LibraryRow\" VALUE=\"{RowPtr}\" onClick=\"clearLibraryRows('{RowPtr}');\">{cp.Html.Hidden($"LibraryRowGuid{RowPtr}", CollectionGUID)}{cp.Html.Hidden($"LibraryRowName{RowPtr}", CollectionName)}";
                                                 if (!IsOnSite) {
                                                     // 
                                                     // -- not installed
@@ -283,10 +279,10 @@ namespace Contensive.Addons.AddonManager51 {
                                             }
                                         }
                                         if (!string.IsNullOrEmpty(CollectionDemoLink)) {
-                                            CollectionDescription = CollectionDescription + "<div class=\"amDemoLink\"><a target=\"_blank\" href=\"" + CollectionDemoLink + "\">Demo</a></div>";
+                                            CollectionDescription += $"<div class=\"amDemoLink\"><a target=\"_blank\" href=\"{CollectionDemoLink}\">Demo</a></div>";
                                         }
                                         if (!string.IsNullOrEmpty(CollectionHelpLink)) {
-                                            CollectionDescription = CollectionDescription + "<div class=\"amHelpLink\"><a target=\"_blank\" href=\"" + CollectionHelpLink + "\">Reference</a></div>";
+                                            CollectionDescription += $"<div class=\"amHelpLink\"><a target=\"_blank\" href=\"{CollectionHelpLink}\">Reference</a></div>";
                                         }
                                         bool requiresNewerContensive = false;
                                         if (!string.IsNullOrEmpty(CollectionContensiveVersion)) {
@@ -320,15 +316,15 @@ namespace Contensive.Addons.AddonManager51 {
                             }
                         }
                     }
-                    string layout = cp.Layout.GetLayout(_Constants.guidAddonManagerLibraryListCell, _Constants.nameAddonManagerLibraryLisCell, _Constants.pathFilenameAddonManagerLibraryLisCell);
+                    string layout = cp.Layout.GetLayout(Constants.guidAddonManagerLibraryListCell, Constants.nameAddonManagerLibraryLisCell, Constants.pathFilenameAddonManagerLibraryLisCell);
                     form.body = cp.Mustache.Render(layout, viewModel);
                     // 
                     // --------------------------------------------------------------------------------
                     // Build Page from tabs
                     // --------------------------------------------------------------------------------
                     // 
-                    form.addFormButton(_Constants.ButtonCancel);
-                    form.addFormButton(_Constants.ButtonOK);
+                    form.addFormButton(Constants.buttonCancel);
+                    form.addFormButton(Constants.buttonOK);
                 }
                 // 
                 // Output the Add-on
@@ -336,7 +332,7 @@ namespace Contensive.Addons.AddonManager51 {
                 form.title = "Add-on Library";
                 form.description = "";
                 if (!string.IsNullOrEmpty(status)) {
-                    form.description = form.description + "<div style=\"Margin-left:50px\">" + status + "</div>";
+                    form.description += $"<div style=\"Margin-left:50px\">{status}</div>";
                 }
                 return form.getHtml();
             } catch (Exception ex) {
@@ -352,7 +348,7 @@ namespace Contensive.Addons.AddonManager51 {
         /// <summary>
         /// list of collections
         /// </summary>
-        public List<LibraryViewModel_collectionList> collectionList { get; set; } = new List<LibraryViewModel_collectionList>();
+        public List<LibraryViewModel_collectionList> collectionList { get; set; } = [];
         /// <summary>
         /// persisted search text filter
         /// </summary>

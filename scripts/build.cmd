@@ -1,18 +1,16 @@
 @echo off
 setlocal
 
-set nopause=0
-if /i "%~1"=="/nopause" set nopause=1
+@echo Build Add-on Manager
 
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0build.ps1"
-set exitcode=%errorlevel%
 
-if not "%exitcode%"=="0" (
+if %errorlevel% neq 0 (
     echo.
     echo ========================================
-    echo BUILD FAILED
+    echo   BUILD FAILED
     echo ========================================
+    echo.
 )
 
-if "%nopause%"=="0" pause
-exit /b %exitcode%
+if not "%1"=="/nopause" pause

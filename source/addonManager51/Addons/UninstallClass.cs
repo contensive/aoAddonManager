@@ -1,8 +1,9 @@
 ﻿using System;
+using Contensive.AddonManager.Controllers;
 using Contensive.BaseClasses;
 using Contensive.Models.Db;
 
-namespace Contensive.Addons.AddonManager51 {
+namespace Contensive.AddonManager.Addons {
     /// <summary>
     /// uninstall a collection
     /// </summary>
@@ -18,22 +19,7 @@ namespace Contensive.Addons.AddonManager51 {
         // 
         private const string ButtonCancel = " Cancel ";
         private const string ButtonOK = " OK ";
-        // 
-        private struct NavigatorType {
-            public string Name;
-            public string NameSpacex;
-        }
-
-        private struct Collection2Type {
-            public int AddonCnt;
-            public string[] AddonGuid;
-            public string[] AddonName;
-            public int MenuCnt;
-            public string[] Menus;
-            public int NavigatorCnt;
-            public NavigatorType[] Navigators;
-        }
-        // 
+        //
         // =====================================================================================
         /// <summary>
         /// addon api
@@ -46,7 +32,7 @@ namespace Contensive.Addons.AddonManager51 {
                 return getUnistall();
             } catch (Exception ex) {
                 CP.Site.ErrorReport(ex);
-                throw;
+                return "<p>An error occurred during collection uninstall. Please try again.</p>";
             }
         }
         // 
@@ -59,7 +45,7 @@ namespace Contensive.Addons.AddonManager51 {
         private string getUnistall() {
             string returnResult = "";
             try {
-                var form = cp.AdminUI.CreateLayoutBuilderList();
+                var form = cp.AdminUI.CreateLayoutBuilderList("{3092AD1E-9660-4104-81D3-C29210C3183C}");
                 //
                 if (!cp.User.IsAdmin) {
                     return cp.Html.p("You must be an administrator to use this tool.");
@@ -94,9 +80,9 @@ namespace Contensive.Addons.AddonManager51 {
                                 var loopTo = cnt - 1;
                                 int Ptr;
                                 for (Ptr = 0; Ptr <= loopTo; Ptr++) {
-                                    if (cp.Doc.GetBoolean("ac" + Ptr)) {
-                                        int TargetCollectionID = cp.Doc.GetInteger("acID" + Ptr);
-                                        InstallController.UninstallCollection(cp, TargetCollectionID);
+                                    if (cp.Doc.GetBoolean($"ac{Ptr}")) {
+                                        int TargetCollectionID = cp.Doc.GetInteger($"acID{Ptr}");
+                                        InstallController.uninstallCollection(cp, TargetCollectionID);
                                     }
                                 }
                             }
@@ -106,28 +92,28 @@ namespace Contensive.Addons.AddonManager51 {
                         // Current Collections Tab
                         // --------------------------------------------------------------------------------
                         // 
-                        form.addColumn();
                         form.columnCaption = "Del";
-                        form.columnCaptionClass = _Constants.AfwStyles.afwTextAlignCenter + " " + _Constants.AfwStyles.afwWidth50px;
-                        form.columnCellClass = _Constants.AfwStyles.afwTextAlignCenter;
+                        form.columnCaptionClass = $"{Constants.AfwStyles.afwTextAlignCenter} {Constants.AfwStyles.afwWidth50px}";
+                        form.columnCellClass = Constants.AfwStyles.afwTextAlignCenter;
                         form.columnDownloadable = false;
                         form.columnName = "";
                         form.columnSortable = false;
                         form.columnVisible = true;
-                        // 
                         form.addColumn();
+                        //
                         form.columnCaption = "Name";
-                        form.columnCaptionClass = _Constants.AfwStyles.afwTextAlignLeft;
-                        form.columnCellClass = _Constants.AfwStyles.afwTextAlignLeft;
+                        form.columnCaptionClass = Constants.AfwStyles.afwTextAlignLeft;
+                        form.columnCellClass = Constants.AfwStyles.afwTextAlignLeft;
                         form.columnDownloadable = false;
                         form.columnName = "";
                         form.columnSortable = false;
                         form.columnVisible = true;
+                        form.addColumn();
                         var addonCollectionList = DbBaseModel.createList<AddonCollectionModel>(cp, "", "name");
                         int rowPtr = 0;
                         foreach (var item in addonCollectionList) {
                             form.addRow();
-                            form.setCell(cp.Html.CheckBox("AC" + rowPtr) + cp.Html.Hidden("ACID" + rowPtr, item.id.ToString()));
+                            form.setCell($"{cp.Html.CheckBox($"AC{rowPtr}")}{cp.Html.Hidden($"ACID{rowPtr}", item.id.ToString())}");
                             form.setCell(item.name);
                             rowPtr += 1;
                         }
@@ -138,15 +124,10 @@ namespace Contensive.Addons.AddonManager51 {
                     // 
                     // Output the Add-on
                     // 
-                    form.name = "Uninstall Collections";
                     form.title = "Uninstall Collections";
                     form.description = "To remove collections, select them from the list and click the Uninstall button.";
                     if (!DbUpToDate) {
                         form.description += "<div style=\"Margin-left:50px\">Warning: The site's Database needs to be upgraded.</div>";
-                    }
-                    string status = "";
-                    if (!string.IsNullOrEmpty(status)) {
-                        form.description += "<div style=\"Margin-left:50px\">" + status + "</div>";
                     }
                     returnResult = form.getHtml();
                 }

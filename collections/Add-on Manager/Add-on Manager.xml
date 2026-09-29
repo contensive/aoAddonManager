@@ -4,15 +4,48 @@
   xsi:noNamespaceSchemaLocation="https://contensive.s3.amazonaws.com/xsd/Collection.xsd"
 >
 	<HelpLink></HelpLink>
-	<Help></Help>
-	<Addon name="OnInstall" guid="{F379C86F-DE77-4B43-9ECD-B14CB5D415AF}" type="Add-on"> 
-		<DotNetClass>Contensive.Addons.AddonManager51.OnInstallClass</DotNetClass> 
+	<Help>Gives site administrators a single portal to browse, install, upgrade, and remove addon collections without leaving the admin interface. The Collection Library connects to the Contensive addon catalog so you can discover available addons, see which are already installed, and install or upgrade with one click. Upload lets you install collections from a zip file, Export packages any installed collection for transfer to another site, and Uninstall cleanly removes a collection along with its addons and navigator entries. Version awareness highlights when upgrades are available and warns if a collection requires a newer platform version.</Help>
+	<Addon name="OnInstall" guid="{F379C86F-DE77-4B43-9ECD-B14CB5D415AF}" type="Add-on">
+		<Copy></Copy>
+		<CopyText></CopyText>
+		<DotNetClass>Contensive.AddonManager.Addons.OnInstallClass</DotNetClass>
+		<ArgumentList></ArgumentList>
+		<AsAjax>No</AsAjax>
+		<Filter>No</Filter>
+		<Help></Help>
+		<HelpLink></HelpLink>
+		<Icon Link="" width="0" height="0" sprites="0" />
+		<InIframe>No</InIframe>
+		<BlockEditTools>Yes</BlockEditTools>
+		<FormXML></FormXML>
+		<IsInline>No</IsInline>
+		<JavascriptInHead></JavascriptInHead>
+		<javascriptForceHead>No</javascriptForceHead>
+		<JSHeadScriptSrc></JSHeadScriptSrc>
+		<Content>No</Content>
+		<Template>No</Template>
+		<Email>No</Email>
+		<Admin>No</Admin>
+		<OnPageEndEvent>No</OnPageEndEvent>
+		<OnPageStartEvent>No</OnPageStartEvent>
+		<OnBodyStart>No</OnBodyStart>
+		<OnBodyEnd>No</OnBodyEnd>
+		<RemoteMethod>No</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
+		<ProcessInterval>0</ProcessInterval>
+		<MetaDescription></MetaDescription>
+		<OtherHeadTags></OtherHeadTags>
+		<PageTitle></PageTitle>
+		<RemoteAssetLink></RemoteAssetLink>
+		<Styles></Styles>
+		<styleslinkhref></styleslinkhref>
+		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
 
 	<Addon name="Add-on Manager" guid="{4DD876E7-BCC4-4AF0-B32E-59FFAB816478}" type="Tool">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<DotNetClass><![CDATA[Contensive.Addons.AddonManager51.AddonManagerRedirectClass]]></DotNetClass>
+		<DotNetClass><![CDATA[Contensive.AddonManager.Addons.AddonManagerRedirectClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
 		<Filter>No</Filter>
@@ -51,7 +84,7 @@
 	<Addon name="addonManager-CollectionLibrary" guid="{7360E5BB-0404-461C-94E4-A56066CA0B02}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<DotNetClass><![CDATA[Contensive.Addons.AddonManager51.collectionLibraryClass]]></DotNetClass>
+		<DotNetClass><![CDATA[Contensive.AddonManager.Addons.CollectionLibraryClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
 		<Filter>No</Filter>
@@ -61,7 +94,7 @@
 		<InIframe>No</InIframe>
 		<BlockEditTools>Yes</BlockEditTools>
 		<FormXML></FormXML>
-		<IncludeAddon name="addonManager51-Includes" guid="{71A95926-D611-40AF-ACA4-100C18449F0D}"/>
+		<IncludeAddon name="addonManager-Includes" guid="{71A95926-D611-40AF-ACA4-100C18449F0D}"/>
 		<IsInline>No</IsInline>
 		<JavascriptInHead></JavascriptInHead>
 		<javascriptForceHead>No</javascriptForceHead>
@@ -86,12 +119,12 @@
 		<RemoteAssetLink></RemoteAssetLink>
 		<Styles></Styles>
 		<styleslinkhref></styleslinkhref>
-		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
+		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
 	<Addon name="addonManager-Export" guid="{B7013B2B-DCF8-48C7-A665-6F258CACAF4D}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<DotNetClass><![CDATA[Contensive.Addons.AddonManager51.exportClass]]></DotNetClass>
+		<DotNetClass><![CDATA[Contensive.AddonManager.Addons.ExportClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
 		<Filter>No</Filter>
@@ -124,113 +157,30 @@
 		<PageTitle></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
 		<Styles><![CDATA[
-
-		.collectionExport{
-			padding-top:20px;
+		.collectionExport {
+			padding-top: 20px;
 		}
 		.collectionExport .mainForm {
-			width:300px;
-			color: #444;
-			background-color:#fee;
-			padding:10px;
-			border:1px solid #444;
-			margin-right:auto;
-			margin-left:auto;
+			width: 300px;
+			color: inherit;
+			background-color: var(--bs-tertiary-bg, #f8f9fa);
+			padding: 10px;
+			border: 1px solid var(--bs-border-color, #dee2e6);
+			margin-right: auto;
+			margin-left: auto;
 		}
 		.collectionExport .responseForm {
-			width:300px;
-			color: #444;
-			background-color:#fee;
-			padding:10px;
-			border:1px solid #444;
-			margin-right:auto;
-			margin-left:auto;
+			width: 300px;
+			color: inherit;
+			background-color: var(--bs-tertiary-bg, #f8f9fa);
+			padding: 10px;
+			border: 1px solid var(--bs-border-color, #dee2e6);
+			margin-right: auto;
+			margin-left: auto;
 		}
-		.collectionExport{
-			padding-top:20px;
-		}
-		.collectionExport .mainForm {
-			width:300px;
-			color: #444;
-			background-color:#fee;
-			padding:10px;
-			border:1px solid #444;
-			margin-right:auto;
-			margin-left:auto;
-		}
-		.collectionExport .responseForm {
-			width:300px;
-			color: #444;
-			background-color:#fee;
-			padding:10px;
-			border:1px solid #444;
-			margin-right:auto;
-			margin-left:auto;
-		}
-		.collectionExport{
-			padding-top:20px;
-		}
-		.collectionExport .mainForm {
-			width:300px;
-			color: #444;
-			background-color:#fee;
-			padding:10px;
-			border:1px solid #444;
-			margin-right:auto;
-			margin-left:auto;
-		}
-		.collectionExport .responseForm {
-			width:300px;
-			color: #444;
-			background-color:#fee;
-			padding:10px;
-			border:1px solid #444;
-			margin-right:auto;
-			margin-left:auto;
-		}
-
 ]]></Styles>
 		<styleslinkhref></styleslinkhref>
-		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
-	</Addon>
-	<Addon name="addonManager-iisRecycle" guid="{164C4B6F-2A89-4A0D-AAA0-7B34BB2DD77D}" type="Add-on">
-		<Copy></Copy>
-		<CopyText></CopyText>
-		<DotNetClass><![CDATA[Contensive.Addons.AddonManager51.iisRecycleClass]]></DotNetClass>
-		<ArgumentList></ArgumentList>
-		<AsAjax>No</AsAjax>
-		<Filter>No</Filter>
-		<Help></Help>
-		<HelpLink></HelpLink>
-		<Icon Link="" width="0" height="0" sprites="0" />
-		<InIframe>No</InIframe>
-		<BlockEditTools>Yes</BlockEditTools>
-		<FormXML></FormXML>
-		<IsInline>No</IsInline>
-		<JavascriptInHead></JavascriptInHead>
-		<javascriptForceHead>No</javascriptForceHead>
-		<JSHeadScriptSrc></JSHeadScriptSrc>
-		<!-- deprecated --><JSBodyScriptSrc></JSBodyScriptSrc>
-		<!-- deprecated --><JavascriptBodyEnd></JavascriptBodyEnd>
-		<!-- deprecated --><JavascriptOnLoad></JavascriptOnLoad>
-		<Content>No</Content>
-		<Template>No</Template>
-		<Email>No</Email>
-		<Admin>No</Admin>
-		<OnPageEndEvent>No</OnPageEndEvent>
-		<OnPageStartEvent>No</OnPageStartEvent>
-		<OnBodyStart>No</OnBodyStart>
-		<OnBodyEnd>No</OnBodyEnd>
-		<RemoteMethod>No</RemoteMethod>
-		<ProcessRunOnce>No</ProcessRunOnce>
-		<ProcessInterval>0</ProcessInterval>
-		<MetaDescription></MetaDescription>
-		<OtherHeadTags></OtherHeadTags>
-		<PageTitle></PageTitle>
-		<RemoteAssetLink></RemoteAssetLink>
-		<Styles></Styles>
-		<styleslinkhref></styleslinkhref>
-		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
+		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
 	<Addon name="addonManager-Includes" guid="{71A95926-D611-40AF-ACA4-100C18449F0D}" type="Add-on">
 		<Copy></Copy>
@@ -267,69 +217,14 @@
 		<OtherHeadTags></OtherHeadTags>
 		<PageTitle></PageTitle>
 		<RemoteAssetLink></RemoteAssetLink>
-		<Styles><![CDATA[
-
-
-
-.amLibraryListCell td.amBody div ,.amLibraryListCell td.amBody div p{
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size:14px;
-}
-
-.amLibraryListCell {margin:4px; border: 1px solid #333; padding:10px;background-color:#fafafa;}
-.amLibraryListCell table {width:100%;padding:0;margin:0;}
-.amLibraryListCell table td {}
-.amLibraryListCell td.amImage {width:101px;height:121px;padding:5px;background-color:#444;}
-.amLibraryListCell td.amImage img {width:100px;}
-.amLibraryListCell td.amBody {height:126px;padding:5px 5px 5px 10px;}
-.amLibraryListCell td.amBody .amHeadline {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:24px;
-	font-weight:bold;
-}
-.amLibraryListCell td.amBody .amCheckbox {font-size:14px;padding:16px 0 0 0}
-.amLibraryListCell td.amBody .amDescription {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody .amDescription p {margin:6px 0 6px 0;padding:0}
-.amLibraryListCell td.amBody .amDescription li {
-    font-family: "Helvetica","Arial","Verdana","Trebuchet MS","sans-serif";
-    font-size: 12px;
-    line-height: 1.2;
-}
-
-.amLibraryListCell td.amBody div.amDate {font-size:14px;padding:8px 0 0 0}
-.amLibraryListCell td.amBody div.amDemoLink a {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-	}
-.amLibraryListCell td.amBody div.amDemoLink a:visited,.amLibraryListCell td.amBody div.amDemoLink a:hover {
-	color: #1B75BB;
-	}
-.amLibraryListCell td.amBody div.amHelpLink {
-	font-family: "Trebuchet MS","Verdana","Helvetica","Arial","sans-serif";
-	color: #1B75BB;
-	font-size:18px;
-	font-weight:bold;
-	padding: 20px 0 0 0;
-}
-
-.amLibraryListCell td.amBody div.amHelpLink a:visited,.amLibraryListCell td.amBody div.amHelpLink a:hover {
-	color: #1B75BB;
-	}
-
-
-
-]]></Styles>
+		<Styles></Styles>
 		<styleslinkhref></styleslinkhref>
-		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
+		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
 	<Addon name="addonManager-Uninstall" guid="{3092AD1E-9660-4104-81D3-C29210C3183C}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<DotNetClass><![CDATA[Contensive.Addons.AddonManager51.uninstallClass]]></DotNetClass>
+		<DotNetClass><![CDATA[Contensive.AddonManager.Addons.UninstallClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
 		<Filter>No</Filter>
@@ -339,7 +234,7 @@
 		<InIframe>No</InIframe>
 		<BlockEditTools>Yes</BlockEditTools>
 		<FormXML></FormXML>
-		<IncludeAddon name="addonManager51-Includes" guid="{71A95926-D611-40AF-ACA4-100C18449F0D}"/>
+		<IncludeAddon name="addonManager-Includes" guid="{71A95926-D611-40AF-ACA4-100C18449F0D}"/>
 		<IsInline>No</IsInline>
 		<JavascriptInHead></JavascriptInHead>
 		<javascriptForceHead>No</javascriptForceHead>
@@ -364,12 +259,12 @@
 		<RemoteAssetLink></RemoteAssetLink>
 		<Styles></Styles>
 		<styleslinkhref></styleslinkhref>
-		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
+		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
 	<Addon name="addonManager-Upload" guid="{2D928D71-D97F-4F0A-9D6E-DB850B06D7C8}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<DotNetClass><![CDATA[Contensive.Addons.AddonManager51.uploadClass]]></DotNetClass>
+		<DotNetClass><![CDATA[Contensive.AddonManager.Addons.UploadClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<AsAjax>No</AsAjax>
 		<Filter>No</Filter>
@@ -379,7 +274,7 @@
 		<InIframe>No</InIframe>
 		<BlockEditTools>Yes</BlockEditTools>
 		<FormXML></FormXML>
-		<IncludeAddon name="addonManager51-Includes" guid="{71A95926-D611-40AF-ACA4-100C18449F0D}"/>
+		<IncludeAddon name="addonManager-Includes" guid="{71A95926-D611-40AF-ACA4-100C18449F0D}"/>
 		<IsInline>No</IsInline>
 		<JavascriptInHead></JavascriptInHead>
 		<javascriptForceHead>No</javascriptForceHead>
@@ -404,7 +299,7 @@
 		<RemoteAssetLink></RemoteAssetLink>
 		<Styles></Styles>
 		<styleslinkhref></styleslinkhref>
-		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
+		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
 	<data>
 		<record content="portals" guid="{9DF996D7-2280-431E-8D34-2ED059CB988C}" name="Add-ons">
@@ -420,13 +315,45 @@
 			<field name="collectionid">{a3e58089-74fc-4fb3-b847-0ad22b51aa72}</field>
 			<field Name="icon">addonmanager\dashboardIcons\add-ons.svg</field>
 		</record>
+		<!-- top-level nav headings -->
+		<record content="portal features" guid="{EFB0CB53-C24F-49B9-8420-C7906D370699}" name="addonManager-Reports">
+			<field name="active">True</field>
+			<field name="addonid"></field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Reports]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
+			<field name="sortorder"></field>
+		</record>
+		<record content="portal features" guid="{AEC028F9-3750-429D-BEDB-436500814629}" name="addonManager-Tools">
+			<field name="active">True</field>
+			<field name="addonid"></field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Tools]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
+			<field name="sortorder"></field>
+		</record>
+		<record content="portal features" guid="{20CB4C35-F5F7-48D5-A8B8-2CA9E9E50B55}" name="addonManager-Settings">
+			<field name="active">True</field>
+			<field name="addonid"></field>
+			<field name="addpadding">False</field>
+			<field name="datacontentid"></field>
+			<field name="heading"><![CDATA[Settings]]></field>
+			<field name="parentfeatureid"></field>
+			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
+			<field name="sortorder"></field>
+		</record>
+		<!-- tool features under Tools heading -->
 		<record content="portal features" guid="{23E6E281-B5A6-4368-A0E6-9681D9F142BC}" name="addonManager-Export">
 			<field name="active">True</field>
 			<field name="addonid">{B7013B2B-DCF8-48C7-A665-6F258CACAF4D}</field>
 			<field name="addpadding">False</field>
 			<field name="datacontentid"></field>
 			<field name="heading"><![CDATA[Export]]></field>
-			<field name="parentfeatureid"></field>
+			<field name="parentfeatureid">{AEC028F9-3750-429D-BEDB-436500814629}</field>
 			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
 			<field name="sortorder"></field>
 		</record>
@@ -446,7 +373,7 @@
 			<field name="addpadding">False</field>
 			<field name="datacontentid"></field>
 			<field name="heading"><![CDATA[Collection Library]]></field>
-			<field name="parentfeatureid"></field>
+			<field name="parentfeatureid">{AEC028F9-3750-429D-BEDB-436500814629}</field>
 			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
 			<field name="sortorder"></field>
 		</record>
@@ -456,7 +383,7 @@
 			<field name="addpadding">False</field>
 			<field name="datacontentid"></field>
 			<field name="heading"><![CDATA[Upload]]></field>
-			<field name="parentfeatureid"></field>
+			<field name="parentfeatureid">{AEC028F9-3750-429D-BEDB-436500814629}</field>
 			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
 			<field name="sortorder"></field>
 		</record>
@@ -466,7 +393,7 @@
 			<field name="addpadding">False</field>
 			<field name="datacontentid"></field>
 			<field name="heading"><![CDATA[Uninstall]]></field>
-			<field name="parentfeatureid"></field>
+			<field name="parentfeatureid">{AEC028F9-3750-429D-BEDB-436500814629}</field>
 			<field name="portalid">{9DF996D7-2280-431E-8D34-2ED059CB988C}</field>
 			<field name="sortorder"></field>
 		</record>

@@ -1,11 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="layout" content="Add-on Manager Library List Body Layout">
+	<meta name="layoutguid" content="{9767F464-3728-4B7D-904B-3442D7FD03BE}">
+	<title>Add-on Manager Library List Body Layout</title>
+</head>
+<body>
 <style>
-	.card-img-top {
+	.amLibraryWrapper .card-img-top {
 		width: 125px;
 		height: 100%;
 		object-fit: contain;
 	}
 </style>
-<div class="container-fluid px-0">
+<div class="amLibraryWrapper container-fluid px-0">
 	<div class="row mb-3">
 		<div class="col-12">
 			<div class="d-flex flex-wrap align-items-center gap-3 p-2 bg-light rounded-2 shadow-sm">
@@ -65,7 +75,7 @@
 								<button type="submit" name="button-remove" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Remove</button>
 								{{/notUpdatable}}
 							{{/isRepair}}
-							
+
 						</div>
 					</div>
 					<hr>
@@ -87,7 +97,7 @@
 <input type="hidden" name="amFilterInstalledValue" id="amFilterInstalledValue" value="{{filterInstalled}}">
 <input type="hidden" name="amFilterUpgradesValue" id="amFilterUpgradesValue" value="{{filterUpgrades}}">
 <input type="hidden" name="amFilterNotInstalledValue" id="amFilterNotInstalledValue" value="{{filterNotInstalled}}">
-<script language="JavaScript">
+<script>
 	function clearLibraryRows(r) {
 		var c,p;
 		c=document.getElementsByName('LibraryRow');
@@ -136,3 +146,5 @@
 		}
 	})();
 </script>
+</body>
+</html>

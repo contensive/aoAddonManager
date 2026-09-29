@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>Contensive.AddonManager</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>addonman.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
@@ -14,8 +14,8 @@
     <AssemblyName>addonManager51</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Contensive.CPBaseClass" Version="26.5.31.32673" />
-    <PackageReference Include="Contensive.DbModels" Version="26.5.31.32673" />
+    <PackageReference Include="Contensive.CPBaseClass" Version="26.9.28.29162" />
+    <PackageReference Include="Contensive.DbModels" Version="26.9.28.29162" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources.Designer.cs">
