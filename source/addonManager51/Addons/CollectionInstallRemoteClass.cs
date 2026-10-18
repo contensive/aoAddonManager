@@ -254,7 +254,7 @@ namespace Contensive.AddonManager.Addons {
         /// Extract collectionGuid from the task's cmdDetail XML.
         /// The cmdDetail contains argument key-value pairs; we look for collectionGuid.
         /// </summary>
-        private static string extractCollectionGuid(string cmdDetail) {
+        public static string extractCollectionGuid(string cmdDetail) {
             if (string.IsNullOrEmpty(cmdDetail)) { return ""; }
             //
             // -- cmdDetail XML like: <cmd><row key="collectionGuid" value="{guid}"/></cmd>
@@ -282,16 +282,25 @@ namespace Contensive.AddonManager.Addons {
         // JSON helpers
         // ==============================================================================================
         //
-        private static string jsonError(string message) {
+        /// <summary>
+        /// Returns a JSON-formatted error response string
+        /// </summary>
+        public static string jsonError(string message) {
             return $"{{\"success\":false,\"error\":\"{jsonEscape(message)}\"}}";
         }
         //
-        private static string jsonEscape(string s) {
+        /// <summary>
+        /// Escapes special characters for JSON string values
+        /// </summary>
+        public static string jsonEscape(string s) {
             if (string.IsNullOrEmpty(s)) { return ""; }
             return s.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\r", "\\r").Replace("\n", "\\n");
         }
         //
-        private static string boolJson(bool value) {
+        /// <summary>
+        /// Converts boolean to JSON literal string ("true" or "false")
+        /// </summary>
+        public static string boolJson(bool value) {
             return value ? "true" : "false";
         }
     }

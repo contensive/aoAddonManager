@@ -16,7 +16,10 @@
       "WebFetch(domain:contensive.io)",
       "WebFetch(domain:api.github.com)",
       "Bash(dotnet list:*)",
-      "WebFetch(domain:contensive.s3.amazonaws.com)"
+      "WebFetch(domain:contensive.s3.amazonaws.com)",
+      "Bash(sn -p:*)",
+      "Bash(sn -tp:*)",
+      "Bash(dotnet test:*)"
     ]
   }
 }
