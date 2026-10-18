@@ -3,6 +3,7 @@ using Contensive.BaseClasses;
 using Contensive.Models.Db;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 
 namespace Contensive.AddonManager.Addons {
@@ -60,62 +61,13 @@ namespace Contensive.AddonManager.Addons {
                 string status = "";
                 {
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    string installFolder = "CollectionUpload" + cp.Utils.CreateGuid().Replace("{", "").Replace("-", "").Replace("}", "");
-                    string InstallPath = installFolder + @"\";
-                    string ErrorMessage = "";
-                    bool UpgradeOK;
                     string CollectionGUID = "";
                     if (!string.IsNullOrEmpty(ButtonRemove ?? "")) {
                         //
-                        // -- uninstall
+                        // -- uninstall (synchronous, stays as form POST)
+                        //
                         var collection = DbBaseModel.create<AddonCollectionModel>(cp, ButtonRemove);
                         InstallController.uninstallCollection(cp, collection.id);
-                    } else if ((Button ?? "") == Constants.buttonOK) {
-                        //
-                        // -- legacy
-                        // 
-                        // ---------------------------------------------------------------------------------------------
-                        // Download and install Collections from the Collection Library
-                        // ---------------------------------------------------------------------------------------------
-                        // 
-                        string InstallLibCollectionList = "";
-                        int Ptr;
-                        if (!string.IsNullOrEmpty(cp.Doc.GetText("LibraryRow"))) {
-                            Ptr = cp.Doc.GetInteger("LibraryRow");
-                            CollectionGUID = cp.Doc.GetText($"LibraryRowguid{Ptr}");
-                            InstallLibCollectionList += $",{CollectionGUID}";
-                        }
-                        // 
-                        if (!string.IsNullOrEmpty(InstallLibCollectionList)) {
-                            InstallLibCollectionList = InstallLibCollectionList.Substring(1);
-                            string[] LibGuids = InstallLibCollectionList.Split(',');
-                            int cnt = LibGuids.Length;
-                            var loopTo = cnt - 1;
-                            for (Ptr = 0; Ptr <= loopTo; Ptr++) {
-                                // 
-                                // -- use v5 method
-                                UpgradeOK = InstallController.installCollectionFromLibrary(cp, LibGuids[Ptr], ref ErrorMessage);
-                                if (!UpgradeOK) {
-                                    form.failMessage += ErrorMessage;
-                                    continue;
-                                }
-                                if (!string.IsNullOrEmpty(ErrorMessage)) {
-                                    form.warningMessage += ErrorMessage;
-                                    continue;
-                                }
-                            }
-                        }
-                    } else if (!string.IsNullOrEmpty(Button ?? "")) {
-                        //
-                        // -- button value is the guid of the collection to install
-                        // 
-                        // -- use v5 method
-                        UpgradeOK = InstallController.installCollectionFromLibrary(cp, Button, ref ErrorMessage);
-                        if (!UpgradeOK) {
-                            form.failMessage += ErrorMessage;
-                        } else if (!string.IsNullOrEmpty(ErrorMessage)) {
-                            form.warningMessage += ErrorMessage;
-                        }
                     }
 
 
@@ -127,7 +79,8 @@ namespace Contensive.AddonManager.Addons {
                         filterSearch = cp.Doc.GetText("amFilterSearchValue"),
                         filterInstalled = cp.Doc.GetBoolean("amFilterInstalledValue"),
                         filterUpgrades = cp.Doc.GetBoolean("amFilterUpgradesValue"),
-                        filterNotInstalled = cp.Doc.GetBoolean("amFilterNotInstalledValue")
+                        filterNotInstalled = cp.Doc.GetBoolean("amFilterNotInstalledValue"),
+                        remoteMethodUrl = "/addonManager-CollectionInstallRemote"
                     };
                     if ((LibCollections.DocumentElement.Name.ToLower() ?? "") != (Constants.collectionListRootNode.ToLower() ?? "")) {
                         string UserError = $"There was an error reading the Collection Library file. The '{Constants.collectionListRootNode}' element was not found.";
@@ -140,11 +93,8 @@ namespace Contensive.AddonManager.Addons {
                         // 
                         RowPtr = 0;
                         // Content = ""
-                        string cellTemplate = My.Resources.Resources.AddonManagerLibraryListCell;
-
                         foreach (System.Xml.XmlNode CDef_Node in LibCollections.DocumentElement.ChildNodes) {
                             string CollectionImageLink = "";
-                            string CollectionCheckbox = "";
                             string CollectionName = "";
                             var CollectionModifiedDate = DateTime.MinValue;
                             string CollectionModifiedDateCaption = "";
@@ -256,25 +206,21 @@ namespace Contensive.AddonManager.Addons {
                                                     isNotUpdatable = !cs.GetBoolean("updatable");
                                                 }
                                                 cs.Close();
-                                                CollectionCheckbox = $"<input TYPE=\"CheckBox\" NAME=\"LibraryRow\" VALUE=\"{RowPtr}\" onClick=\"clearLibraryRows('{RowPtr}');\">{cp.Html.Hidden($"LibraryRowGuid{RowPtr}", CollectionGUID)}{cp.Html.Hidden($"LibraryRowName{RowPtr}", CollectionName)}";
                                                 if (!IsOnSite) {
-                                                    // 
+                                                    //
                                                     // -- not installed
                                                     isInstall = true;
                                                     showAddon = true;
-                                                    CollectionCheckbox += "&nbsp;Install";
                                                 } else if (installedDate >= CollectionModifiedDate) {
-                                                    // 
+                                                    //
                                                     // -- up to date, reinstall
                                                     isRepair = true;
                                                     showAddon = true;
-                                                    CollectionCheckbox += "&nbsp;Reinstall";
                                                 } else {
-                                                    // 
+                                                    //
                                                     // -- old version, upgrade
                                                     isUpgrade = true;
                                                     showAddon = true;
-                                                    CollectionCheckbox += "&nbsp;Upgrade";
                                                 }
                                             }
                                         }
@@ -298,7 +244,6 @@ namespace Contensive.AddonManager.Addons {
                                             viewModel.collectionList.Add(new LibraryViewModel_collectionList() {
                                                 name = CollectionName,
                                                 imageLink = CollectionImageLink,
-                                                checkbox = CollectionCheckbox,
                                                 lastUpdatedString = CollectionModifiedDateCaption,
                                                 description = CollectionDescription,
                                                 isInstall = isInstall,
@@ -316,15 +261,23 @@ namespace Contensive.AddonManager.Addons {
                             }
                         }
                     }
+                    //
+                    // -- build a comma-separated list of GUIDs for all upgradable collections
+                    //
+                    string upgradeAllGuids = string.Join(",", viewModel.collectionList
+                        .Where(c => c.isUpgrade && !c.notUpdatable)
+                        .Select(c => c.buttonValue));
+                    viewModel.upgradeAllGuids = upgradeAllGuids;
+                    viewModel.hasUpgrades = !string.IsNullOrEmpty(upgradeAllGuids);
+                    //
                     string layout = cp.Layout.GetLayout(Constants.guidAddonManagerLibraryListCell, Constants.nameAddonManagerLibraryLisCell, Constants.pathFilenameAddonManagerLibraryLisCell);
                     form.body = cp.Mustache.Render(layout, viewModel);
-                    // 
+                    //
                     // --------------------------------------------------------------------------------
                     // Build Page from tabs
                     // --------------------------------------------------------------------------------
-                    // 
+                    //
                     form.addFormButton(Constants.buttonCancel);
-                    form.addFormButton(Constants.buttonOK);
                 }
                 // 
                 // Output the Add-on
@@ -365,6 +318,18 @@ namespace Contensive.AddonManager.Addons {
         /// persisted not-installed filter checkbox
         /// </summary>
         public bool filterNotInstalled { get; set; }
+        /// <summary>
+        /// comma-separated GUIDs of all collections that need upgrading (for Upgrade All button)
+        /// </summary>
+        public string upgradeAllGuids { get; set; } = "";
+        /// <summary>
+        /// true if there are collections that need upgrading
+        /// </summary>
+        public bool hasUpgrades { get; set; }
+        /// <summary>
+        /// URL of the remote method addon for AJAX install and status polling
+        /// </summary>
+        public string remoteMethodUrl { get; set; } = "";
     }
     /// <summary>
     /// a collection entry in the library list
@@ -378,10 +343,6 @@ namespace Contensive.AddonManager.Addons {
         /// image
         /// </summary>
         public string imageLink { get; set; }
-        /// <summary>
-        /// checkbox (should be in the form)
-        /// </summary>
-        public string checkbox { get; set; }
         /// <summary>
         /// string that represents the date updated
         /// </summary>

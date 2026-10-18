@@ -72,12 +72,17 @@ namespace Contensive.AddonManager.Controllers {
         /// <param name="ErrorMessage">Error message output if installation fails</param>
         /// <returns>True if installation succeeded</returns>
         public static bool installCollectionFromLibrary(CPBaseClass cp, string collectionGuid, ref string ErrorMessage) {
-            if (!cp.User.IsAdmin) { throw new Exception("Administrator access required."); }
-            //
-            cp.Utils.AppendLog($"installCollectionFromLibrary, collectionGuid [{collectionGuid}]");
-            //
-            cp.Addon.InstallCollectionFromLibrary(collectionGuid, ref ErrorMessage);
-            return true;
+            try {
+                if (!cp.User.IsAdmin) { throw new Exception("Administrator access required."); }
+                //
+                cp.Utils.AppendLog($"installCollectionFromLibrary, collectionGuid [{collectionGuid}]");
+                //
+                cp.Addon.InstallCollectionFromLibrary(collectionGuid, ref ErrorMessage);
+                return true;
+            } catch (Exception ex) {
+                cp.Site.ErrorReport(ex);
+                throw;
+            }
         }
 
         /// <summary>

@@ -44,6 +44,22 @@ namespace Contensive.AddonManager {
         /// </summary>
         public const string buttonRemove = "button-remove";
         /// <summary>
+        /// Upgrade All button label
+        /// </summary>
+        public const string buttonUpgradeAll = " Upgrade All ";
+        /// <summary>
+        /// GUID of the core Collection Install Task addon (in Contensive5 aoBase51.xml)
+        /// </summary>
+        public const string guidCollectionInstallTask = "{C49D7C41-2B84-4F34-A9F6-A0791E4C1CD3}";
+        /// <summary>
+        /// Minimum Contensive version that supports background collection install via ExecuteAsProcess
+        /// </summary>
+        public const string minVersionForBackgroundInstall = "26.10.16.1";
+        /// <summary>
+        /// GUID of the remote method addon that handles AJAX install trigger and status polling
+        /// </summary>
+        public const string guidCollectionInstallRemote = "{8FD7D732-1AF7-42B9-884A-612B009BC100}";
+        /// <summary>
         /// Form field name for collection ID
         /// </summary>
         public const string requestNameCollectionID = "collectionid";

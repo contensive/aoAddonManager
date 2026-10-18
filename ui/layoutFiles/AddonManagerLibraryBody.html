@@ -32,12 +32,15 @@
 					<input type="checkbox" class="form-check-input" id="amFilterNotInstalled" onchange="amApplyFilters()">
 					<label class="form-check-label" for="amFilterNotInstalled">Not Installed</label>
 				</div>
+				{{#hasUpgrades}}
+				<button type="button" class="btn btn-sm btn-outline-warning ms-auto" id="amUpgradeAllBtn" onclick="amUpgradeAll()">Upgrade All</button>
+				{{/hasUpgrades}}
 			</div>
 		</div>
 	</div>
 	<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3">
 		{{#collectionList}}
-		<div class="col mb-3" data-am-name="{{name}}" data-am-status="{{#isInstall}}install{{/isInstall}}{{#isUpgrade}}upgrade{{/isUpgrade}}{{#isRepair}}repair{{/isRepair}}">
+		<div class="col mb-3" data-am-name="{{name}}" data-am-status="{{#isInstall}}install{{/isInstall}}{{#isUpgrade}}upgrade{{/isUpgrade}}{{#isRepair}}repair{{/isRepair}}" data-collection-guid="{{buttonValue}}">
 			<div class="card h-100 rounded-2 p-2 shadow-sm{{#isRepair}}{{#requiresNewerContensive}} bg-danger-subtle{{/requiresNewerContensive}}{{^requiresNewerContensive}} bg-primary-subtle{{/requiresNewerContensive}}{{/isRepair}}{{#isUpgrade}}{{#requiresNewerContensive}} bg-danger-subtle{{/requiresNewerContensive}}{{^requiresNewerContensive}} bg-warning-subtle{{/requiresNewerContensive}}{{/isUpgrade}}">
 				<div class="">
 					<div class="d-flex flex-row align-items-center">
@@ -51,9 +54,8 @@
 								{{#isUpgrade}}<div><small class="text-body-secondary">Installed: {{installedDate}}</small></div>{{/isUpgrade}}
 								{{#isRepair}}<div><small class="text-body-secondary">Installed: {{installedDate}}</small></div>{{/isRepair}}
 							</div>
-							<!-- -->
 							{{#isInstall}}
-								<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-sm{{#requiresNewerContensive}} btn-outline-danger{{/requiresNewerContensive}}{{^requiresNewerContensive}} btn-outline-primary{{/requiresNewerContensive}}">Install</button>
+								<button type="button" onclick="amInstallCollection('{{buttonValue}}', this)" class="btn btn-sm am-install-btn{{#requiresNewerContensive}} btn-outline-danger{{/requiresNewerContensive}}{{^requiresNewerContensive}} btn-outline-primary{{/requiresNewerContensive}}">Install</button>
 							{{/isInstall}}
 							{{#isUpgrade}}
 								{{#notUpdatable}}
@@ -61,7 +63,7 @@
 								<div class="text-danger small mt-1">This collection is not upgradable</div>
 								{{/notUpdatable}}
 								{{^notUpdatable}}
-								<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Upgrade</button>
+								<button type="button" onclick="amInstallCollection('{{buttonValue}}', this)" class="btn btn-outline-primary btn-sm am-install-btn">Upgrade</button>
 								<button type="submit" name="button-remove" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Remove</button>
 								{{/notUpdatable}}
 							{{/isUpgrade}}
@@ -71,11 +73,11 @@
 								<div class="text-danger small mt-1">This collection is not upgradable</div>
 								{{/notUpdatable}}
 								{{^notUpdatable}}
-								<button type="submit" name="button" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Reinstall</button>
+								<button type="button" onclick="amInstallCollection('{{buttonValue}}', this)" class="btn btn-outline-primary btn-sm am-install-btn">Reinstall</button>
 								<button type="submit" name="button-remove" value="{{buttonValue}}" class="btn btn-outline-primary btn-sm">Remove</button>
 								{{/notUpdatable}}
 							{{/isRepair}}
-
+							<span class="am-install-status small ms-2" data-status-guid="{{buttonValue}}"></span>
 						</div>
 					</div>
 					<hr>
@@ -93,11 +95,16 @@
 </div>
 
 <input type="hidden" name="LibraryCnt" value="0">
+<input type="hidden" name="upgradeAllGuids" id="amUpgradeAllGuids" value="{{upgradeAllGuids}}">
+<input type="hidden" id="amRemoteMethodUrl" value="{{remoteMethodUrl}}">
 <input type="hidden" name="amFilterSearchValue" id="amFilterSearchValue" value="{{filterSearch}}">
 <input type="hidden" name="amFilterInstalledValue" id="amFilterInstalledValue" value="{{filterInstalled}}">
 <input type="hidden" name="amFilterUpgradesValue" id="amFilterUpgradesValue" value="{{filterUpgrades}}">
 <input type="hidden" name="amFilterNotInstalledValue" id="amFilterNotInstalledValue" value="{{filterNotInstalled}}">
 <script>
+	//
+	// -- filter functions
+	//
 	function clearLibraryRows(r) {
 		var c,p;
 		c=document.getElementsByName('LibraryRow');
@@ -144,6 +151,126 @@
 		if (form) {
 			form.addEventListener('submit', function() { amSyncHiddenFilters(); });
 		}
+	})();
+	//
+	// -- AJAX install and status polling
+	//
+	var amRemoteUrl = document.getElementById('amRemoteMethodUrl').value;
+	var amSpinnerImg = '<img src="https://s3.amazonaws.com/cdn.contensive.com/assets/20201227/images/ajax-loader-small.gif" width="16" height="16">';
+	//
+	function amGetStatusEl(collectionGuid) {
+		return document.querySelector('[data-status-guid="' + collectionGuid + '"]');
+	}
+	function amGetInstallBtn(collectionGuid) {
+		var card = document.querySelector('[data-collection-guid="' + collectionGuid + '"]');
+		return card ? card.querySelector('.am-install-btn') : null;
+	}
+	//
+	// -- install a collection via AJAX
+	//
+	function amInstallCollection(collectionGuid, btn) {
+		if (btn) { btn.disabled = true; }
+		var statusEl = amGetStatusEl(collectionGuid);
+		if (statusEl) { statusEl.innerHTML = 'Queuing...' + amSpinnerImg; }
+		fetch(amRemoteUrl, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			body: 'action=install&collectionGuid=' + encodeURIComponent(collectionGuid)
+		})
+		.then(function(r) { return r.json(); })
+		.then(function(data) {
+			if (data.success && data.taskId > 0) {
+				if (statusEl) { statusEl.innerHTML = 'Installing... ' + amSpinnerImg; }
+				amPollStatus(data.taskId, collectionGuid);
+			} else if (data.success && data.taskId === -1) {
+				// fire-and-forget (older platform, no task id), reload after delay
+				if (statusEl) { statusEl.innerHTML = 'Installing... ' + amSpinnerImg; }
+				setTimeout(function() { location.reload(); }, 15000);
+			} else if (data.success && data.taskId === 0) {
+				if (statusEl) { statusEl.innerHTML = '<span class="text-success">Installed</span>'; }
+				setTimeout(function() { location.reload(); }, 1500);
+			} else {
+				if (statusEl) { statusEl.innerHTML = '<span class="text-danger">Error: ' + (data.error || 'Unknown') + '</span>'; }
+				if (btn) { btn.disabled = false; }
+			}
+		})
+		.catch(function() {
+			if (statusEl) { statusEl.innerHTML = '<span class="text-danger">Request failed</span>'; }
+			if (btn) { btn.disabled = false; }
+		});
+	}
+	//
+	// -- poll task status
+	//
+	function amPollStatus(taskId, collectionGuid) {
+		fetch(amRemoteUrl, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			body: 'action=status&taskId=' + taskId
+		})
+		.then(function(r) { return r.json(); })
+		.then(function(data) {
+			var statusEl = amGetStatusEl(collectionGuid);
+			var btn = amGetInstallBtn(collectionGuid);
+			if (data.isCompleted) {
+				if (statusEl) { statusEl.innerHTML = '<span class="text-success">Installed</span>'; }
+				setTimeout(function() { location.reload(); }, 1500);
+			} else if (data.isFailed) {
+				if (statusEl) { statusEl.innerHTML = '<span class="text-danger">Failed: ' + (data.failMessage || 'Unknown error') + '</span>'; }
+				if (btn) { btn.disabled = false; }
+			} else {
+				var msg = data.isRunning ? 'Installing... ' : 'Queued... ';
+				if (statusEl) { statusEl.innerHTML = msg + amSpinnerImg; }
+				setTimeout(function() { amPollStatus(taskId, collectionGuid); }, 3000);
+			}
+		})
+		.catch(function() {
+			setTimeout(function() { amPollStatus(taskId, collectionGuid); }, 5000);
+		});
+	}
+	//
+	// -- upgrade all collections via AJAX
+	//
+	function amUpgradeAll() {
+		var guidsField = document.getElementById('amUpgradeAllGuids');
+		if (!guidsField || !guidsField.value) { return; }
+		var guids = guidsField.value.split(',');
+		var upgradeBtn = document.getElementById('amUpgradeAllBtn');
+		if (upgradeBtn) { upgradeBtn.disabled = true; }
+		for (var i = 0; i < guids.length; i++) {
+			var guid = guids[i].trim();
+			if (guid) {
+				var btn = amGetInstallBtn(guid);
+				amInstallCollection(guid, btn);
+			}
+		}
+	}
+	//
+	// -- on page load, check for active install tasks
+	//
+	(function amCheckActiveTasks() {
+		if (!amRemoteUrl) { return; }
+		fetch(amRemoteUrl, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			body: 'action=activeTasks'
+		})
+		.then(function(r) { return r.json(); })
+		.then(function(data) {
+			if (data.tasks && data.tasks.length > 0) {
+				for (var i = 0; i < data.tasks.length; i++) {
+					var t = data.tasks[i];
+					var btn = amGetInstallBtn(t.collectionGuid);
+					if (btn) { btn.disabled = true; }
+					var statusEl = amGetStatusEl(t.collectionGuid);
+					if (statusEl) {
+						statusEl.innerHTML = (t.isRunning ? 'Installing... ' : 'Queued... ') + amSpinnerImg;
+					}
+					amPollStatus(t.taskId, t.collectionGuid);
+				}
+			}
+		})
+		.catch(function() { /* silent */ });
 	})();
 </script>
 </body>

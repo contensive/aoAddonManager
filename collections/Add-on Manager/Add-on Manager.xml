@@ -261,6 +261,42 @@
 		<styleslinkhref></styleslinkhref>
 		<Scripting Language="" EntryPoint="" Timeout="5000"/>
 	</Addon>
+	<Addon name="addonManager-CollectionInstallRemote" guid="{8FD7D732-1AF7-42B9-884A-612B009BC100}" type="Add-on">
+		<Copy></Copy>
+		<CopyText></CopyText>
+		<DotNetClass><![CDATA[Contensive.AddonManager.Addons.CollectionInstallRemoteClass]]></DotNetClass>
+		<ArgumentList></ArgumentList>
+		<AsAjax>Yes</AsAjax>
+		<Filter>No</Filter>
+		<Help></Help>
+		<HelpLink></HelpLink>
+		<Icon Link="" width="0" height="0" sprites="0" />
+		<InIframe>No</InIframe>
+		<BlockEditTools>Yes</BlockEditTools>
+		<FormXML></FormXML>
+		<IsInline>No</IsInline>
+		<JavascriptInHead></JavascriptInHead>
+		<javascriptForceHead>No</javascriptForceHead>
+		<JSHeadScriptSrc></JSHeadScriptSrc>
+		<Content>No</Content>
+		<Template>No</Template>
+		<Email>No</Email>
+		<Admin>No</Admin>
+		<OnPageEndEvent>No</OnPageEndEvent>
+		<OnPageStartEvent>No</OnPageStartEvent>
+		<OnBodyStart>No</OnBodyStart>
+		<OnBodyEnd>No</OnBodyEnd>
+		<RemoteMethod>Yes</RemoteMethod>
+		<ProcessRunOnce>No</ProcessRunOnce>
+		<ProcessInterval>0</ProcessInterval>
+		<MetaDescription></MetaDescription>
+		<OtherHeadTags></OtherHeadTags>
+		<PageTitle></PageTitle>
+		<RemoteAssetLink></RemoteAssetLink>
+		<Styles></Styles>
+		<styleslinkhref></styleslinkhref>
+		<Scripting Language="" EntryPoint="" Timeout="5000"/>
+	</Addon>
 	<Addon name="addonManager-Upload" guid="{2D928D71-D97F-4F0A-9D6E-DB850B06D7C8}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
