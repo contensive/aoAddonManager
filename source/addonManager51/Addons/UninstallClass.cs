@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using Contensive.AddonManager.Controllers;
 using Contensive.BaseClasses;
 using Contensive.Models.Db;
@@ -46,6 +47,8 @@ namespace Contensive.AddonManager.Addons {
             string returnResult = "";
             try {
                 var form = cp.AdminUI.CreateLayoutBuilderList("{3092AD1E-9660-4104-81D3-C29210C3183C}");
+                form.callbackAddonGuid = "{3092AD1E-9660-4104-81D3-C29210C3183C}";
+                form.paginationPageSizeDefault = 50;
                 //
                 if (!cp.User.IsAdmin) {
                     return cp.Html.p("You must be an administrator to use this tool.");
@@ -105,11 +108,41 @@ namespace Contensive.AddonManager.Addons {
                         form.columnCaptionClass = Constants.AfwStyles.afwTextAlignLeft;
                         form.columnCellClass = Constants.AfwStyles.afwTextAlignLeft;
                         form.columnDownloadable = false;
-                        form.columnName = "";
-                        form.columnSortable = false;
+                        form.columnName = "name";
+                        form.columnSortable = true;
                         form.columnVisible = true;
                         form.addColumn();
-                        var addonCollectionList = DbBaseModel.createList<AddonCollectionModel>(cp, "", "name");
+                        //
+                        // Build SQL criteria with search filter
+                        //
+                        string sqlCriteria = "";
+                        if (!string.IsNullOrEmpty(form.sqlSearchTerm)) {
+                            sqlCriteria = $"(name like {cp.Db.EncodeSQLTextLike(form.sqlSearchTerm)})";
+                        }
+                        //
+                        // Build SQL order by with sort
+                        //
+                        string sqlOrderBy = "name";
+                        if (!string.IsNullOrEmpty(form.sortField)) {
+                            sqlOrderBy = form.sortField;
+                            if (form.sortDirection == "desc") {
+                                sqlOrderBy += " desc";
+                            }
+                        }
+                        //
+                        // Get total record count for pagination
+                        //
+                        string searchWhere = string.IsNullOrEmpty(sqlCriteria) ? "" : $" and ({sqlCriteria})";
+                        string sqlCount = $"select count(*) from ccaddoncollections where (1=1){searchWhere}";
+                        using (DataTable dt = cp.Db.ExecuteQuery(sqlCount)) {
+                            if (dt?.Rows != null && dt.Rows.Count == 1) {
+                                form.recordCount = cp.Utils.EncodeInteger(dt.Rows[0][0]);
+                            }
+                        }
+                        //
+                        // Get paginated data
+                        //
+                        var addonCollectionList = DbBaseModel.createList<AddonCollectionModel>(cp, sqlCriteria, sqlOrderBy, form.paginationPageSize, form.paginationPageNumber);
                         int rowPtr = 0;
                         foreach (var item in addonCollectionList) {
                             form.addRow();
@@ -119,7 +152,7 @@ namespace Contensive.AddonManager.Addons {
                         }
                         form.addFormButton(ButtonCancel);
                         form.addFormButton(ButtonOK);
-                        form.addFormHidden("accnt", addonCollectionList.Count.ToString());
+                        form.addFormHidden("accnt", rowPtr.ToString());
                     }
                     // 
                     // Output the Add-on
