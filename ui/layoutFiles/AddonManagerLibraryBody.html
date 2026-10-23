@@ -53,7 +53,7 @@
 								<div><small class="text-body-secondary">Last updated: {{lastUpdatedString}}</small></div>
 								<div data-installed-date="{{buttonValue}}">{{#isUpgrade}}<small class="text-body-secondary">Installed: {{installedDate}}</small>{{/isUpgrade}}{{#isRepair}}<small class="text-body-secondary">Installed: {{installedDate}}</small>{{/isRepair}}</div>
 							</div>
-							<div class="am-install-status small mb-2" data-status-guid="{{buttonValue}}">&nbsp;</div>
+							<div class="am-install-status small text-body-secondary mb-2" data-status-guid="{{buttonValue}}">&nbsp;</div>
 							{{#isInstall}}
 								<button type="button" onclick="amInstallCollection('{{buttonValue}}', this)" class="btn btn-sm am-install-btn{{#requiresNewerContensive}} btn-outline-danger{{/requiresNewerContensive}}{{^requiresNewerContensive}} btn-outline-primary{{/requiresNewerContensive}}">Install</button>
 							{{/isInstall}}
