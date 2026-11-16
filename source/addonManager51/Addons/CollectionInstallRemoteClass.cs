@@ -28,6 +28,8 @@ namespace Contensive.AddonManager.Addons {
                         return handleStatus(cp);
                     case "activetasks":
                         return handleActiveTasks(cp);
+                    case "statusbatch":
+                        return handleStatusBatch(cp);
                     default:
                         return jsonError("Unknown action.");
                 }
@@ -131,6 +133,42 @@ namespace Contensive.AddonManager.Addons {
                 cp.Site.ErrorReport(ex);
                 return "{\"tasks\":[]}";
             }
+        }
+        //
+        /// <summary>
+        /// Handle statusBatch action: return statuses for multiple task IDs in a single response.
+        /// Accepts a comma-separated list of task IDs and returns an array of status objects.
+        /// </summary>
+        private static string handleStatusBatch(CPBaseClass cp) {
+            string taskIdsRaw = cp.Doc.GetText("taskIds");
+            if (string.IsNullOrEmpty(taskIdsRaw)) {
+                return "{\"statuses\":[]}";
+            }
+            //
+            // -- parse and validate task IDs
+            //
+            string[] parts = taskIdsRaw.Split(',');
+            var validTaskIds = new List<int>();
+            foreach (string part in parts) {
+                if (int.TryParse(part.Trim(), out int id) && id > 0) {
+                    validTaskIds.Add(id);
+                }
+            }
+            if (validTaskIds.Count == 0) {
+                return "{\"statuses\":[]}";
+            }
+            //
+            // -- get status for each task, reusing existing per-task helpers
+            //
+            var statusEntries = new List<string>();
+            foreach (int taskId in validTaskIds) {
+                string result = invokeGetStatus(cp, taskId);
+                if (result == null) {
+                    result = getStatusFromDb(cp, taskId);
+                }
+                statusEntries.Add(result);
+            }
+            return $"{{\"statuses\":[{string.Join(",", statusEntries)}]}}";
         }
         //
         // ==============================================================================================
