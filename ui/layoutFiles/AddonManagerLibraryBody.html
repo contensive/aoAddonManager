@@ -157,6 +157,11 @@
 	var amRemoteUrl = document.getElementById('amRemoteMethodUrl').value;
 	var amSpinnerImg = '<img src="https://s3.amazonaws.com/cdn.contensive.com/assets/20201227/images/ajax-loader-small.gif" width="16" height="16">';
 	//
+	// -- batch polling state
+	//
+	var amActivePolls = {};
+	var amPollTimerId = null;
+	//
 	function amGetStatusEl(collectionGuid) {
 		return document.querySelector('[data-status-guid="' + collectionGuid + '"]');
 	}
@@ -211,7 +216,7 @@
 		.then(function(data) {
 			if (data.success && data.taskId > 0) {
 				if (statusEl) { statusEl.innerHTML = 'Queued... ' + amSpinnerImg; }
-				amPollStatus(data.taskId, collectionGuid);
+				amRegisterPoll(data.taskId, collectionGuid);
 			} else if (data.success && data.taskId === -1) {
 				// fire-and-forget (older platform, no task id)
 				if (statusEl) { statusEl.innerHTML = 'Installing... ' + amSpinnerImg; }
@@ -229,31 +234,62 @@
 		});
 	}
 	//
-	// -- poll task status
+	// -- register a task for batch polling
 	//
-	function amPollStatus(taskId, collectionGuid) {
+	function amRegisterPoll(taskId, collectionGuid) {
+		amActivePolls[taskId] = collectionGuid;
+		if (amPollTimerId === null) {
+			amPollTimerId = setTimeout(amBatchPollStatus, 3000);
+		}
+	}
+	//
+	// -- batch poll all active task statuses in a single request
+	//
+	function amBatchPollStatus() {
+		amPollTimerId = null;
+		var taskIds = [];
+		for (var key in amActivePolls) {
+			if (amActivePolls.hasOwnProperty(key)) {
+				taskIds.push(key);
+			}
+		}
+		if (taskIds.length === 0) { return; }
 		fetch(amRemoteUrl, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-			body: 'action=status&taskId=' + taskId
+			body: 'action=statusBatch&taskIds=' + encodeURIComponent(taskIds.join(','))
 		})
 		.then(function(r) { return r.json(); })
 		.then(function(data) {
-			var statusEl = amGetStatusEl(collectionGuid);
-			var btn = amGetInstallBtn(collectionGuid);
-			if (data.isCompleted) {
-				amMarkCardInstalled(collectionGuid);
-			} else if (data.isFailed) {
-				if (statusEl) { statusEl.innerHTML = '<span class="text-danger">Failed: ' + (data.failMessage || 'Unknown error') + '</span>'; }
-				if (btn) { btn.disabled = false; }
-			} else {
-				var msg = data.isRunning ? 'Installing... ' : 'Queued... ';
-				if (statusEl) { statusEl.innerHTML = msg + amSpinnerImg; }
-				setTimeout(function() { amPollStatus(taskId, collectionGuid); }, 3000);
+			if (!data.statuses) { return; }
+			for (var i = 0; i < data.statuses.length; i++) {
+				var s = data.statuses[i];
+				var collectionGuid = amActivePolls[s.taskId];
+				if (!collectionGuid) { continue; }
+				var statusEl = amGetStatusEl(collectionGuid);
+				var btn = amGetInstallBtn(collectionGuid);
+				if (s.isCompleted) {
+					delete amActivePolls[s.taskId];
+					amMarkCardInstalled(collectionGuid);
+				} else if (s.isFailed) {
+					delete amActivePolls[s.taskId];
+					if (statusEl) { statusEl.innerHTML = '<span class="text-danger">Failed: ' + (s.failMessage || 'Unknown error') + '</span>'; }
+					if (btn) { btn.disabled = false; }
+				} else {
+					var msg = s.isRunning ? 'Installing... ' : 'Queued... ';
+					if (statusEl) { statusEl.innerHTML = msg + amSpinnerImg; }
+				}
 			}
 		})
-		.catch(function() {
-			setTimeout(function() { amPollStatus(taskId, collectionGuid); }, 5000);
+		.catch(function() { /* retry on next cycle */ })
+		.then(function() {
+			var hasRemaining = false;
+			for (var key in amActivePolls) {
+				if (amActivePolls.hasOwnProperty(key)) { hasRemaining = true; break; }
+			}
+			if (hasRemaining && amPollTimerId === null) {
+				amPollTimerId = setTimeout(amBatchPollStatus, 3000);
+			}
 		});
 	}
 	//
@@ -294,7 +330,7 @@
 					if (statusEl) {
 						statusEl.innerHTML = (t.isRunning ? 'Installing... ' : 'Queued... ') + amSpinnerImg;
 					}
-					amPollStatus(t.taskId, t.collectionGuid);
+					amRegisterPoll(t.taskId, t.collectionGuid);
 				}
 			}
 		})
